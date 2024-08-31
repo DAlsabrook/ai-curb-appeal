@@ -8,6 +8,7 @@ const replicate = new Replicate({
 export async function GET(request, { params }) {
   const { id } = params;
   const prediction = await replicate.predictions.get(id);
+  console.log('Getting Image from Replicate via [ID]')
 
   if (prediction?.error) {
     return NextResponse.json({ detail: prediction.error }, { status: 500 });

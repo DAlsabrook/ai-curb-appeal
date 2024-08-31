@@ -23,29 +23,30 @@ export default function Home() {
       }),
     });
     console.log('page.js - After handleSubmit');
-    console.log(response);
 
-    let prediction = await response.json();
+    let prediction = await response.json(); // response from predictions/route.js
     if (response.status !== 201) {
       setError(prediction.detail);
       return;
     }
     setPrediction(prediction);
+    console.log(prediction)
 
-    while (
-      prediction.status !== "succeeded" &&
-      prediction.status !== "failed"
-    ) {
-      await sleep(1000);
-      const response = await fetch("/api/predictions/" + prediction.id);
-      prediction = await response.json();
-      if (response.status !== 200) {
-        setError(prediction.detail);
-        return;
-      }
-      console.log({ prediction: prediction });
-      setPrediction(prediction);
-    }
+    // while (
+    //   prediction.status !== "succeeded" &&
+    //   prediction.status !== "failed"
+    // ) {
+    //   await sleep(1000);
+    //   // "GET" to the predictions/[id]/route.js
+    //   const response = await fetch("/api/predictions/" + prediction.id);
+    //   prediction = await response.json();
+    //   if (response.status !== 200) {
+    //     setError(prediction.detail);
+    //     return;
+    //   }
+    //   // console.log({ prediction: prediction });
+    //   setPrediction(prediction);
+    // }
   };
 
   return (
@@ -73,10 +74,10 @@ export default function Home() {
 
       {prediction && (
         <>
-          {prediction.output && (
+          {prediction && (
             <div className="image-wrapper mt-5">
               <Image
-                src={prediction.output[prediction.output.length - 1]}
+                src={prediction[0]}
                 alt="output"
                 sizes="100vw"
                 height={768}
@@ -84,7 +85,7 @@ export default function Home() {
               />
             </div>
           )}
-          <p className="py-3 text-sm opacity-50">status: {prediction.status}</p>
+          <p className="py-3 text-sm opacity-50">status: {prediction[0]}</p>
         </>
       )}
     </div>
