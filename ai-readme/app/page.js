@@ -12,15 +12,16 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('page.js - Before handleSubmit');
-    console.log('page.js - Promt passed to fetch(): ' + e.target.prompt.value)
+
+    const formData = new FormData();
+    formData.append('prompt', e.target.prompt.value);
+    formData.append('file', e.target.file.files[0]);
+
+    console.log('page.js - FormData:', formData);
+
     const response = await fetch("/api/predictions", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        prompt: e.target.prompt.value,
-      }),
+      body: formData,
     });
     console.log('page.js - After handleSubmit');
 
@@ -30,28 +31,23 @@ export default function Home() {
       return;
     }
     setPrediction(prediction);
-    console.log(prediction)
-
-    // THIS logic is to hit the replicate via a "GET request and filter for a specific img already created"
-    // // "GET" to the predictions/[id]/route.js
-    // const response = await fetch("/api/predictions/" + prediction.id);
-    // prediction = await response.json();
-    // if (response.status !== 200) {
-    //   setError(prediction.detail);
-    //   return;
-    // }
-    // // console.log({ prediction: prediction });
-    // setPrediction(prediction);
+    console.log(prediction);
   };
 
   return (
     <div className="container max-w-2xl mx-auto p-5">
-      <form className="w-full flex" onSubmit={handleSubmit}>
+      <form className="w-full flex flex-col" onSubmit={handleSubmit}>
         <input
           type="text"
-          className="flex-grow"
+          className="flex-grow mb-2"
           name="prompt"
           placeholder="Enter a prompt to display an image"
+        />
+        <input
+          type="file"
+          className="mb-2"
+          name="file"
+          accept="image/*"
         />
         <button className="button" type="submit">
           Go!

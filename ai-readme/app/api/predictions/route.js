@@ -1,59 +1,66 @@
 import { NextResponse } from "next/server";
+import formidable from "formidable";
+import fs from "fs";
 import Replicate from "replicate";
 
-// init the replicte object to use for api call
-const replicate = new Replicate({
+// Initialize the Replicate client with the API token
+const replicateClient = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
 
-// In production and preview deployments (on Vercel), the VERCEL_URL environment variable is set.
-// In development (on your local machine), the NGROK_HOST environment variable is set.
-// const WEBHOOK_HOST = process.env.VERCEL_URL
-//   ? `https://${process.env.VERCEL_URL}`
-//   : process.env.NGROK_HOST;
+// Disable the default body parser to handle file uploads with formidable
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
+export async function POST(req) {
+  // Convert NextRequest to a standard Node.js request
+  const nodeReq = req.nextUrl ? req : Object.assign(req, { nextUrl: new URL(req.url, `http://${req.headers.host}`) });
 
-export async function POST(request) {
-  // "POST" Request to "api/predictions" run this function
-  console.log('Creating Image with Replicate')
-  if (!process.env.REPLICATE_API_TOKEN) { // If api key env varibale is not set correctly
-    throw new Error(
-      'The REPLICATE_API_TOKEN environment variable is not set.'
-    );
-  }
+  const form = formidable({ multiples: true });
 
-  let prompt;
-  try { // Handle getting the prompt from the post request
-    ({ prompt } = await request.json());
-  } catch (error) {
-    console.error('ERROR getting prompt from "POST" request in route.js:', error);
-    return NextResponse.json({ detail: error.message }, { status: 500 });
-  }
+  return new Promise((resolve, reject) => {
+    form.parse(nodeReq, async (parseError, fields, files) => {
+      if (parseError) {
+        console.error('Error parsing form data:', parseError);
+        resolve(NextResponse.json({ detail: "Error parsing form data" }, { status: 500 }));
+        return;
+      }
 
-  const input = { // Construct the input to send to the replicate API
-    prompt: prompt + " FLUX DEV",
-    guidance: 3.4
-  };
+      const { prompt } = fields;
+      const uploadedFile = files.file;
 
-  let output;
-  try { // Send user prompt to the replicate API
-    console.log({ input }, process.env.REPLICATE_API_TOKEN)
-    output = await replicate.run("black-forest-labs/flux-dev", { input });
+      if (!prompt || !uploadedFile) {
+        resolve(NextResponse.json({ detail: "Prompt and file are required" }, { status: 400 }));
+        return;
+      }
 
-  } catch (error) {
-    console.error('ERROR during replicate.run:', error);
-    return NextResponse.json({ detail: error.message }, { status: 500 });
-  }
+      // Read the uploaded file
+      const filePath = uploadedFile.filepath;
+      const fileData = fs.readFileSync(filePath);
 
+      try {
+        // Send the file and prompt to the external API
+        const apiResponse = await replicateClient.run("black-forest-labs/flux-dev", {
+          input: { prompt, file: fileData },
+        });
 
-  // // For vercel
-  // if (WEBHOOK_HOST) {
-  //   options.webhook = `${WEBHOOK_HOST}/api/webhooks`
-  //   options.webhook_events_filter = ["start", "completed"]
-  // }
+        if (apiResponse.error) {
+          console.log("Error from API response.");
+          resolve(NextResponse.json({ detail: apiResponse.error }, { status: 500 }));
+          return;
+        }
 
-  console.log('Route.js had no errors');
-  return NextResponse.json(output, { status: 201 });
+        // Delete the file after it has been successfully sent to the API
+        fs.unlinkSync(filePath);
+
+        resolve(NextResponse.json(apiResponse, { status: 201 }));
+      } catch (apiError) {
+        console.error('Error during API call:', apiError);
+        resolve(NextResponse.json({ detail: "Error during API call" }, { status: 500 }));
+      }
+    });
+  });
 }
-
-// export REPLICATE_API_TOKEN=

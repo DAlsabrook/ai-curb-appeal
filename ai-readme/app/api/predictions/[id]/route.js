@@ -16,3 +16,15 @@ export async function GET(request, { params }) {
 
   return NextResponse.json(prediction);
 }
+
+
+// THIS logic is to hit the replicate via a "GET request and filter for a specific img already created"
+// // "GET" to the predictions/[id]/route.js
+// const response = await fetch("/api/predictions/" + prediction.id);
+// prediction = await response.json();
+// if (response.status !== 200) {
+//   setError(prediction.detail);
+//   return;
+// }
+// // console.log({ prediction: prediction });
+// setPrediction(prediction);
