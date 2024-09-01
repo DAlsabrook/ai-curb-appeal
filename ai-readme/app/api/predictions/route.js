@@ -25,27 +25,20 @@ export async function POST(request) {
     guidance: 3.5
   };
 
-  const output = await replicate.run("black-forest-labs/flux-dev", { input });
-  // const options = {
-  //   version: 'adirik/flux-cinestill:216a43b9975de9768114644bbf8cd0cba54a923c6d0f65adceaccfc9383a938f',
-  //   input: { prompt }
-  // }
+  try {
+    const output = await replicate.run("black-forest-labs/flux-dev", input);
 
+  } catch (error) {
+    console.error('ERROR during replicate.run:', error);
+    return NextResponse.json({ detail: error.message }, { status: 500 });
+  }
   // // For vercel
   // if (WEBHOOK_HOST) {
   //   options.webhook = `${WEBHOOK_HOST}/api/webhooks`
   //   options.webhook_events_filter = ["start", "completed"]
   // }
 
-  // // A prediction is the result you get when you run a model, including the input, output, and other details
-  // const prediction = await replicate.predictions.create(options);
-  // console.log(prediction)
-
-  // // if (prediction?.error) {
-  // //   console.log('|||||||||||||||||||||||||| Error return');
-  // //   return NextResponse.json({ detail: prediction.error }, { status: 500 });
-  // // }
-  console.log('|||||||||||||||||||||||||| No error return');
+  console.log('No error return');
   return NextResponse.json(output, { status: 201 });
 }
 
