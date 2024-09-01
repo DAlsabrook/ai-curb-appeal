@@ -32,32 +32,20 @@ export default function Home() {
     setPrediction(prediction);
     console.log(prediction)
 
-    // while (
-    //   prediction.status !== "succeeded" &&
-    //   prediction.status !== "failed"
-    // ) {
-    //   await sleep(1000);
-    //   // "GET" to the predictions/[id]/route.js
-    //   const response = await fetch("/api/predictions/" + prediction.id);
-    //   prediction = await response.json();
-    //   if (response.status !== 200) {
-    //     setError(prediction.detail);
-    //     return;
-    //   }
-    //   // console.log({ prediction: prediction });
-    //   setPrediction(prediction);
+    // THIS logic is to hit the replicate via a "GET request and filter for a specific img already created"
+    // // "GET" to the predictions/[id]/route.js
+    // const response = await fetch("/api/predictions/" + prediction.id);
+    // prediction = await response.json();
+    // if (response.status !== 200) {
+    //   setError(prediction.detail);
+    //   return;
     // }
+    // // console.log({ prediction: prediction });
+    // setPrediction(prediction);
   };
 
   return (
     <div className="container max-w-2xl mx-auto p-5">
-      <h1 className="py-6 text-center font-bold text-2xl">
-        Dream something with{" "}
-        <a href="https://replicate.com/stability-ai/sdxl?utm_source=project&utm_project=getting-started">
-          SDXL
-        </a>
-      </h1>
-
       <form className="w-full flex" onSubmit={handleSubmit}>
         <input
           type="text"
