@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import style from '../styles/dashboard.css'
+import '../styles/dashboard.css';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -42,18 +42,18 @@ export default function Dashboard() {
         <form onSubmit={handleSubmit} className="fileUploadForm">
 
           <label htmlFor="model">Model:</label>
-          <input type="text" name="model" placeholder="Model to use"/>
+          <input type="text" name="model" placeholder="model to use"/>
 
-          <label htmlFor="prompt">prompt:</label>
-          <input type="text" name="prompt" placeholder="Enter a prompt to display an image"/>
+          <label htmlFor="prompt">Prompt:</label>
+          <input type="text" name="prompt" placeholder="enter a prompt to display an image"/>
 
-          <label htmlFor="negPrompt">Negative Prompt:</label>
-          <input type="text" name="negPrompt" placeholder="Negative Prompt"/>
+          <label htmlFor="negPrompt">Negative Prompt: &#40;optional&#41;</label>
+          <input type="text" name="negPrompt" placeholder='e.g. "old, broken, dirty, run down"'/>
 
           <label htmlFor="file">Upload File:</label>
           <input type="file" name="file" accept="image/*"/>
 
-          <button className="button" type="submit">Generate</button>
+          <button type="submit">Generate</button>
         </form>
       </div>
 
@@ -61,9 +61,11 @@ export default function Dashboard() {
 
       <div className="consolePanel">
         <div className="consolePanelNav">
-          <p>Models</p>
-          <p>Saved images</p>
-          <p>Pre-made Styles</p>
+          <ul>
+            <li>Models</li>
+            <li>Saved images</li>
+            <li>Pre-made Styles</li>
+          </ul>
         </div>
 
         <div className="consolePanelContentContainer">

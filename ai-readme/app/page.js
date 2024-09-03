@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from "react";
 import Dashboard from './components/dashboard';
+import Landing from './components/landing';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export default function Home() {
-  const [openApp, setOpenApp] = useState(false);
+  const [openAppDashboard, setOpenAppDashboard] = useState(false);
+  const [openAppLanding, setOpenAppLanding] = useState(true);
+
   // const [user, setUser] = useState(null); // Store use information for client side use
 
   // // Wait for dom to render and then attach events for SignIn
@@ -79,11 +82,18 @@ export default function Home() {
   return (
     <div className="bodyContent">
       <header>
-        <p className="headerLogo">AI Curb Appeal</p>
-        <button onClick={() => setOpenApp(true)} className="threeD" style={{height: '40px'}}>Sign-in Button</button>
+        <a href="#" onClick={() => { setOpenAppDashboard(false), setOpenAppLanding(true) }} className="headerLogo">AI Curb Appeal</a>
+        {/* Add an "if user logged in the display their img and name for a dropdown to logout and have profile settings" */}
       </header>
 
-      {openApp && (
+      {openAppLanding && (
+        <Landing
+          setOpenAppDashboard={setOpenAppDashboard}
+          setOpenAppLanding={setOpenAppLanding}
+        />
+      )}
+
+      {openAppDashboard && (
         <Dashboard/>
       )}
 
@@ -97,7 +107,7 @@ export default function Home() {
           <Dashboard />
         </div>
       )} */}
-      <a href="https://x.com/David_Alsabrook" className="xLink" target="_blank" rel="noopener noreferrer">Created by: @David_Alsabrook</a>
+      <a href="https://x.com/David_Alsabrook" className="xLink" target="_blank" rel="noopener noreferrer">X: &nbsp;&nbsp;&nbsp;<span>@David_Alsabrook</span></a>
     </div>
   );
 }

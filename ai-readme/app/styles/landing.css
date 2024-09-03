@@ -1,0 +1,19 @@
+.landingContainer {
+  height: 100%;
+  max-height: calc(100% - 70px);
+  padding-top: 70px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: linear-gradient(to top left,
+    rgba(67, 43, 226, 0.1),
+    var(--color-background),
+    var(--color-background));
+}
+.dashboardContainer {
+  height: 100%;
+  padding-top: 70px;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}

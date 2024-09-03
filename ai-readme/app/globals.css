@@ -4,23 +4,20 @@
   --color-background: rgb(8, 8, 9);
   --color-dark-panel: rgb(14, 15, 15);
   --color-light-panel: rgb(36, 41, 47);
-  --color-accent: rgb(171, 125, 248);
-  --color-accent-light: rgb(202, 173, 251);
-}
-button {
-  outline: none;
-  border: none;
-  background: none;
- color: white;
+  --color-purple: rgb(171, 125, 248);
+  --color-purple-light: rgb(202, 173, 251);
+  --color-peach: rgb(255, 126, 95);
+  --color-orange: rgb(254, 180, 123);
 }
 
 .threeD {
   box-shadow:
-    inset 0 1px 1px rgba(125, 147, 176, 0.2),
-    inset 0 2px 2px rgba(125, 147, 176, 0.05),
+    inset .5px 1px 1px rgba(125, 147, 176, 0.2),
+    inset .5px 2px 2px rgba(125, 147, 176, 0.05),
     inset 0 3px 3px rgba(21, 27, 35, 0.05),
     inset 0 4px 4px rgba(21, 27, 35, 0.1),
-    0px 5px 10px rgba(0, 0, 0, 0.5);
+    0px 5px 10px rgba(0, 0, 0, 1),
+    -15px -20px 20px rgba(255, 255, 255, .02);
 
   background-color: var(--color-dark-panel) !important;
   border-radius: 6px !important;
@@ -42,11 +39,12 @@ body,
 header {
   height: 30px;
   padding: 20px;
+  position: absolute;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--color-background);
+  background-color: transparent;
   color: white;
 }
 
@@ -78,19 +76,78 @@ header {
 }
 
 .xLink {
-  border-top-left-radius: 10px;
-  background-color: white;
-  height: 20px;
+  border-top-left-radius: 15px;
+  border: 1px solid var(--color-purple);
+  background-color: var(--color-background);
+  color: white;
+  height: 15px;
   font-size: .7rem;
   text-align: center;
   font-weight: 800;
   padding: 10px;
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: -2px;
+  right: -2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .xLink:hover {
-  background-color: lightgray;
-  opacity: .8;
+  opacity: .6;
 }
+
+.xLink span {
+  color: var(--color-peach);
+  /* Gradient text for supported browsers */
+  background: linear-gradient(90deg, var(--color-peach), var(--color-orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  /* Standard property */
+  text-fill-color: transparent;
+  /* Safari? */
+}
+
+/* Remove default styles for buttons */
+button {
+  outline: none;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* Remove default styles for anchor tags */
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Remove default styles for lists */
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Remove default styles for list items */
+li {
+  list-style: none;
+}
+
+@keyframes shiny-border {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+

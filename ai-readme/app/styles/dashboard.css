@@ -1,5 +1,7 @@
 .dashboardContainer {
-  height: calc(100% - 70px);
+  height: 100%;
+  max-height: calc(100% - 70px);
+  padding-top: 70px;
   display: flex;
   flex-direction: row;
   overflow: hidden;
@@ -8,9 +10,10 @@
 .controlPanel {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   width: 30%;
-  padding: 20px;
+  height: 100%;
+  padding: 10px;
+  padding-bottom: 20px;
   overflow-y: scroll;
   overflow-x: hidden;
 }
@@ -19,8 +22,13 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  height: 100%;
+  height: 80%;
   padding: 5px;
+}
+
+.fileUploadForm label {
+  font-size: .8rem;
+  margin-bottom: -20px;
 }
 
 .fileUploadForm input {
@@ -34,18 +42,34 @@
   outline: none;
 }
 
+@keyframes spin-border {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
 .fileUploadForm button {
-  border: none;
+  border: 1.5px solid var(--color-purple);
+  border-radius: 20px;
   cursor: pointer;
   margin: 0 auto;
-  width: 100px;
+  padding: 0 20px;
+  background-color: var(--color-background);
 }
+
+
 
 .consolePanel {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   width: 100%;
+  height: auto;
   background: linear-gradient(to top left,
     rgba(67, 43, 226, 0.1),
     var(--color-background),
@@ -54,20 +78,39 @@
 }
 
 .consolePanelNav {
+  height: 20px;
+  padding: 10px;
+  border: 2px solid var(--color-dark-panel);
+  border-radius: 6px;
+}
+
+.consolePanelNav ul {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   text-align: center;
   align-items: center;
-  height: 20px;
-  padding: 10px;
-  border-bottom: 1px solid grey;
+  width: 100%;
+  height: 100%;
 }
+.consolePanelNav li {
+  cursor: pointer;
+  position: relative;
+}
+
+.consolePanelNav li:hover {
+  border-top: 1px solid white;
+}
+
+.consolePanelNav li:active {
+  border-top: 1px solid yellow;
+}
+
 
 .consolePanelContentContainer {
   display: flex;
   flex-direction: column;
-  height: 95%;
+  height: 100%;
 }
 
 .image-wrapper {

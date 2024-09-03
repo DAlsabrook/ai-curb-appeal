@@ -39,6 +39,3 @@ async function trainModel() {
 
 // Run the training function
 trainModel();
-
-// Run the training function
-trainModel();
