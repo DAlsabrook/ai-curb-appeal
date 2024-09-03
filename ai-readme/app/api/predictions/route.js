@@ -22,7 +22,7 @@ export const config = {
   },
 };
 
-export async function RunModel(req) {
+export async function POST(req) {
   // console.log("All env variable check");
   // console.log(process.env.REPLICATE_API_TOKEN)
   // console.log(process.env.CLOUDINARY_CLOUD_NAME)

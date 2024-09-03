@@ -1,16 +1,56 @@
 'use client';
 
 import { useState } from "react";
-import Image from "next/image";
+
+// Tab import
+import TabModels from './tab-models.js'
+import TabLive from "./tab-live_images.js";
+
 import '../styles/dashboard.css';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export default function Dashboard() {
+  // Control panel
   const [prediction, setPrediction] = useState(null);
   const [error, setError] = useState(null);
   const [uploadedImage, setUploadedImage] = useState(null);
 
+  // Consol panel
+  const [selectedNavItem, setSelectedNavItem] = useState('Models');
+
+  const renderContent = () => {
+    switch (selectedNavItem) {
+
+      case 'Models':
+        return (
+          <TabModels/>
+        );
+
+      case 'Live images':
+        return (
+          <TabLive
+            uploadedImage={uploadedImage}
+            prediction={prediction}
+          />
+        );
+
+      case 'Saved images':
+        return (
+          <div>Saved Images panel</div>
+        );
+
+      case 'Pre-made Styles':
+        return (
+          <div>Pre-made styles panel</div>
+        );
+      default:
+        return null;
+    }
+  };
+
+
+  // Control Panel submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -62,33 +102,15 @@ export default function Dashboard() {
       <div className="consolePanel">
         <div className="consolePanelNav">
           <ul>
-            <li>Models</li>
-            <li>Saved images</li>
-            <li>Pre-made Styles</li>
+            <li onClick={() => setSelectedNavItem('Models')}>Models</li>
+            <li onClick={() => setSelectedNavItem('Live images')}>Live Images</li>
+            <li onClick={() => setSelectedNavItem('Saved images')}>Saved Images</li>
+            <li onClick={() => setSelectedNavItem('Pre-made Styles')}>Pre-made Styles</li>
           </ul>
         </div>
 
         <div className="consolePanelContentContainer">
-          {uploadedImage && (
-            <div className="image-wrapper">
-              <Image
-                src={uploadedImage}
-                alt="Uploaded Preview"
-                height={300}
-                width={300}
-              />
-            </div>
-          )}
-          {prediction && (
-            <div className="image-wrapper">
-              <Image
-                src={prediction[0]}
-                alt="Output"
-                height={300}
-                width={300}
-              />
-            </div>
-          )}
+          {renderContent()}
         </div>
       </div>
     </div>

@@ -42,17 +42,6 @@
   outline: none;
 }
 
-@keyframes spin-border {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-
 .fileUploadForm button {
   border: 1.5px solid var(--color-purple);
   border-radius: 20px;
@@ -99,18 +88,36 @@
 }
 
 .consolePanelNav li:hover {
-  border-top: 1px solid white;
+  color: var(--color-peach);
+  /* Gradient text for supported browsers */
+  background: linear-gradient(90deg, var(--color-peach), var(--color-orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  /* Standard property */
+  text-fill-color: transparent;
+  /* Safari? */
 }
-
-.consolePanelNav li:active {
-  border-top: 1px solid yellow;
-}
-
 
 .consolePanelContentContainer {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+
+/* MODELS TAB /////////////////////////////////////////////////////// */
+.tabModelsContent {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+/* LIVE IMAGES TAB /////////////////////////////////////////////////*/
+.tabLiveContent {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .image-wrapper {
@@ -120,10 +127,11 @@
   /* Optional: Set a maximum width */
   border-radius: 30px;
   overflow: hidden;
-  border: 1px solid var(--accent_color);
+  /* border: 1.5px solid var(--color-purple); */
+  margin: 0 20px;
   position: relative;
   /* Ensure the image can be positioned absolutely */
-  height: 300px;
+  height: 200px;
   /* Let the height adjust based on the image aspect ratio */
 }
 
