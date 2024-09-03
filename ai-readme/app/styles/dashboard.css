@@ -10,7 +10,6 @@
   flex-direction: column;
   justify-content: center;
   width: 30%;
-  border: 1px solid grey;
   padding: 20px;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -25,10 +24,13 @@
 }
 
 .fileUploadForm input {
-  background-color: black;
+  background-color: var(--color-background);
+  padding: 5px;
   color: grey;
   border: none;
-  border-bottom: 1px solid grey;
+  border-radius: 10px;
+  height: 30px;
+  border: 1px solid grey;
   outline: none;
 }
 
@@ -44,6 +46,11 @@
   flex-direction: column;
   justify-content: space-around;
   width: 100%;
+  background: linear-gradient(to top left,
+    rgba(67, 43, 226, 0.1),
+    var(--color-background),
+    var(--color-background)
+    );
 }
 
 .consolePanelNav {

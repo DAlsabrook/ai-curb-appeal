@@ -37,13 +37,22 @@ export default function Dashboard() {
 
   return (
     <div className="dashboardContainer">
-      <div className="controlPanel">
+      <div className="controlPanel threeD">
         <p>Control Panel</p>
         <form onSubmit={handleSubmit} className="fileUploadForm">
+
+          <label htmlFor="model">Model:</label>
           <input type="text" name="model" placeholder="Model to use"/>
+
+          <label htmlFor="prompt">prompt:</label>
           <input type="text" name="prompt" placeholder="Enter a prompt to display an image"/>
+
+          <label htmlFor="negPrompt">Negative Prompt:</label>
           <input type="text" name="negPrompt" placeholder="Negative Prompt"/>
+
+          <label htmlFor="file">Upload File:</label>
           <input type="file" name="file" accept="image/*"/>
+
           <button className="button" type="submit">Generate</button>
         </form>
       </div>

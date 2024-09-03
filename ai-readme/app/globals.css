@@ -1,11 +1,11 @@
 :root {
   /* https://github.com/features/codespaces
       Style inspiration*/
-  --color-background: rgb(13, 17, 23);
-  --color-dark-panel: rgb(21, 27, 35);
+  --color-background: rgb(8, 8, 9);
+  --color-dark-panel: rgb(14, 15, 15);
   --color-light-panel: rgb(36, 41, 47);
-  --color_accent: rgb(171, 125, 248);
-  --color-panel-top-shine: rgba(255, 255, 255, 0.25) 0 0 0 1px inset;
+  --color-accent: rgb(171, 125, 248);
+  --color-accent-light: rgb(202, 173, 251);
 }
 button {
   outline: none;
@@ -48,7 +48,6 @@ header {
   align-items: center;
   background-color: var(--color-background);
   color: white;
-  border-bottom: 1px solid grey;
 }
 
 .headerLogo {
@@ -57,17 +56,17 @@ header {
 
 /* Custom scrollbar styles for webkit-based browsers */
 .controlPanel::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
   /* Width of the scrollbar */
 }
 
 .controlPanel::-webkit-scrollbar-track {
-  background: black;
+  background: transparent;
   /* Color of the scrollbar track */
 }
 
 .controlPanel::-webkit-scrollbar-thumb {
-  background: rgb(66, 66, 66);
+  background: var(--color-light-panel);
   /* Color of the scrollbar thumb */
   border-radius: 10px;
   /* Optional: Rounded corners for the scrollbar thumb */
