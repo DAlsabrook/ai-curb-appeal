@@ -63,7 +63,7 @@ export default function Dashboard() {
             <Image
               src={uploadedImage}
               alt="Uploaded Preview"
-              layout="responsive"
+              style={{ width: '100%', height: 'auto' }}
               height={300}
               width={300}
             />
@@ -74,7 +74,7 @@ export default function Dashboard() {
             <Image
               src={prediction[0]}
               alt="Output"
-              layout="responsive"
+              style={{ width: '100%', height: 'auto' }}
               height={300}
               width={300}
             />

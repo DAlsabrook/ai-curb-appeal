@@ -1,43 +1,91 @@
-'use client';
+"use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import Dashboard from './components/dashboard'
+import { useState, useEffect } from "react";
+import Dashboard from './components/dashboard';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export default function Home() {
-  const [prediction, setPrediction] = useState(null);
-  const [error, setError] = useState(null);
-  const [uploadedImage, setUploadedImage] = useState(null);
+  const [user, setUser] = useState(null); // Store use information for client side use
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Wait for dom to render and then attach events for SignIn
+  useEffect(() => {
+    const initializeGoogleSignIn = () => {
+      window.gapi.load('auth2', () => {
+        window.gapi.auth2.init({
+          client_id: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
+        }).then(() => {
+          const auth2 = window.gapi.auth2.getAuthInstance();
+          auth2.attachClickHandler(document.getElementById('googleSignInButton'), {},
+            onSignIn, (error) => {
+              console.error(JSON.stringify(error, undefined, 2));
+            });
+        });
+      });
+    };
 
-    const formData = new FormData();
-    formData.append('prompt', e.target.prompt.value);
-    const file = e.target.file.files[0];
-    formData.append('file', file);
+    if (window.gapi) { // if gapi object is present kick off the party
+      initializeGoogleSignIn();
+    } else { // No gapi object, manually add the script tag and attach the init func
+      const script = document.createElement("script");
+      script.src = "https://apis.google.com/js/platform.js";
+      script.async = true;
+      script.defer = true;
+      script.onload = initializeGoogleSignIn;
+      document.body.appendChild(script);
 
-    // Create a preview URL for the uploaded image
-    setUploadedImage(URL.createObjectURL(file));
-
-    const response = await fetch("/api/predictions", {
-      method: "POST",
-      body: formData,
-    });
-
-    let prediction = await response.json(); // response from predictions/route.js
-    if (response.status !== 201) {
-      setError(prediction.detail);
-      return;
+      return () => {
+        document.body.removeChild(script);
+      };
     }
-    setPrediction(prediction);
-  };
+  }, []);
+
+
+  // User has signed in. Backend API to OAuth to verify
+  function onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+    // Get the ID token
+    const id_token = googleUser.getAuthResponse().id_token;
+
+    // Send the ID token to your backend
+    fetch('/api/authenticate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id_token }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Page.js - User authenticated:', data);
+        // Store user data in state
+        setUser({
+          name: profile.getName(),
+          email: profile.getEmail(),
+          imageUrl: profile.getImageUrl(),
+          id_tok: id_token,
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
 
   return (
     <div className="container-fluid max-w-2xl mx-auto p-5">
-      <Dashboard/>
+      <div id="googleSignInButton" className="g-signin2" data-onsuccess="onSignIn"></div>
+      {user && (
+        <div>
+          <h2>Welcome, {user.name}</h2>
+          <img src={user.imageUrl} alt={user.name} />
+          <p>Email: {user.email}</p>
+          <Dashboard />
+        </div>
+      )}
     </div>
   );
 }
