@@ -36,50 +36,49 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container-fluid max-w-2xl mx-auto p-5">
-      <form className="w-full flex flex-col" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          className="flex-grow mb-2"
-          name="prompt"
-          placeholder="Enter a prompt to display an image"
-        />
-        <input
-          type="file"
-          className="mb-2"
-          name="file"
-          accept="image/*"
-        />
-        <button className="button" type="submit">
-          Go!
-        </button>
-      </form>
+    <div className="dashboardContainer">
+      <div className="controlPanel">
+        <p>Control Panel</p>
+        <form onSubmit={handleSubmit} className="fileUploadForm">
+          <input type="text" name="model" placeholder="Model to use"/>
+          <input type="text" name="prompt" placeholder="Enter a prompt to display an image"/>
+          <input type="text" name="negPrompt" placeholder="Negative Prompt"/>
+          <input type="file" name="file" accept="image/*"/>
+          <button className="button" type="submit">Generate</button>
+        </form>
+      </div>
 
       {error && <div>{error}</div>}
 
-      <div className="image_container">
-        {uploadedImage && (
-          <div className="image-wrapper">
-            <Image
-              src={uploadedImage}
-              alt="Uploaded Preview"
-              style={{ width: '100%', height: 'auto' }}
-              height={300}
-              width={300}
-            />
-          </div>
-        )}
-        {prediction && (
-          <div className="image-wrapper">
-            <Image
-              src={prediction[0]}
-              alt="Output"
-              style={{ width: '100%', height: 'auto' }}
-              height={300}
-              width={300}
-            />
-          </div>
-        )}
+      <div className="consolePanel">
+        <div className="consolePanelNav">
+          <p>Models</p>
+          <p>Saved images</p>
+          <p>Pre-made Styles</p>
+        </div>
+
+        <div className="consolePanelContentContainer">
+          {uploadedImage && (
+            <div className="image-wrapper">
+              <Image
+                src={uploadedImage}
+                alt="Uploaded Preview"
+                height={300}
+                width={300}
+              />
+            </div>
+          )}
+          {prediction && (
+            <div className="image-wrapper">
+              <Image
+                src={prediction[0]}
+                alt="Output"
+                height={300}
+                width={300}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

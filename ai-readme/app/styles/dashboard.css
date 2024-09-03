@@ -1,12 +1,88 @@
-.image_container {
+.dashboardContainer {
+  height: calc(100% - 70px);
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  overflow: hidden;
+}
+
+.controlPanel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 30%;
+  border: 1px solid grey;
+  padding: 20px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.fileUploadForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  padding: 5px;
+}
+
+.fileUploadForm input {
+  background-color: black;
+  color: grey;
+  border: none;
+  border-bottom: 1px solid grey;
+  outline: none;
+}
+
+.fileUploadForm button {
+  border: none;
+  cursor: pointer;
+  margin: 0 auto;
+  width: 100px;
+}
+
+.consolePanel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
   width: 100%;
 }
 
+.consolePanelNav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  text-align: center;
+  align-items: center;
+  height: 20px;
+  padding: 10px;
+  border-bottom: 1px solid grey;
+}
+
+.consolePanelContentContainer {
+  display: flex;
+  flex-direction: column;
+  height: 95%;
+}
+
 .image-wrapper {
-  width: 40%;
+  width: 100%;
   /* Set the desired width */
-  height: auto;
+  max-width: 300px;
+  /* Optional: Set a maximum width */
+  border-radius: 30px;
+  overflow: hidden;
+  border: 1px solid var(--accent_color);
+  position: relative;
+  /* Ensure the image can be positioned absolutely */
+  height: 300px;
+  /* Let the height adjust based on the image aspect ratio */
+}
+
+.image-wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  /* Maintain aspect ratio and cover the container */
 }
