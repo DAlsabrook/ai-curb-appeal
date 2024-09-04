@@ -105,14 +105,6 @@
   height: 100%;
 }
 
-
-/* MODELS TAB /////////////////////////////////////////////////////// */
-.tabModelsContent {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
 /* LIVE IMAGES TAB /////////////////////////////////////////////////*/
 .tabLiveContent {
   display: flex;
