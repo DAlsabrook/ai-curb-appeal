@@ -1,7 +1,7 @@
 :root {
   /* https://github.com/features/codespaces
-      Style inspiration*/
-  --color-background: rgb(8, 8, 9);
+      Style inspiration rgb(8, 8, 9)*/
+  --color-background: white;
   --color-dark-panel: rgb(14, 15, 15);
   --color-light-panel: rgb(36, 41, 47);
   --color-purple: rgb(171, 125, 248);
@@ -32,7 +32,7 @@ body,
   margin: 0;
   overflow: hidden;
   background-color: var(--color-background);
-  color: white;
+  color: black;
   box-sizing: border-box;
 }
 
@@ -45,7 +45,7 @@ header {
   justify-content: space-between;
   align-items: center;
   background-color: transparent;
-  color: white;
+  color: black;
 }
 
 .headerLogo {
@@ -77,9 +77,8 @@ header {
 
 .xLink {
   border-top-left-radius: 15px;
-  border: 1px solid var(--color-purple);
+  border: 1px solid black;
   background-color: var(--color-background);
-  color: white;
   height: 15px;
   font-size: .7rem;
   text-align: center;

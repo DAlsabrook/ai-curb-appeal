@@ -17,17 +17,26 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Function to resize images
-async function resizeImages(images, maxWidth) {
+// Function to resize images to a maximum size of 1MB
+async function resizeImages(images) {
   const resizedImages = [];
   for (const image of images) {
     let buffer = await image.arrayBuffer();
     let imageBuffer = Buffer.from(buffer);
 
-    // Resize image
+    // Resize image to a maximum dimension while maintaining aspect ratio
     imageBuffer = await sharp(imageBuffer)
-      .resize({ width: maxWidth }) // Resize to a max width
+      .resize({ width: 1024, height: 1024, fit: 'inside' }) // Resize to fit within 1024x1024
+      .jpeg({ quality: 85 }) // Adjust quality to reduce size
       .toBuffer();
+
+    // Check if the image size is still over 1MB
+    while (imageBuffer.length > 1 * 1024 * 1024) {
+      imageBuffer = await sharp(imageBuffer)
+        .resize({ width: Math.floor(imageBuffer.width * 0.9) }) // Reduce width by 10%
+        .jpeg({ quality: 85 }) // Adjust quality to reduce size
+        .toBuffer();
+    }
 
     resizedImages.push({ name: image.name, buffer: imageBuffer });
   }
@@ -45,79 +54,104 @@ async function createZip(images) {
 
 // Function to train the model
 export async function POST(req) {
-  try {
-    const formData = await req.formData();
-    const userGivenName = formData.get('name');
-    const modelOwner = 'stability-ai';
-    const modelName = 'sdxl';
-    const versionId = '7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc';
+  const formData = await req.formData();
+  const userGivenName = formData.get('name').toLowerCase().replace(/ /g, '_');
 
-    if (!formData || !userGivenName) {
-      return NextResponse.json({ detail: "Prompt and file are required" }, { status: 400 });
+  if (!userGivenName) {
+    return NextResponse.json({ detail: "Model name is required" }, { status: 400 });
+  }
+
+  // Check if the name contains only letters and numbers
+  const isValidName = /^[a-zA-Z0-9]+$/.test(userGivenName);
+  if (!isValidName) {
+    return NextResponse.json({ detail: "Model name must contain only letters and numbers" }, { status: 400 });
+  }
+
+  // Collect all images from formData
+  const images = [];
+  formData.forEach((value, key) => {
+    if (key.startsWith('filesList[')) {
+      images.push(value);
     }
+  });
 
-    // Collect all images from formData
-    const images = [];
-    formData.forEach((value, key) => {
-      if (key.startsWith('filesList[')) {
-        images.push(value);
+  if (images.length === 0) {
+    return NextResponse.json({ detail: "Error loading images" }, { status: 400 });
+  }
+
+  // Resize images to a maximum size of 1MB
+  const resizedImages = await resizeImages(images);
+
+  // Create zip file from resized images
+  const zipContent = await createZip(resizedImages);
+
+  // Upload the zip file to Cloudinary
+  const uploadResponse = await new Promise((resolve, reject) => {
+    const stream = cloudinary.v2.uploader.upload_stream(
+      { resource_type: 'raw', folder: `dalsabrook/${userGivenName}`, format: 'zip' },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
       }
-    });
+    );
+    Readable.from(zipContent).pipe(stream);
+  });
+  // Introduce a delay before starting the training
+  await new Promise(resolve => setTimeout(resolve, 300000)); // 60,000 === 1 minute
+  console.log('Done waiting for cloudinary to proccess.')
+  try { // Create the model
+    const owner = 'dalsabrook';
+    const visibility = 'private';
+    const hardware = 'gpu-t4';
+    const description = 'AICurbAppeal.com house model'
 
-    if (images.length === 0) {
-      return NextResponse.json({ detail: "No images provided" }, { status: 400 });
-    }
-
-    let maxWidth = 1024;
-    let zipContent;
-
-    // Iteratively resize images and check zip size
-    while (true) {
-      const resizedImages = await resizeImages(images, maxWidth);
-      zipContent = await createZip(resizedImages);
-
-      if (zipContent.length <= 10 * 1024 * 1024) { // Check if compressed size is under 10MB
-        break;
+    const model = await replicate.models.create(
+      owner,
+      userGivenName,
+      {
+        'visibility': visibility,
+        'hardware': hardware,
+        'description': description
       }
+    );
+    console.log(`Model created: ${model.name}`);
+    console.log(`Model URL: https://replicate.com/${model.owner}/${model.name}`);
 
-      maxWidth = Math.floor(maxWidth * 0.9); // Reduce max width by 10%
-      if (maxWidth < 100) { // Prevent infinite loop
-        return NextResponse.json({ detail: "Unable to compress images under 10MB" }, { status: 400 });
-      }
-    }
+    try { // Training the model that was just created
+      const modelOwner = 'ostris';
+      const modelName = 'flux-dev-lora-trainer';
+      const versionId = '3f39d8b7d50801daf27c7adc4e6b3de138cce9c5daa22e062c5ca30f0a558918';
 
-    // Upload the zip file to Cloudinary
-    const uploadResponse = await new Promise((resolve, reject) => {
-      const stream = cloudinary.v2.uploader.upload_stream(
-        { resource_type: 'raw', folder: `dalsabrook/${userGivenName}` },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
+      const options = {
+        destination: `${owner}/${userGivenName}`,
+        input: {
+          steps: 1000,
+          lora_rank: 16,
+          optimizer: "adamw8bit",
+          batch_size: 1,
+          resolution: "512,768,1024",
+          autocaption: false,
+          input_images: uploadResponse.secure_url,
+          trigger_word: "TOK",
+          learning_rate: 0.0004,
+          wandb_project: "flux_train_replicate",
+          wandb_save_interval: 100,
+          caption_dropout_rate: 0.05,
+          wandb_sample_interval: 100
         }
-      );
-      Readable.from(zipContent).pipe(stream);
-    });
+      };
 
-    const options = {
-      destination: `dalsabrook/${userGivenName}`, // THE PROBLEM - replicate says this doesnt exist, which it doesnt, but i want it to create it
-      input: {
-        input_images: uploadResponse.secure_url,
-      },
-    };
+      const training = await replicate.trainings.create(modelOwner, modelName, versionId, options);
 
-    const training = await replicate.trainings.create(modelOwner, modelName, versionId, options);
-
-    console.log('Model training successful:');
-    console.log(`URL: https://replicate.com/p/${training.id}`);
-
-    return NextResponse.json({ detail: "Model training started successfully", trainingUrl: `https://replicate.com/p/${training.id}` }, { status: 201 });
-  } catch (error) {
-    if (error.response && error.response.status === 422) {
-      console.error('Invalid version or not permitted:', error.response.data);
-      return NextResponse.json({ detail: 'Invalid version or not permitted', error: error.response.data }, { status: 422 });
-    } else {
-      console.error('Error during model training:', error);
+      console.log('Model training started:');
+      console.log(`URL: https://replicate.com/p/${training.id}`);
+      return NextResponse.json({ detail: 'Model training has started!', trainedModel: training }, { status: 200 });
+    } catch (error) {
+      console.log(error);
       return NextResponse.json({ detail: 'Error during model training', error: error.message }, { status: 500 });
     }
+  } catch (error) {
+    console.error('Error creating model:', error);
+    return NextResponse.json({ detail: 'Error creating the model', error: error.message }, { status: 500 });
   }
 }
