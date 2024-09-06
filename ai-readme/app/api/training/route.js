@@ -1,20 +1,24 @@
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NextResponse } from "next/server";
 import Replicate from "replicate";
-import cloudinary from 'cloudinary'; // Save img
 import sharp from 'sharp'; // Resizing images
 import JSZip from 'jszip'; // Create zip files
-import { Readable } from 'stream'; // Stream for zip file
+// import { Readable } from 'stream'; // Stream for zip file
 
 // Initialize Rep client with the API token
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
 
-// Configure Cloudinary
-cloudinary.v2.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+// Initialize S3Client for Cloudflare R2
+const s3Client = new S3Client({
+  endpoint: `https://${process.env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  region: "auto",
+  credentials: {
+    accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+  },
 });
 
 // Function to resize images to a maximum size of 1MB
@@ -52,8 +56,61 @@ async function createZip(images) {
   return await zip.generateAsync({ type: 'nodebuffer' });
 }
 
+// Upload zip file to Cloudflare R2 using AWS SDK v3
+async function uploadToR2(fileBuffer, userGivenName) {
+  try {
+    const objectKey = `username/${userGivenName}/${Date.now()}.zip`;
+
+    // Upload to R2 using S3 API v3
+    const putObjectCommand = new PutObjectCommand({
+      Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
+      Key: objectKey,
+      Body: fileBuffer,
+      ContentType: "application/zip",
+    });
+
+    const s3Response = await s3Client.send(putObjectCommand);
+    console.log('Uploaded S3 response:\n', s3Response)
+
+    // Generate a signed URL for the uploaded file (valid for 1 hour)
+    const getObjectCommand = new GetObjectCommand({
+      Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
+      Key: objectKey,
+    });
+
+    const signedUrl = await getSignedUrl(s3Client, getObjectCommand, { expiresIn: 3600 }); // URL valid for 1 hour
+    console.log("Signed URL:", signedUrl);
+
+    return signedUrl;
+  } catch (error) {
+    console.error("Error uploading to Cloudflare R2:", error);
+    throw error;
+  }
+}
+
+async function checkEnvVariables() {
+  const tokens = {
+    'Replicate': process.env.REPLICATE_API_TOKEN,
+    'CF Bucket Name': process.env.CLOUDFLARE_R2_BUCKET_NAME,
+    'CF Account ID': process.env.CLOUDFLARE_R2_ACCOUNT_ID,
+    'CF Access Key': process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
+    'CF Secret Key': process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+  }
+
+  for (const key in tokens) {
+    if (!tokens[key]) {
+      console.log(`${key} is not set`);
+      return false;
+    }
+  }
+  return true;
+}
+
 // Function to train the model
 export async function POST(req) {
+  if (!checkEnvVariables()) {
+    return NextResponse.json({ detail: "Enviroment variables not set correctly" }, { status: 400 });
+  }
   const formData = await req.formData();
   const userGivenName = formData.get('name').toLowerCase().replace(/ /g, '_');
 
@@ -85,19 +142,8 @@ export async function POST(req) {
   // Create zip file from resized images
   const zipContent = await createZip(resizedImages);
 
-  // Upload the zip file to Cloudinary
-  const uploadResponse = await new Promise((resolve, reject) => {
-    const stream = cloudinary.v2.uploader.upload_stream(
-      { resource_type: 'raw', folder: `dalsabrook/${userGivenName}`, format: 'zip' },
-      (error, result) => {
-        if (error) reject(error);
-        else resolve(result);
-      }
-    );
-    Readable.from(zipContent).pipe(stream);
-  });
-
-  console.log('uploadResponse:', uploadResponse);
+  // Upload the zip file to Cloudflare R2
+  const r2Url = await uploadToR2(zipContent, userGivenName);
 
   try { // Create the model
     const owner = 'dalsabrook';
@@ -114,7 +160,7 @@ export async function POST(req) {
         'description': description
       }
     );
-    
+
     try { // Training the model that was just created
       const modelOwner = 'ostris';
       const modelName = 'flux-dev-lora-trainer';
@@ -129,7 +175,7 @@ export async function POST(req) {
           batch_size: 1,
           resolution: "512,768,1024",
           autocaption: false,
-          input_images: uploadResponse.url,
+          input_images: r2Url,
           trigger_word: "TOK",
           learning_rate: 0.0004,
           wandb_project: "flux_train_replicate",

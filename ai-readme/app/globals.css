@@ -25,21 +25,33 @@
 }
 
 html,
-body,
-.bodyContent {
+body {
   height: 100%;
-  padding: 0;
+  width: 100%;
+  padding: -15px;
   margin: 0;
+  overflow: hidden;
+  background-color: var(--color-background);
+
+}
+
+.pageContent {
+  height: 100%;
+  padding-right: 1px;
+  margin: auto;
   overflow: hidden;
   background-color: var(--color-background);
   color: black;
   box-sizing: border-box;
+  position: relative;
 }
 
 header {
-  height: 30px;
-  padding: 20px;
+  height: 50px;
+  width: 100%;
   position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
