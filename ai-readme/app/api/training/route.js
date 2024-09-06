@@ -96,9 +96,9 @@ export async function POST(req) {
     );
     Readable.from(zipContent).pipe(stream);
   });
-  // Introduce a delay before starting the training
-  await new Promise(resolve => setTimeout(resolve, 300000)); // 60,000 === 1 minute
-  console.log('Done waiting for cloudinary to proccess.')
+
+  console.log('uploadResponse:', uploadResponse);
+
   try { // Create the model
     const owner = 'dalsabrook';
     const visibility = 'private';
@@ -114,9 +114,7 @@ export async function POST(req) {
         'description': description
       }
     );
-    console.log(`Model created: ${model.name}`);
-    console.log(`Model URL: https://replicate.com/${model.owner}/${model.name}`);
-
+    
     try { // Training the model that was just created
       const modelOwner = 'ostris';
       const modelName = 'flux-dev-lora-trainer';
@@ -131,7 +129,7 @@ export async function POST(req) {
           batch_size: 1,
           resolution: "512,768,1024",
           autocaption: false,
-          input_images: uploadResponse.secure_url,
+          input_images: uploadResponse.url,
           trigger_word: "TOK",
           learning_rate: 0.0004,
           wandb_project: "flux_train_replicate",
@@ -143,8 +141,7 @@ export async function POST(req) {
 
       const training = await replicate.trainings.create(modelOwner, modelName, versionId, options);
 
-      console.log('Model training started:');
-      console.log(`URL: https://replicate.com/p/${training.id}`);
+      console.log(`Training URL: https://replicate.com/p/${training.id}`);
       return NextResponse.json({ detail: 'Model training has started!', trainedModel: training }, { status: 200 });
     } catch (error) {
       console.log(error);
@@ -155,3 +152,35 @@ export async function POST(req) {
     return NextResponse.json({ detail: 'Error creating the model', error: error.message }, { status: 500 });
   }
 }
+
+//////////// this is what the training object is. logged on line 150
+// {
+//   id: 'papxhx3s4srm00chrp683cwf00',
+//   model: 'ostris/flux-dev-lora-trainer',
+//   version: '9d960224bcfc17c68d621e7a6a5afb43d222588daa4e8ddc5f127e27ab874486',
+//   input: {
+//      autocaption: false,
+//      batch_size: 1,
+//      caption_dropout_rate: 0.05,
+//      input_images: 'http://res.cloudinary.com/dugyjblat/raw/upload/v1725596201/dalsabrook/logtest1/dyvsdxwcuyt97kfkmuj5.zip',
+//      learning_rate: 0.0004,
+//      lora_rank: 16,
+//      optimizer: 'adamw8bit',
+//      resolution: '512,768,1024',
+//      steps: 1000,
+//      trigger_word: 'TOK',
+//      wandb_project: 'flux_train_replicate',
+//      wandb_sample_interval: 100,
+//      wandb_save_interval: 100
+//   },
+//   logs: '',
+//   output: null,
+//   data_removed: false,
+//   error: null,
+//   status: 'starting',
+//   created_at: '2024-09-06T04:16:43.302Z',
+//   urls: {
+//     cancel: 'https://api.replicate.com/v1/predictions/papxhx3s4srm00chrp683cwf00/cancel',
+//     get: 'https://api.replicate.com/v1/predictions/papxhx3s4srm00chrp683cwf00'
+//   }
+// }

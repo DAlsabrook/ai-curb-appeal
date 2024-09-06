@@ -51,16 +51,14 @@ export default function TabModels() {
       formData.append(`filesList[${index}]`, file);
     });
 
-    // Log the contents of FormData
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value.name || value}`);
-    }
-
-
     const response = await fetch("/api/training", {
       method: "POST",
       body: formData,
     });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
     let trainingResponse = await response.json(); // response from training/route.js
     if (response.status !== 201) {
@@ -71,6 +69,7 @@ export default function TabModels() {
       const trainingUrl = trainingResponse.trainingUrl;
       console.log(detail, trainingUrl);
     }
+    console.log('done with api in handle submit')
   };
 
   // userName from google

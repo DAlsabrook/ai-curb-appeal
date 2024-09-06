@@ -1,2 +1,4 @@
 "Prompt crafting" page where you can select things to add to your prompt like \/ idea
 Add the ability to select like blender style "textures" (red brick, white paint, flower bed, roof color) that will add descriptions of that texture to the prompt
+
+Append the users name to the name they give for the model to avoid duplicate names
