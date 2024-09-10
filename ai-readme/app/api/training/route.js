@@ -19,7 +19,7 @@ const s3Client = new S3Client({
     accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
     secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
   },
-});
+}); // THIS IS NOT GOING TO WORK. I Removed the "allowed" domains that can access the r2////////////////////////////////
 
 // Function to resize images to a maximum size of 1MB
 async function resizeImages(images) {

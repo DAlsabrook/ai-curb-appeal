@@ -1,11 +1,11 @@
 :root {
   /* https://github.com/features/codespaces
       Style inspiration rgb(8, 8, 9)*/
-  --color-background: white;
+  --color-background: black;
   --color-dark-panel: rgb(14, 15, 15);
-  --color-light-panel: rgb(36, 41, 47);
+  --color-borders: rgb(57, 57, 57);
+  --color-blue: rgb(66, 107, 243);
   --color-purple: rgb(171, 125, 248);
-  --color-purple-light: rgb(202, 173, 251);
   --color-peach: rgb(255, 126, 95);
   --color-orange: rgb(254, 180, 123);
 }
@@ -32,7 +32,14 @@ body {
   margin: 0;
   overflow: hidden;
   background-color: var(--color-background);
-
+  color: white;
+  font-family: 'Noto Sans';
+}
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 900;
 }
 
 .pageContent {
@@ -40,8 +47,6 @@ body {
   padding-right: 1px;
   margin: auto;
   overflow: hidden;
-  background-color: var(--color-background);
-  color: black;
   box-sizing: border-box;
   position: relative;
 }
@@ -56,40 +61,34 @@ header {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: transparent;
-  color: black;
-}
-
-.headerLogo {
-  color: var(--color_accent);
 }
 
 /* Custom scrollbar styles for webkit-based browsers */
-.controlPanel::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 5px;
   /* Width of the scrollbar */
 }
 
-.controlPanel::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: transparent;
   /* Color of the scrollbar track */
 }
 
-.controlPanel::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: var(--color-light-panel);
   /* Color of the scrollbar thumb */
   border-radius: 10px;
   /* Optional: Rounded corners for the scrollbar thumb */
 }
 
-.controlPanel::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background: #555;
   /* Color of the scrollbar thumb when hovered */
 }
 
 .xLink {
   border-top-left-radius: 15px;
-  border: 1px solid black;
+  border: 1px solid var(--color-borders);
   background-color: var(--color-background);
   height: 15px;
   font-size: .7rem;
@@ -152,13 +151,26 @@ li {
   list-style: none;
 }
 
-@keyframes shiny-border {
+
+/* KEYFRAMES for CSS animations */
+@keyframes border-raindow-pulsate {
   0% {
-    transform: rotate(0deg);
+    border-color: var(--color-blue);
+  }
+
+  25% {
+    border-color: var(--color-purple);
+  }
+
+  50% {
+    border-color: var(--color-peach);
+  }
+
+  75% {
+    border-color: var(--color-orange);
   }
 
   100% {
-    transform: rotate(360deg);
+    border-color: var(--color-blue);
   }
 }
-

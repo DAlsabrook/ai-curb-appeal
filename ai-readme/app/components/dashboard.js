@@ -1,6 +1,16 @@
 'use client';
 
 import { useState } from "react";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionItemHeading,
+  AccordionItemButton,
+  AccordionItemPanel,
+} from 'react-accessible-accordion';
+
+// Demo styles, see 'Styles' section below for some notes on use.
+// import 'react-accessible-accordion/dist/fancy-example.css';
 
 // Tab import
 import TabModels from './tab-models.js'
@@ -22,11 +32,6 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (selectedNavItem) {
 
-      case 'Models':
-        return (
-          <TabModels/>
-        );
-
       case 'Live images':
         return (
           <TabLive
@@ -40,10 +45,6 @@ export default function Dashboard() {
           <div>Saved Images panel</div>
         );
 
-      case 'Pre-made Styles':
-        return (
-          <div>Pre-made styles panel</div>
-        );
       default:
         return null;
     }
@@ -78,11 +79,42 @@ export default function Dashboard() {
   return (
     <div className="dashboardContainer">
       <div className="controlPanel threeD">
-        <p>Control Panel</p>
+        <h2>Control Panel</h2>
+        <Accordion allowZeroExpanded>
+          <AccordionItem>
+            <AccordionItemHeading>
+              <AccordionItemButton>
+                Create Models
+              </AccordionItemButton>
+            </AccordionItemHeading>
+            <AccordionItemPanel>
+              <TabModels />
+            </AccordionItemPanel>
+          </AccordionItem>
+          <AccordionItem>
+            <AccordionItemHeading>
+              <AccordionItemButton>
+                Styles
+              </AccordionItemButton>
+            </AccordionItemHeading>
+            <AccordionItemPanel>
+              <p>
+                In ad velit in ex nostrud dolore cupidatat consectetur
+                ea in ut nostrud velit in irure cillum tempor laboris
+                sed adipisicing eu esse duis nulla non.
+              </p>
+            </AccordionItemPanel>
+          </AccordionItem>
+        </Accordion>
         <form onSubmit={handleSubmit} className="fileUploadForm">
 
-          <label htmlFor="model">Model:</label>
-          <input type="text" name="model" placeholder="model to use"/>
+          <label htmlFor="model">Model to use:</label>
+          <select name="model" id="modelToUse">
+            <option value="volvo">Volvo</option>
+            <option value="saab">Saab</option>
+            <option value="opel">Opel</option>
+            <option value="audi">Audi</option>
+          </select>
 
           <label htmlFor="prompt">Prompt:</label>
           <input type="text" name="prompt" placeholder="enter a prompt to display an image"/>
@@ -102,10 +134,8 @@ export default function Dashboard() {
       <div className="consolePanel">
         <div className="consolePanelNav">
           <ul>
-            <li onClick={() => setSelectedNavItem('Models')}>Models</li>
             <li onClick={() => setSelectedNavItem('Live images')}>Live Images</li>
             <li onClick={() => setSelectedNavItem('Saved images')}>Saved Images</li>
-            <li onClick={() => setSelectedNavItem('Pre-made Styles')}>Pre-made Styles</li>
           </ul>
         </div>
 

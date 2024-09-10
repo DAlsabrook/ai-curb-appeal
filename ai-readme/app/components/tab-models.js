@@ -79,25 +79,23 @@ export default function TabModels() {
         <label htmlFor='name'>Name of Model:</label>
         <input name='name' type='text' placeholder='name for model'></input>
 
-        {/* Uploaded image previews */}
-        <div>
-          {uploadedImages.length > 0 && (
-            <div className="image-preview">
-              {uploadedImages.map((image, index) => (
-                <img key={index} src={image} alt={`Preview ${index}`} style={{ width: '100px', height: '100px', margin: '10px' }} />
-              ))}
-            </div>
-          )}
-        </div>
-
         {/* Error Messege */}
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
         {/* Drag and drop box */}
         <div {...getRootProps()} className='formDragAndDrop'>
           <input {...getInputProps()} />
-          <p>Drag & drop files here, or click to browse files</p>
-          <p>Accepts .png, .jpeg, .jpg</p>
+          <p>Upload .png, .jpeg, .jpg</p>
+          {/* Uploaded image previews */}
+          <div>
+            {uploadedImages.length > 0 && (
+              <div className="image-preview">
+                {uploadedImages.map((image, index) => (
+                  <img key={index} src={image} alt={`Preview ${index}`} style={{ width: '50px', height: '50px', margin: '5px', borderRadius: '10px' }} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         <button type='submit'>Start Training</button>
       </form>

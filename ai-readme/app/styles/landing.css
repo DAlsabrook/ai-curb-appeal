@@ -5,8 +5,4 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: linear-gradient(to top left,
-    rgba(67, 43, 226, .5),
-    var(--color-background),
-    var(--color-background));
 }

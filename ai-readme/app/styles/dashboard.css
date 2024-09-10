@@ -19,17 +19,74 @@
   color: white;
 }
 
+.accordion {
+  border-radius: 20px;
+}
+
+.accordion__item {
+  border-bottom: 1px solid var(--color-borders);
+}
+
+.accordion__button {
+  cursor: pointer;
+  padding: 15px 0;
+  width: 100%;
+  text-align: left;
+  border: none;
+}
+
+.accordion__button:hover {
+  opacity: .8;
+}
+
+.accordion__button:before {
+  display: inline-block;
+  content: '';
+  height: 10px;
+  width: 10px;
+  margin-right: 12px;
+  border-bottom: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: rotate(-45deg);
+}
+
+.accordion__button[aria-expanded='true']::before,
+.accordion__button[aria-selected='true']::before {
+  transform: rotate(45deg);
+}
+
+[hidden] {
+  display: none;
+}
+
+.accordion__panel {
+  padding: 20px;
+  padding-top: 0;
+  animation: fadein 0.5s ease-in;
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 .fileUploadForm {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  height: 80%;
+  height: 450px;
   padding: 5px;
 }
 
 .fileUploadForm label {
-  font-size: .8rem;
+  font-size: 1rem;
   margin-bottom: -20px;
+  font-weight: 600;
 }
 
 .fileUploadForm input {
@@ -39,21 +96,19 @@
   border: none;
   border-radius: 10px;
   height: 30px;
-  border: 1px solid grey;
+  border: 1.5px solid var(--color-borders);
   outline: none;
 }
 
 .fileUploadForm button {
-  border: 1.5px solid var(--color-purple);
+  border: 1px solid var(--color-borders);
   border-radius: 20px;
   cursor: pointer;
   margin: 0 auto;
   padding: 0 20px;
-  color: var(--color-purple);
   background-color: var(--color-background);
+  animation: border-raindow-pulsate 20s infinite;
 }
-
-
 
 .consolePanel {
   display: flex;
@@ -61,18 +116,14 @@
   justify-content: space-around;
   width: 100%;
   height: auto;
-  background: linear-gradient(to top left,
-    rgba(67, 43, 226, 0.1),
-    var(--color-background),
-    var(--color-background)
-    );
 }
 
 .consolePanelNav {
   height: 20px;
   padding: 10px;
-  border: 2px solid var(--color-dark-panel);
+  border: 1px solid var(--color-borders);
   border-radius: 6px;
+  color: grey;
 }
 
 .consolePanelNav ul {
