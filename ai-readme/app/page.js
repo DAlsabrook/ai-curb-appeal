@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import Dashboard from './components/dashboard';
 import Landing from './components/landing';
+import PaymentPage from "./components/payment";
+
 import {
   ClerkProvider,
   SignInButton,
@@ -14,13 +16,15 @@ import {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export default function Home() {
-  const [openAppDashboard, setOpenAppDashboard] = useState(false);
   const [openAppLanding, setOpenAppLanding] = useState(true);
+  const [openAppDashboard, setOpenAppDashboard] = useState(false);
+  const [openAppPayment, setOpenAppPayment] = useState(false);
 
   return (
     <div className="pageContent">
       <header>
-        <a href="#" onClick={() => { setOpenAppDashboard(false), setOpenAppLanding(true) }} className="headerLogo">AI Curb Appeal</a>
+        {/* Close all pages and returnt to landing page */}
+        <a href="#" onClick={() => { setOpenAppPayment(false), setOpenAppDashboard(false), setOpenAppLanding(true) }} className="headerLogo">AI Curb Appeal</a>
         <SignedIn>
           <UserButton />
         </SignedIn>
@@ -30,12 +34,25 @@ export default function Home() {
         <Landing
           setOpenAppDashboard={setOpenAppDashboard}
           setOpenAppLanding={setOpenAppLanding}
+          setOpenAppPayment={setOpenAppPayment}
+        />
+      )}
+
+      {openAppPayment && (
+        <PaymentPage
+          setOpenAppDashboard={setOpenAppDashboard}
+          setOpenAppLanding={setOpenAppLanding}
+          setOpenAppPayment={setOpenAppPayment}
         />
       )}
 
       {openAppDashboard && (
         <SignedIn>
-          <Dashboard/>
+          <Dashboard
+            setOpenAppDashboard={setOpenAppDashboard}
+            setOpenAppLanding={setOpenAppLanding}
+            setOpenAppPayment={setOpenAppPayment}
+          />
         </SignedIn>
       )}
 

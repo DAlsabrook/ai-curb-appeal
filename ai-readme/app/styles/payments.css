@@ -1,0 +1,8 @@
+.paymentContainer {
+  height: 100%;
+  max-height: calc(100% - 50px);
+  padding-top: 50px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}

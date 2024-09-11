@@ -20,7 +20,7 @@ import '../styles/dashboard.css';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-export default function Dashboard() {
+export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment }) {
   // Control panel
   const [prediction, setPrediction] = useState(null);
   const [error, setError] = useState(null);
