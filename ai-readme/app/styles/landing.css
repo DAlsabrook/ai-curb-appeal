@@ -44,6 +44,7 @@
   flex-direction: column;
   justify-content: end;
   padding: 20px;
+  z-index: 1;
 }
 
 .bannerLeftContent h1 {
@@ -68,18 +69,21 @@
 .bannerRightContent {
   width: 50%;
   height: calc(100vh - 70px);
+  z-index: -1;
   position: relative;
 }
 
 .bannerPhotoGrid{
   rotate: -20deg;
   position: absolute;
-  top: -200px;
+  top: -100px;
+  right: -200px;
   width: 700px;
 }
 
 .bannerHouseImg {
   border-radius: 20px;
+  opacity: .5;
   margin: 5px;
   box-shadow: -10px 5px 50px rgba(255, 255, 255, .15);
 }
