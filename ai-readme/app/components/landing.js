@@ -25,9 +25,7 @@ export default function Landing({ setOpenAppDashboard, setOpenAppLanding, setOpe
           <p>Flippers</p>
           <p>Agents</p>
 
-          <SignedIn>
-            <button onClick={() => { setOpenAppPayment(true); setOpenAppLanding(false); }} className="plansButton">View all plans</button>
-          </SignedIn>
+          <button onClick={() => { setOpenAppPayment(true); setOpenAppLanding(false); }} className="plansButton">View all plans</button>
         </div>
 
         {/* Right side */}

@@ -42,8 +42,8 @@
   height: calc(100vh - 70px);
   display: flex;
   flex-direction: column;
-  justify-content: end;
-  padding: 20px;
+  justify-content: center;
+  padding-left: 5%;
   z-index: 1;
 }
 
