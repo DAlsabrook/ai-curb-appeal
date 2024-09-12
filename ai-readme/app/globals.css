@@ -26,15 +26,14 @@
 
 html,
 body {
-  height: 100%;
-  width: 100%;
-  padding: -15px;
   margin: 0;
-  overflow: hidden;
   background-color: var(--color-background);
   color: white;
   font-family: 'Noto Sans';
+  z-index: 0;
+  box-sizing: border-box;
 }
+
 h1,
 h2,
 h3,
@@ -44,9 +43,9 @@ h4 {
 
 .pageContent {
   height: 100%;
+  width: 100%;
   padding-right: 1px;
   margin: auto;
-  overflow: hidden;
   box-sizing: border-box;
   position: relative;
 }
@@ -54,36 +53,74 @@ h4 {
 header {
   height: 50px;
   width: 100%;
+  margin: 0;
   position: absolute;
+  box-sizing: border-box;
+  padding: 0 15px;
   top: 0;
   left: 0;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  /* Semi-transparent background */
+  backdrop-filter: blur(10px);
+  /* Apply blur effect */
+  -webkit-backdrop-filter: blur(10px);
+  /* For Safari support */
+  box-shadow: 0 5px 10px rgba(0, 0, 0, .5);
+  /* Optional: Add a subtle shadow */
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.logo:hover {
+  opacity: .8;
+}
+
+/* .logoImg {
+
+} */
+
+.logo p {
+  font-weight: 600;
+  font-size: 1.7rem;
+  margin-left: 5px;
+}
+
+.logo p span {
+  font-weight: 200;
+  color: var(--color-peach);
+  /* Gradient text for supported browsers */
+  background: linear-gradient(45deg, var(--color-orange), var(--color-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  /* Standard property */
+  text-fill-color: transparent;
+  /* Safari? */
+}
+
+.headerUserItems {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 200px;
+  height: 50px;
 }
 
 /* Custom scrollbar styles for webkit-based browsers */
 ::-webkit-scrollbar {
-  width: 5px;
-  /* Width of the scrollbar */
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-  /* Color of the scrollbar track */
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-light-panel);
-  /* Color of the scrollbar thumb */
-  border-radius: 10px;
-  /* Optional: Rounded corners for the scrollbar thumb */
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-  /* Color of the scrollbar thumb when hovered */
+  display: none;
 }
 
 .xLink {
@@ -95,12 +132,13 @@ header {
   text-align: center;
   font-weight: 800;
   padding: 10px;
-  position: absolute;
+  position: fixed;
   bottom: -2px;
   right: -2px;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 100;
 }
 
 .xLink:hover {

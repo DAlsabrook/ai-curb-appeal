@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Dashboard from './components/dashboard';
 import Landing from './components/landing';
 import PaymentPage from "./components/payment";
+import Image from 'next/image';
 
 import {
   ClerkProvider,
@@ -23,10 +24,18 @@ export default function Home() {
   return (
     <div className="pageContent">
       <header>
-        {/* Close all pages and returnt to landing page */}
-        <a href="#" onClick={() => { setOpenAppPayment(false), setOpenAppDashboard(false), setOpenAppLanding(true) }} className="headerLogo">AI Curb Appeal</a>
+        <div className="logo" onClick={() => { setOpenAppPayment(false), setOpenAppDashboard(false), setOpenAppLanding(true) }}>
+          <Image src="/whiteCircle-black.png" alt="House logo" className="logoImg" width={35} height={35} />
+          <p><span>AI</span> CurbAppeal</p>
+        </div>
+        <SignedOut>
+          <SignInButton />
+        </SignedOut>
         <SignedIn>
-          <UserButton />
+          <div className="headerUserItems">
+            <button onClick={() => { setOpenAppDashboard(true); setOpenAppLanding(false); }} className="threeD" style={{ height: '30px', color: 'white', width: '100px', cursor: 'pointer' }}>Dashboard</button>
+            <UserButton />
+          </div>
         </SignedIn>
       </header>
 

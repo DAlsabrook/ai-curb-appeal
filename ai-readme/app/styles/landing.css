@@ -4,5 +4,82 @@
   padding-top: 50px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  position: relative;
+}
+
+.blueShadow {
+  position: fixed;
+  top: 30%;
+  left: -40%;
+  width: 80%;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(0, 102, 255, 0.1) 0%, rgba(0, 0, 255, 0) 70%);
+}
+
+.orangeShadow {
+  position: fixed;
+  top: 40%;
+  right: -40%;
+  width: 80%;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 153, 0, 0.1) 0%, rgba(0, 0, 255, 0) 70%);
+}
+
+/* BANNER */
+
+.bannerContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: auto;
+  z-index: 1;
+}
+
+.bannerLeftContent {
+  width: 50%;
+  height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  padding: 20px;
+}
+
+.bannerLeftContent h1 {
+  font-size: 3rem;
+  margin: 0;
+}
+
+.bannerLeftContent p {
+  font-size: 1.5rem;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+.plansButton {
+  margin: 20px;
+  border: 2px solid white;
+  border-radius: 50px;
+  height: 50px;
+  width: 200px;
+}
+
+.bannerRightContent {
+  width: 50%;
+  height: calc(100vh - 70px);
+  position: relative;
+}
+
+.bannerPhotoGrid{
+  rotate: -20deg;
+  position: absolute;
+  top: -200px;
+  width: 700px;
+}
+
+.bannerHouseImg {
+  border-radius: 20px;
+  margin: 5px;
+  box-shadow: -10px 5px 50px rgba(255, 255, 255, .15);
 }
