@@ -87,3 +87,89 @@
   margin: 5px;
   box-shadow: -10px 5px 50px rgba(255, 255, 255, .15);
 }
+
+/* Prompts section */
+.prompts {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 200px;
+  background-color: black;
+  padding: 200px 100px;
+}
+
+.promtFile {
+  position: relative;
+  width: 300px;
+}
+.promtFile>img {
+  position: absolute;
+  top: -20px;
+  left: -100px;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: 500px;
+  opacity: .2;
+}
+
+.promptsUserImages {
+  padding: 0;
+  width: 300px;
+  overflow: hidden;
+}
+.promptsUserImages>p {
+  font-size: 2rem;
+}
+
+.promptsUserImages>img {
+  margin: auto;
+  margin-bottom: 5px;
+  border-radius: 10px;
+}
+
+.promptsUserImagesSmall {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.promptsUserImagesSmall>img {
+  border-radius: 10px;
+}
+
+.promptsLines {
+  height: .5px;
+  width: 100px;
+  background: linear-gradient(to right, black, var(--color-orange), var(--color-blue), black);
+  background-size: 200% 100%;
+  /* Double the width to allow for smooth animation */
+  animation: moveGradient 1s linear infinite;
+  /* Apply the animation */
+}
+
+@keyframes moveGradient {
+  0% {
+    background-position: 0% 0%;
+  }
+
+  100% {
+    background-position: -200% 0%;
+  }
+}
+
+.promptsSelector {
+  width: 20%;
+  height: auto;
+  text-align: center;
+  border: 2px solid grey;
+  border-radius: 20px;
+}
+
+.promptsSelector h3 {
+  border-bottom: 1px solid grey;
+}
+
+.promptsResult {
+  border-radius: 20px;
+}

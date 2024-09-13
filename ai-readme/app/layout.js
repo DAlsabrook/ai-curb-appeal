@@ -8,6 +8,14 @@ import {
   UserButton
 } from '@clerk/nextjs'
 import React from 'react'
+import Head from 'next/head';
+
+
+// Default fonts for MaterialUI
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +27,11 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
       <html lang="en">
+        <Head>
+          <meta name="viewport" content="initial-scale=1, width=device-width" />
+          <title>{metadata.title}</title>
+          <meta name="description" content={metadata.description} />
+        </Head>
         <body>
           {children}
         </body>
@@ -26,10 +39,3 @@ export default function RootLayout({ children }) {
     </ClerkProvider>
   )
 }
-// export default function RootLayout({ children }) {
-//   return (
-//     <html lang="en">
-//       <body className={inter.className}>{children}</body>
-//     </html>
-//   );
-// }

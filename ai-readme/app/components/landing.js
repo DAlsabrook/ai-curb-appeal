@@ -1,6 +1,7 @@
 "use client";
 import '../styles/landing.css'
 import Image from 'next/image';
+import Button from '@mui/material/Button';
 import {
   ClerkProvider,
   SignInButton,
@@ -8,6 +9,7 @@ import {
   SignedOut,
   UserButton
 } from '@clerk/nextjs'
+
 
 export default function Landing({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment }) {
   return (
@@ -24,8 +26,16 @@ export default function Landing({ setOpenAppDashboard, setOpenAppLanding, setOpe
           <p>Homeowners</p>
           <p>Flippers</p>
           <p>Agents</p>
-
-          <button onClick={() => { setOpenAppPayment(true); setOpenAppLanding(false); }} className="plansButton">View all plans</button>
+          <Button
+            variant="outlined"
+            onClick={() => { setOpenAppPayment(true); setOpenAppLanding(false); }}
+            style={{ width: "200px",
+            borderRadius: 50,
+            border: "1px solid white",
+            color: "white",
+            backgroundColor: 'var(--color-blue'}}>
+              View all plans
+          </Button>
         </div>
 
         {/* Right side */}
@@ -47,6 +57,31 @@ export default function Landing({ setOpenAppDashboard, setOpenAppLanding, setOpe
               <Image src="/results/replicate-prediction-wvjykv1yvnrm60chtkgr5n902m-3.png" alt="House logo" className="bannerHouseImg" width={200} height={200} />
             </div>
           </div>
+        </div>
+      </div>
+      <div className='prompts'>
+        {/* To show many variants from 1 prompt */}
+        <div className='promtFile'>
+          <Image src='/file-1453.svg' alt='file image' width={350} height={350} />
+          <div className='promptsUserImages'>
+            <p>Upload Files</p>
+            <Image src="/results/earhart-house-6.jpg" alt="House logo" className="promptUserImg" width={300} height={230} />
+            <div className='promptsUserImagesSmall'>
+              <Image src="/results/earhart-house-1.jpg" alt="House logo" className="promptUserImg" width={145} height={112} />
+              <Image src="/results/earhart-house-5.jpg" alt="House logo" className="promptUserImg" width={145} height={112} />
+            </div>
+          </div>
+        </div>
+        <div className='promptsLines'></div>
+        <div className='promptsSelector'>
+          <h3>Control Panel</h3>
+          <p>Brick</p>
+          <p>White Paint</p>
+          <p>Add Landscape</p>
+        </div>
+        <div className='promptsLines'></div>
+        <div className='promptsResults'>
+          <Image src="/results/replicate-prediction-ttzkweh5nxrm20chtkcvqx13bm-0.png" alt="House logo" className='promptsResult' width={350} height={350} />
         </div>
       </div>
   </div>

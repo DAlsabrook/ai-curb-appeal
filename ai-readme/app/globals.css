@@ -54,7 +54,7 @@ header {
   height: 50px;
   width: 100%;
   margin: 0;
-  position: absolute;
+  position: fixed;
   box-sizing: border-box;
   padding: 0 15px;
   top: 0;
