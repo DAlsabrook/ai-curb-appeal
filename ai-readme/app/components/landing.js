@@ -2,6 +2,7 @@
 import '../styles/landing.css'
 import Image from 'next/image';
 import Button from '@mui/material/Button';
+import { useState } from 'react';
 import {
   ClerkProvider,
   SignInButton,
@@ -12,6 +13,8 @@ import {
 
 
 export default function Landing({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment }) {
+  const [promptResultsImg, setPromptResultsImg] = useState("/results/replicate-prediction-ttzkweh5nxrm20chtkcvqx13bm-0.png"); // Initialize state
+
   return (
   <div className="landingContainer">
       <div className='blueShadow'></div>
@@ -59,29 +62,65 @@ export default function Landing({ setOpenAppDashboard, setOpenAppLanding, setOpe
           </div>
         </div>
       </div>
+
+      {/* Prompts section */}
       <div className='prompts'>
-        {/* To show many variants from 1 prompt */}
-        <div className='promtFile'>
-          <Image src='/file-1453.svg' alt='file image' width={350} height={350} />
-          <div className='promptsUserImages'>
-            <p>Upload Files</p>
-            <Image src="/results/earhart-house-6.jpg" alt="House logo" className="promptUserImg" width={300} height={230} />
-            <div className='promptsUserImagesSmall'>
-              <Image src="/results/earhart-house-1.jpg" alt="House logo" className="promptUserImg" width={145} height={112} />
-              <Image src="/results/earhart-house-5.jpg" alt="House logo" className="promptUserImg" width={145} height={112} />
+        <h2>Upload Images, Create Prompt, Get New Home</h2>
+        <p>by just giving a simple prompt you can alter ANYTHING about your house</p>
+        <div className='promptsContent'>
+
+          <div className='promtFile'>
+            <Image src='/file-1453.svg' alt='file image' width={350} height={350} />
+            <div className='promptsUserImages'>
+              <p>Upload Files</p>
+              <Image src="/results/earhart-house-6.jpg" alt="House logo" className="promptUserImg" width={300} height={230} />
+              <div className='promptsUserImagesSmall'>
+                <Image src="/results/earhart-house-1.jpg" alt="House logo" className="promptUserImg" width={145} height={112} />
+                <Image src="/results/earhart-house-5.jpg" alt="House logo" className="promptUserImg" width={145} height={112} />
+              </div>
             </div>
           </div>
+
+          <p className='lilArrow'>&rarr;</p>
+
+          <div className='rainbowWrapper'>
+            <div className='promptsSelector'>
+              <h3>Select Prompt</h3>
+              <button className='promptSelectorBtn' onClick={() => { setPromptResultsImg('/results/replicate-prediction-ttzkweh5nxrm20chtkcvqx13bm-0.png')}}>"Brick Walls"</button>
+              <button className='promptSelectorBtn' onClick={() => { setPromptResultsImg('/results/replicate-prediction-wvjykv1yvnrm60chtkgr5n902m-2.png') }}>"Add Landscaping"</button>
+              <button className='promptSelectorBtn' onClick={() => { setPromptResultsImg('/results/replicate-prediction-wvjykv1yvnrm60chtkgr5n902m-3.png')}}>"Add Modern Paint"</button>
+            </div>
+          </div>
+
+          <p className='lilArrow'>&rarr;</p>
+
+          <div className='promptsResults'>
+            <Image src={promptResultsImg} alt="House logo" className='promptsResult' width={350} height={350} />
+          </div>
+
         </div>
-        <div className='promptsLines'></div>
-        <div className='promptsSelector'>
-          <h3>Control Panel</h3>
-          <p>Brick</p>
-          <p>White Paint</p>
-          <p>Add Landscape</p>
-        </div>
-        <div className='promptsLines'></div>
-        <div className='promptsResults'>
-          <Image src="/results/replicate-prediction-ttzkweh5nxrm20chtkcvqx13bm-0.png" alt="House logo" className='promptsResult' width={350} height={350} />
+      </div>
+
+      {/* Who uses section */}
+      <div className='whoFor'>
+        <h2>Who is This Model For?</h2>
+        <div className='whoForContent'>
+
+          {/* item */}
+          <div className='whoForItem'>
+            <Image src='/results/family.jpg' alt="House logo" width={350} height={350} />
+            <h3>Homeowners</h3>
+          </div>
+
+          {/* item */}
+          <div className='whoForItem'>
+            <h3>Property developers</h3>
+          </div>
+
+          {/* item */}
+          <div className='whoForItem'>
+            <h3>Contractors</h3>
+          </div>
         </div>
       </div>
   </div>
