@@ -85,7 +85,7 @@ export default function Landing({ setOpenAppDashboard, setOpenAppLanding, setOpe
 
           <div className='rainbowWrapper'>
             <div className='promptsSelector'>
-              <h3>Select Prompt</h3>
+              <h3>Select a Prompt</h3>
               <button className='promptSelectorBtn' onClick={() => { setPromptResultsImg('/results/replicate-prediction-ttzkweh5nxrm20chtkcvqx13bm-0.png')}}>"Brick Walls"</button>
               <button className='promptSelectorBtn' onClick={() => { setPromptResultsImg('/results/replicate-prediction-wvjykv1yvnrm60chtkgr5n902m-2.png') }}>"Add Landscaping"</button>
               <button className='promptSelectorBtn' onClick={() => { setPromptResultsImg('/results/replicate-prediction-wvjykv1yvnrm60chtkgr5n902m-3.png')}}>"Add Modern Paint"</button>
