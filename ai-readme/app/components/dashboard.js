@@ -13,7 +13,7 @@ import {
 // import 'react-accessible-accordion/dist/fancy-example.css';
 
 // Tab import
-import TabModels from './tab-models.js'
+import TabModels from './accordian_models.js'
 import TabLive from "./tab-live_images.js";
 
 import '../styles/dashboard.css';

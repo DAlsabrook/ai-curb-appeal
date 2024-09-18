@@ -65,14 +65,12 @@ export default function TabModels() {
       setError(trainingResponse.detail);
       return;
     } else {
-      const detail = trainingResponse.detail;
+      const detail = trainingResponse.trainedModel;
       const trainingUrl = trainingResponse.trainingUrl;
       console.log(detail, trainingUrl);
     }
-    console.log('done with api in handle submit')
   };
 
-  // userName from google
   return (
     <div className="tabModelsContent">
       <form onSubmit={handleSubmit} className='createModelForm'>

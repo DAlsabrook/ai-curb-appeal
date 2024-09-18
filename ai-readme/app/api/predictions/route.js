@@ -1,18 +1,10 @@
 import { NextResponse } from "next/server";
 import Replicate from "replicate";
-import cloudinary from 'cloudinary'; // Save img
 import sharp from 'sharp'; // Resizing images
 
 // Initialize the Replicate client with the API token
 const replicateClient = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
-});
-
-// Configure Cloudinary
-cloudinary.v2.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 // Disable the default body parser to handle file uploads with formidable
@@ -23,11 +15,6 @@ export const config = {
 };
 
 export async function POST(req) {
-  // console.log("All env variable check");
-  // console.log(process.env.REPLICATE_API_TOKEN)
-  // console.log(process.env.CLOUDINARY_CLOUD_NAME)
-  // console.log(process.env.CLOUDINARY_API_KEY)
-  // console.log(process.env.CLOUDINARY_API_SECRET)
 
   try {
     const prePrompt = 'Ensure the scene is rendered with 100% photorealistic detail, including lifelike lighting, textures, and natural imperfections, to maintain complete realism in every generated image.'
@@ -82,6 +69,8 @@ export async function POST(req) {
 
     // REPLICATE API CALL
     let apiResponse;
+    //example on what to use for a user created model
+    // "dalsabrook/testingr2:4ac1394f3b9276d033cc17d8e1672d92b1f094c566c3caf79610ad1f6901aea1"
     const modelToUse = "black-forest-labs/flux-dev";
     try {
       // Send the file URI and prompt to the external API

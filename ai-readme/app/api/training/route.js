@@ -19,7 +19,7 @@ const s3Client = new S3Client({
     accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
     secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
   },
-}); // THIS IS NOT GOING TO WORK. I Removed the "allowed" domains that can access the r2////////////////////////////////
+}); //////////////////////////////////////////////NEED to change R2 'allowed' domains
 
 // Function to resize images to a maximum size of 1MB
 async function resizeImages(images) {
@@ -111,6 +111,7 @@ export async function POST(req) {
   if (!checkEnvVariables()) {
     return NextResponse.json({ detail: "Enviroment variables not set correctly" }, { status: 400 });
   }
+
   const formData = await req.formData();
   const userGivenName = formData.get('name').toLowerCase().replace(/ /g, '_');
 
@@ -123,7 +124,6 @@ export async function POST(req) {
   if (!isValidName) {
     return NextResponse.json({ detail: "Model name must contain only letters and numbers" }, { status: 400 });
   }
-
   // Collect all images from formData
   const images = [];
   formData.forEach((value, key) => {
@@ -199,7 +199,7 @@ export async function POST(req) {
   }
 }
 
-//////////// this is what the training object is. logged on line 150
+//////////// this is what the training object is.
 // {
 //   id: 'papxhx3s4srm00chrp683cwf00',
 //   model: 'ostris/flux-dev-lora-trainer',
