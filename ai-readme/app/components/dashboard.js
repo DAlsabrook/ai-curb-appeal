@@ -14,7 +14,7 @@ import {
 
 // Tab import
 import TabModels from './accordian_models.js'
-import TabLive from "./tab-live_images.js";
+import TabLive from "./tab-generated_images.js";
 
 import '../styles/dashboard.css';
 
@@ -32,9 +32,14 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
   const renderContent = () => {
     switch (selectedNavItem) {
 
-      case 'Live images':
+      case 'My Models':
         return (
-          <TabLive
+          <div>Saved Images panel</div>
+        );
+
+      case 'Generated images':
+        return (
+          <TabGenerated
             uploadedImage={uploadedImage}
             prediction={prediction}
           />
@@ -134,8 +139,9 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
       <div className="consolePanel">
         <div className="consolePanelNav">
           <ul>
-            <li onClick={() => setSelectedNavItem('Live images')}>Live Images</li>
+            <li onClick={() => setSelectedNavItem('Generated images')}>Generated Images</li>
             <li onClick={() => setSelectedNavItem('Saved images')}>Saved Images</li>
+            <li onClick={() => setSelectedNavItem('My Models')}>My Models</li>
           </ul>
         </div>
 

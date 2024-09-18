@@ -69,7 +69,9 @@ export async function POST(req) {
 
     // REPLICATE API CALL
     let apiResponse;
-    //example on what to use for a user created model
+
+    // example on what to use for a user created model
+    // accountname/UserGivenModelName:Version
     // "dalsabrook/testingr2:4ac1394f3b9276d033cc17d8e1672d92b1f094c566c3caf79610ad1f6901aea1"
     const modelToUse = "black-forest-labs/flux-dev";
     try {
@@ -104,9 +106,3 @@ export async function POST(req) {
     return NextResponse.json({ detail: "Error during API call" }, { status: 500 });
   }
 }
-
-// Check env variables
-// printenv REPLICATE_API_TOKEN
-// printenv CLOUDINARY_CLOUD_NAME
-// printenv CLOUDINARY_API_KEY
-// printenv CLOUDINARY_API_SECRET

@@ -70,7 +70,6 @@ async function uploadToR2(fileBuffer, userGivenName) {
     });
 
     const s3Response = await s3Client.send(putObjectCommand);
-    console.log('Uploaded S3 response:\n', s3Response)
 
     // Generate a signed URL for the uploaded file (valid for 1 hour)
     const getObjectCommand = new GetObjectCommand({
@@ -79,7 +78,6 @@ async function uploadToR2(fileBuffer, userGivenName) {
     });
 
     const signedUrl = await getSignedUrl(s3Client, getObjectCommand, { expiresIn: 3600 }); // URL valid for 1 hour
-    console.log("Signed URL:", signedUrl);
 
     return signedUrl;
   } catch (error) {
@@ -176,18 +174,21 @@ export async function POST(req) {
           resolution: "512,768,1024",
           autocaption: false,
           input_images: r2Url,
-          trigger_word: "TOK",
+          trigger_word: "TOK", // Possibly Set to House?
           learning_rate: 0.0004,
           wandb_project: "flux_train_replicate",
           wandb_save_interval: 100,
           caption_dropout_rate: 0.05,
           wandb_sample_interval: 100
-        }
+        },
+        webhook: "https://aicurbappeal.com/api/training-webhook"
+        // Docs for webhooks: https://replicate.com/docs/reference/webhooks
       };
 
       const training = await replicate.trainings.create(modelOwner, modelName, versionId, options);
 
       console.log(`Training URL: https://replicate.com/p/${training.id}`);
+      console.log(`Training object passed to frontend: \n${JSON.stringify(training, null, 2) }`)
       return NextResponse.json({ detail: 'Model training has started!', trainedModel: training }, { status: 200 });
     } catch (error) {
       console.log(error);
@@ -199,34 +200,38 @@ export async function POST(req) {
   }
 }
 
-//////////// this is what the training object is.
+// Training object passed to frontend:
+// Link for this training: https://replicate.com/p/fq01gb6n5drm20cj0rhtj6ds3g
+// Training done use replicate.run with
+//    "dalsabrook/trainingobjtest1:750a11fa29d323ad1f020f9fe6fbb3205dfac5c2ba5d0af69adad5502039b085"
+//     AccountName/UserGivenModelName:
 // {
-//   id: 'papxhx3s4srm00chrp683cwf00',
-//   model: 'ostris/flux-dev-lora-trainer',
-//   version: '9d960224bcfc17c68d621e7a6a5afb43d222588daa4e8ddc5f127e27ab874486',
-//   input: {
-//      autocaption: false,
-//      batch_size: 1,
-//      caption_dropout_rate: 0.05,
-//      input_images: 'http://res.cloudinary.com/dugyjblat/raw/upload/v1725596201/dalsabrook/logtest1/dyvsdxwcuyt97kfkmuj5.zip',
-//      learning_rate: 0.0004,
-//      lora_rank: 16,
-//      optimizer: 'adamw8bit',
-//      resolution: '512,768,1024',
-//      steps: 1000,
-//      trigger_word: 'TOK',
-//      wandb_project: 'flux_train_replicate',
-//      wandb_sample_interval: 100,
-//      wandb_save_interval: 100
+//   "id": "fq01gb6n5drm20cj0rhtj6ds3g",
+//   "model": "ostris/flux-dev-lora-trainer",
+//   "version": "885394e6a31c6f349dd4f9e6e7ffbabd8d9840ab2559ab78aed6b2451ab2cfef",
+//   "input": {
+//      "autocaption": false,
+//      "batch_size": 1,
+//      "caption_dropout_rate": 0.05,
+//      "input_images": "https://curbappeal-image-storage.bb2c7337654f08315f6e09cea3065dbd.r2.cloudflarestorage.com/username/trainingobjtest1/1726679867025.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=94dc187da8480592b14765fa3d73b20a%2F20240918%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20240918T171748Z&X-Amz-Expires=3600&X-Amz-Signature=5322c87a0e614862568765f295806efa774694dccd35e62124dae2581715abd2&X-Amz-SignedHeaders=host&x-id=GetObject",
+//      "learning_rate": 0.0004,
+//      "lora_rank": 16,
+//      "optimizer": "adamw8bit",
+//      "resolution": "512,768,1024",
+//      "steps": 1000,
+//      "trigger_word": "TOK",
+//      "wandb_project": "flux_train_replicate",
+//      "wandb_sample_interval": 100,
+//      "wandb_save_interval": 100
 //   },
-//   logs: '',
-//   output: null,
-//   data_removed: false,
-//   error: null,
-//   status: 'starting',
-//   created_at: '2024-09-06T04:16:43.302Z',
-//   urls: {
-//     cancel: 'https://api.replicate.com/v1/predictions/papxhx3s4srm00chrp683cwf00/cancel',
-//     get: 'https://api.replicate.com/v1/predictions/papxhx3s4srm00chrp683cwf00'
+//   "logs": "",
+//   "output": null,
+//   "data_removed": false,
+//   "error": null,
+//   "status": "starting",
+//   "created_at": "2024-09-18T17:17:44.619Z",
+//   "urls": {
+//     "cancel": "https://api.replicate.com/v1/predictions/fq01gb6n5drm20cj0rhtj6ds3g/cancel",
+//     "get": "https://api.replicate.com/v1/predictions/fq01gb6n5drm20cj0rhtj6ds3g"
 //   }
 // }
