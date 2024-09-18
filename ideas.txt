@@ -2,3 +2,12 @@
 Add the ability to select like blender style "textures" (red brick, white paint, flower bed, roof color) that will add descriptions of that texture to the prompt
 
 Append the users name to the name they give for the model to avoid duplicate names
+
+
+Todo:
+  -get site connect to a DB to store "versionid" from webhooks
+  -DB needs to also store some id from clerk to identify the user
+  -DB also needs to store some id from stripe
+  -DB needs to have a column for credits
+  -stripe sends a webhook that i need to handle (create route to add/remove credits)
+  -let user select a model from a list created by getting versionids from DB
