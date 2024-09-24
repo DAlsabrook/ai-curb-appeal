@@ -7,6 +7,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } f
 
 export const registerUser = async (email, password) => {
   // Sign up
+  // Returns user object
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     return userCredential.user;
@@ -17,6 +18,7 @@ export const registerUser = async (email, password) => {
 
 export const loginUser = async (email, password) => {
   // Sign in
+  // Returns user object
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     return userCredential.user;

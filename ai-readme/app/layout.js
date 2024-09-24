@@ -25,17 +25,15 @@ export const metadata = {
 };
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <Head>
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
-          <title>{metadata.title}</title>
-          <meta name="description" content={metadata.description} />
-        </Head>
-        <body>
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <Head>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+        <title>{metadata.title}</title>
+        <meta name="description" content={metadata.description} />
+      </Head>
+      <body>
+        {children}
+      </body>
+    </html>
   )
 }

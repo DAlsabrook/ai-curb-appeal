@@ -3,13 +3,6 @@ import '../styles/landing.css'
 import Image from 'next/image';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton
-} from '@clerk/nextjs'
 
 
 export default function Landing({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment }) {
