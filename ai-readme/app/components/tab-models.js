@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import '../styles/tab-models.css'
 
-export default function TabModels() {
+export default function TabModels({user}) {
   const [selectedFiles, setSelectedFiles] = useState([]); // This array will contain the list of files to send to backend
   const [error, setError] = useState('');
   const [uploadedImages, setUploadedImages] = useState([]); //Used to preview uploaded images
@@ -29,7 +29,10 @@ export default function TabModels() {
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: 'image/jpeg, image/png', // Accept only valid image MIME types
+    accept: {
+      'image/jpeg': ['.jpeg', '.jpg'],
+      'image/png': ['.png']
+    }, // Accept only valid image MIME types
     multiple: true,
   });
 
@@ -50,6 +53,7 @@ export default function TabModels() {
     selectedFiles.forEach((file, index) => {
       formData.append(`filesList[${index}]`, file);
     });
+    formData.append('uid', user.uid);
 
     const response = await fetch("/api/training", {
       method: "POST",
@@ -65,9 +69,10 @@ export default function TabModels() {
       setError(trainingResponse.detail);
       return;
     } else {
-      const detail = trainingResponse.trainedModel;
-      const trainingUrl = trainingResponse.trainingUrl;
-      console.log(detail, trainingUrl);
+      // const detail = trainingResponse.trainedModel;
+      // const trainingUrl = trainingResponse.trainingUrl;
+      // console.log(detail, trainingUrl);
+      console.log(trainingResponse.detail)
     }
   };
 
@@ -81,6 +86,7 @@ export default function TabModels() {
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
         {/* Drag and drop box */}
+        <p>Upload Images:</p>
         <div {...getRootProps()} className='formDragAndDrop'>
           <input {...getInputProps()} />
           <p>Upload .png, .jpeg, .jpg</p>
@@ -89,7 +95,7 @@ export default function TabModels() {
             {uploadedImages.length > 0 && (
               <div className="image-preview">
                 {uploadedImages.map((image, index) => (
-                  <img key={index} src={image} alt={`Preview ${index}`} style={{ width: '50px', height: '50px', margin: '5px', borderRadius: '10px' }} />
+                  <img key={index} src={image} alt={`Preview ${index}`} style={{ width: 'auto', height: '80px', margin: '5px', borderRadius: '10px' }} />
                 ))}
               </div>
             )}

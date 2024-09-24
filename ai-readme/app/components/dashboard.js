@@ -13,14 +13,14 @@ import {
 // import 'react-accessible-accordion/dist/fancy-example.css';
 
 // Tab import
-import TabModels from './accordian_models.js'
-import TabLive from "./tab-generated_images.js";
+import TabModels from './tab-models.js'
+import TabGenerated from "./tab-generated_images.js";
 
 import '../styles/dashboard.css';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment }) {
+export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment, user }) {
   // Control panel
   const [prediction, setPrediction] = useState(null);
   const [error, setError] = useState(null);
@@ -34,7 +34,7 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
 
       case 'My Models':
         return (
-          <div>Saved Images panel</div>
+          <TabModels user={user} />
         );
 
       case 'Generated images':
@@ -66,7 +66,9 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
     formData.append('file', file);
 
     // Create a preview URL for the uploaded image
-    setUploadedImage(URL.createObjectURL(file));
+    if (file) {
+      setUploadedImage(URL.createObjectURL(file));
+    }
 
     const response = await fetch("/api/predictions", {
       method: "POST",
@@ -86,16 +88,6 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
       <div className="controlPanel threeD">
         <h2>Control Panel</h2>
         <Accordion allowZeroExpanded>
-          <AccordionItem>
-            <AccordionItemHeading>
-              <AccordionItemButton>
-                Create Models
-              </AccordionItemButton>
-            </AccordionItemHeading>
-            <AccordionItemPanel>
-              <TabModels />
-            </AccordionItemPanel>
-          </AccordionItem>
           <AccordionItem>
             <AccordionItemHeading>
               <AccordionItemButton>
@@ -120,7 +112,9 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
             <option value="opel">Opel</option>
             <option value="audi">Audi</option>
           </select>
-
+          <p onClick={() => {
+            console.log(user)
+          }}>-Print User- {user.email}</p>
           <label htmlFor="prompt">Prompt:</label>
           <input type="text" name="prompt" placeholder="enter a prompt to display an image"/>
 

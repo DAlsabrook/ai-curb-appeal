@@ -2,10 +2,10 @@
 import Image from "next/image";
 
 
-export default function TabLive({ uploadedImage, prediction }) {
+export default function TabGenerated({ uploadedImage, prediction }) {
   return (
     <div className="tabLiveContent">
-      <div>Live panel</div>
+      <div>Generated panel</div>
       <div className="image-wrapper">
         {uploadedImage && (
           <Image

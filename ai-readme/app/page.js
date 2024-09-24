@@ -38,11 +38,19 @@ export default function Home() {
           <Login />
         ) : (
           <div className="headerUserItems">
+
+            {user && user.email === 'dfalsabrook@gmail.com' && (
+              <button onClick={() => {
+                console.log(user)
+              }}>Admin</button>
+            )}
+
             <button onClick={() => {
               setOpenAppDashboard(true);
               setOpenAppLanding(false);
               setOpenAppPayment(false)
-              }} className="threeD" style={{ height: '30px', color: 'white', width: '100px', cursor: 'pointer' }}>Dashboard</button>
+              }}>Dashboard</button>
+
             <button onClick={() => {
               logoutUser();
               if (openAppDashboard) {
@@ -50,7 +58,8 @@ export default function Home() {
                 setOpenAppDashboard(false);
                 setOpenAppLanding(true);
               }
-            }} className="threeD" style={{ height: '30px', color: 'white', width: '100px', cursor: 'pointer' }}>Logout</button>
+            }}>Logout</button>
+
           </div>
         )}
       </header>

@@ -1,14 +1,18 @@
-// services/storage.js
 import { storage } from './firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-export const uploadImage = async (file, path) => {
+const uploadImages = async (files, userName, modelName) => {
   try {
-    const storageRef = ref(storage, path);
-    const snapshot = await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(snapshot.ref);
-    return url;
+    const uploadPromises = files.map(file => {
+      const storageRef = ref(storage, `${userName}/${modelName}/${file.name}`);
+      return uploadBytes(storageRef, file).then(snapshot => getDownloadURL(snapshot.ref));
+    });
+
+    const urls = await Promise.all(uploadPromises);
+    return urls; // Returns an array of download URLs
   } catch (error) {
     throw error;
   }
 };
+
+export { uploadImages }; // Export the function

@@ -1,25 +1,13 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NextResponse } from "next/server";
 import Replicate from "replicate";
 import sharp from 'sharp'; // Resizing images
 import JSZip from 'jszip'; // Create zip files
-// import { Readable } from 'stream'; // Stream for zip file
+import { uploadImages } from '../../firebase/storage'
 
 // Initialize Rep client with the API token
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
-
-// Initialize S3Client for Cloudflare R2
-const s3Client = new S3Client({
-  endpoint: `https://${process.env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  region: "auto",
-  credentials: {
-    accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
-    secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
-  },
-}); //////////////////////////////////////////////NEED to change R2 'allowed' domains
 
 // Function to resize images to a maximum size of 1MB
 async function resizeImages(images) {
@@ -56,43 +44,10 @@ async function createZip(images) {
   return await zip.generateAsync({ type: 'nodebuffer' });
 }
 
-// Upload zip file to Cloudflare R2 using AWS SDK v3
-async function uploadToR2(fileBuffer, userGivenName) {
-  try {
-    const objectKey = `username/${userGivenName}/${Date.now()}.zip`;
-
-    // Upload to R2 using S3 API v3
-    const putObjectCommand = new PutObjectCommand({
-      Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
-      Key: objectKey,
-      Body: fileBuffer,
-      ContentType: "application/zip",
-    });
-
-    const s3Response = await s3Client.send(putObjectCommand);
-
-    // Generate a signed URL for the uploaded file (valid for 1 hour)
-    const getObjectCommand = new GetObjectCommand({
-      Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
-      Key: objectKey,
-    });
-
-    const signedUrl = await getSignedUrl(s3Client, getObjectCommand, { expiresIn: 3600 }); // URL valid for 1 hour
-
-    return signedUrl;
-  } catch (error) {
-    console.error("Error uploading to Cloudflare R2:", error);
-    throw error;
-  }
-}
 
 async function checkEnvVariables() {
   const tokens = {
-    'Replicate': process.env.REPLICATE_API_TOKEN,
-    'CF Bucket Name': process.env.CLOUDFLARE_R2_BUCKET_NAME,
-    'CF Account ID': process.env.CLOUDFLARE_R2_ACCOUNT_ID,
-    'CF Access Key': process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
-    'CF Secret Key': process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+    'Replicate': process.env.REPLICATE_API_TOKEN
   }
 
   for (const key in tokens) {
@@ -107,11 +62,12 @@ async function checkEnvVariables() {
 // Function to train the model
 export async function POST(req) {
   if (!checkEnvVariables()) {
-    return NextResponse.json({ detail: "Enviroment variables not set correctly" }, { status: 400 });
+    return NextResponse.json({ detail: "Enviroment variables not set correctly in training route" }, { status: 400 });
   }
 
   const formData = await req.formData();
   const userGivenName = formData.get('name').toLowerCase().replace(/ /g, '_');
+  const userUID = formData.get('uid');
 
   if (!userGivenName) {
     return NextResponse.json({ detail: "Model name is required" }, { status: 400 });
@@ -134,14 +90,16 @@ export async function POST(req) {
     return NextResponse.json({ detail: "Error loading images" }, { status: 400 });
   }
 
+  // Upload Images to firebase
+  const imagesURLList = await uploadImages(images, userUID, userGivenName);
+
+  return NextResponse.json({ detail: 'Images uploaded' }, { status: 200 });
+
   // Resize images to a maximum size of 1MB
   const resizedImages = await resizeImages(images);
 
   // Create zip file from resized images
   const zipContent = await createZip(resizedImages);
-
-  // Upload the zip file to Cloudflare R2
-  const r2Url = await uploadToR2(zipContent, userGivenName);
 
   try { // Create the model
     const owner = 'dalsabrook';

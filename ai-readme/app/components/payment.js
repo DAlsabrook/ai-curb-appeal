@@ -2,7 +2,7 @@
 import '../styles/payments.css'
 
 
-export default function PaymentPage({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment }) {
+export default function PaymentPage({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment, user }) {
 
   return (
     <div className="paymentContainer">
