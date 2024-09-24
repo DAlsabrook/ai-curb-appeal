@@ -1,10 +1,10 @@
 import { storage } from './firebaseConfig';
 import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
 
-const uploadImages = async (files, userName, modelName) => {
+const uploadImages = async (files, userUID, modelName) => {
   try {
     const uploadPromises = files.map(file => {
-      const storageRef = ref(storage, `${userName}/${modelName}/${file.name}`);
+      const storageRef = ref(storage, `${userUID}/${modelName}/${file.name}`);
       return uploadBytes(storageRef, file).then(snapshot => getDownloadURL(snapshot.ref));
     });
 
@@ -14,6 +14,24 @@ const uploadImages = async (files, userName, modelName) => {
     throw error;
   }
 };
+
+const uploadZip = async (zipFile, userUID, modelName) => {
+  const storageRef = ref(storage, `${userUID}/${modelName}`);
+  // Create a reference to the file in Cloud Storage
+  const fileRef = ref(storageRef, `${modelName}-Images.zip`);
+
+  // Upload the file
+  try {
+    const snapshot = await uploadBytes(fileRef, zipFile);
+    // File uploaded successfully
+    const downloadURL = await getDownloadURL(snapshot.ref); // Get the download URL
+    return downloadURL; // Return the download URL
+  } catch (error) {
+    // Handle upload errors
+    console.error('Upload error:', error);
+    throw error; // Rethrow the error to handle it in the calling function
+  }
+}
 
 // Function to get all images in a specific folder
 async function getUploadedImages(folderPath) {
@@ -40,4 +58,4 @@ async function getUploadedImages(folderPath) {
 }
 
 
-export { uploadImages }; // Export the function
+export { uploadImages, uploadZip }; // Export the function
