@@ -69,10 +69,9 @@ export default function TabModels({user}) {
       setError(trainingResponse.detail);
       return;
     } else {
-      // const detail = trainingResponse.trainedModel;
-      // const trainingUrl = trainingResponse.trainingUrl;
-      // console.log(detail, trainingUrl);
-      console.log(trainingResponse.detail)
+      const detail = trainingResponse.trainedModel;
+      const trainingUrl = trainingResponse.trainingUrl;
+      console.log(detail, trainingUrl);
     }
   };
 
@@ -103,6 +102,7 @@ export default function TabModels({user}) {
         </div>
         <button type='submit'>Start Training</button>
       </form>
+      <div>Models:</div>
     </div>
   );
 }

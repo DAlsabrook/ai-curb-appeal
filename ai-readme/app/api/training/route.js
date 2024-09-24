@@ -2,19 +2,32 @@ import { NextResponse } from "next/server";
 import Replicate from "replicate";
 import sharp from 'sharp'; // Resizing images
 import JSZip from 'jszip'; // Create zip files
+import axios from 'axios'; // Used to download images
 import { uploadImages } from '../../firebase/storage'
+import { ConstructionOutlined } from "@mui/icons-material";
 
 // Initialize Rep client with the API token
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
 
+// Download images from firebase storage
+async function downloadImages(imageUrls) {
+  const images = [];
+  for (const url of imageUrls) {
+    const response = await axios.get(url, { responseType: 'arraybuffer' });
+    const buffer = Buffer.from(response.data);
+    const imageName = url.split('/').pop(); // Extract image name from URL
+    images.push({ name: imageName, buffer });
+  }
+  return images;
+}
+
 // Function to resize images to a maximum size of 1MB
 async function resizeImages(images) {
   const resizedImages = [];
   for (const image of images) {
-    let buffer = await image.arrayBuffer();
-    let imageBuffer = Buffer.from(buffer);
+    let imageBuffer = image.buffer;
 
     // Resize image to a maximum dimension while maintaining aspect ratio
     imageBuffer = await sharp(imageBuffer)
@@ -92,14 +105,19 @@ export async function POST(req) {
 
   // Upload Images to firebase
   const imagesURLList = await uploadImages(images, userUID, userGivenName);
+  console.log('Images uploaded')
 
-  return NextResponse.json({ detail: 'Images uploaded' }, { status: 200 });
+  // Download images
+  const downloadedImages = await downloadImages(imagesURLList);
+  console.log('Images downloaded')
 
   // Resize images to a maximum size of 1MB
-  const resizedImages = await resizeImages(images);
+  const resizedImages = await resizeImages(downloadedImages);
+  console.log('Images resized')
 
   // Create zip file from resized images
   const zipContent = await createZip(resizedImages);
+  console.log('Zip Created')
 
   try { // Create the model
     const owner = 'dalsabrook';
@@ -107,7 +125,7 @@ export async function POST(req) {
     const hardware = 'gpu-t4';
     const description = 'AICurbAppeal.com house model'
 
-    const model = await replicate.models.create(
+    await replicate.models.create(
       owner,
       userGivenName,
       {
@@ -131,7 +149,7 @@ export async function POST(req) {
           batch_size: 1,
           resolution: "512,768,1024",
           autocaption: false,
-          input_images: r2Url,
+          input_images: zipContent,
           trigger_word: "TOK", // Possibly Set to House?
           learning_rate: 0.0004,
           wandb_project: "flux_train_replicate",

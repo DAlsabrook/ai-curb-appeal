@@ -1,5 +1,5 @@
 import { storage } from './firebaseConfig';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
 
 const uploadImages = async (files, userName, modelName) => {
   try {
@@ -14,5 +14,30 @@ const uploadImages = async (files, userName, modelName) => {
     throw error;
   }
 };
+
+// Function to get all images in a specific folder
+async function getUploadedImages(folderPath) {
+  try {
+    // Create a reference to the folder
+    const folderRef = ref(storage, folderPath);
+
+    // List all files in the folder
+    const listResult = await listAll(folderRef);
+
+    // Get download URLs for each image
+    const imageUrls = await Promise.all(
+      listResult.items.map(async (itemRef) => {
+        const downloadURL = await getDownloadURL(itemRef);
+        return downloadURL;
+      })
+    );
+
+    return imageUrls;
+  } catch (error) {
+    console.error("Error getting images:", error);
+    return []; // Return an empty array on error
+  }
+}
+
 
 export { uploadImages }; // Export the function
