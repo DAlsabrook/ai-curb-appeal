@@ -148,6 +148,9 @@ export async function POST(req) {
 
       const training = await replicate.trainings.create(modelOwner, modelName, versionId, options);
 
+      // Possibly delete the .zip from firebase after use.
+      // Not sure if it is cheaper to keep the files or use operations to delete them
+
       console.log(`Training URL: https://replicate.com/p/${training.id}`);
       // console.log(`Training object passed to frontend: \n${JSON.stringify(training, null, 2) }`)
       return NextResponse.json({ detail: 'Model training has started!', trainedModel: training }, { status: 200 });
