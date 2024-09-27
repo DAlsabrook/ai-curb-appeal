@@ -29,11 +29,25 @@
 }
 
 .modal-content {
-  background: black;
-  padding: 20px;
-  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
   position: relative;
   animation: fadeInGrow 0.3s ease-in-out;
+  width: 80%;
+  height: 80%;
+  border: 1px solid grey;
+  background: rgba(255, 255, 255, 0.05);
+  /* Semi-transparent background */
+  backdrop-filter: blur(20px);
+  /* Apply blur effect */
+  -webkit-backdrop-filter: blur(20px);
+  /* For Safari support */
+  box-shadow: 0 5px 10px rgba(0, 0, 0, .5);
+  /* Optional: Add a subtle shadow */
+  z-index: 1000;
 }
 
 .modal-close {

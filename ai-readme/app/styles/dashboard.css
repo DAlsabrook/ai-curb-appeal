@@ -12,6 +12,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   width: 100%;
   height: 200px;
   padding: 10px;
@@ -105,6 +106,12 @@
   background-color: var(--color-background);
 }
 
+.toggleControlPanelButton {
+  align-self: flex-end;
+  color: grey;
+  margin: 7px;
+}
+
 .consolePanel {
   display: flex;
   flex-direction: column;
@@ -151,36 +158,4 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-/* LIVE IMAGES TAB /////////////////////////////////////////////////*/
-.tabLiveContent {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.image-wrapper {
-  width: 100%;
-  /* Set the desired width */
-  max-width: 300px;
-  /* Optional: Set a maximum width */
-  border-radius: 30px;
-  overflow: hidden;
-  /* border: 1.5px solid var(--color-purple); */
-  margin: 0 20px;
-  position: relative;
-  /* Ensure the image can be positioned absolutely */
-  height: 200px;
-  /* Let the height adjust based on the image aspect ratio */
-}
-
-.image-wrapper img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-  /* Maintain aspect ratio and cover the container */
 }

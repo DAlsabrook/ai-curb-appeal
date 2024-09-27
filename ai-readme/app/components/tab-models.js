@@ -9,8 +9,8 @@ export default function TabModels({user}) {
   const [error, setError] = useState('');
   const [uploadedImages, setUploadedImages] = useState([]); //Used to preview uploaded images
 
+  // training dragndrop logic
   const onDrop = (acceptedFiles) => {
-
     const newFiles = [...selectedFiles, ...acceptedFiles];
     if (newFiles.length < 5) {
       setError('Please upload 5-10 photos.');
@@ -26,7 +26,7 @@ export default function TabModels({user}) {
     const newImageUrls = acceptedFiles.map(file => URL.createObjectURL(file));
     setUploadedImages(prevImages => [...prevImages, ...newImageUrls]);
   };
-
+  // Setup for training file dragndrop
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
@@ -36,7 +36,7 @@ export default function TabModels({user}) {
     multiple: true,
   });
 
-  // Handle form submition to backend
+  // Handle form submition for training a model
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -75,34 +75,49 @@ export default function TabModels({user}) {
     }
   };
 
+  // Handle model img selection
+  // const modelSelect = (model) => {
+
+  // }
+
   return (
     <div className="tabModelsContent">
-      <form onSubmit={handleSubmit} className='createModelForm'>
-        <label htmlFor='name'>Name of Model:</label>
-        <input name='name' type='text' placeholder='name for model'></input>
-
-        {/* Error Messege */}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-
-        {/* Drag and drop box */}
-        <p>Upload Images:</p>
-        <div {...getRootProps()} className='formDragAndDrop'>
-          <input {...getInputProps()} />
-          <p>Upload .png, .jpeg, .jpg</p>
-          {/* Uploaded image previews */}
-          <div>
-            {uploadedImages.length > 0 && (
-              <div className="image-preview">
-                {uploadedImages.map((image, index) => (
-                  <img key={index} src={image} alt={`Preview ${index}`} style={{ width: 'auto', height: '80px', margin: '5px', borderRadius: '10px' }} />
-                ))}
-              </div>
-            )}
-          </div>
+      <div className='OurModels'>
+        <h2>Select one of our models!</h2>
+        <p>Choose a model, upload an image of your house, and have our models style applied to your house.</p>
+        <div className='modelsImages'>
+          <img src='/results/test_house1.jpg' alt='testhouseimg' className='testModelImg'></img>
+          <img src='/results/test_house2.jpg' alt='testhouseimg' className='testModelImg'></img>
+          <img src='/results/test_house3.jpg' alt='testhouseimg' className='testModelImg'></img>
+          <img src='/results/test_house4.jpg' alt='testhouseimg' className='testModelImg'></img>
         </div>
-        <button type='submit'>Start Training</button>
-      </form>
-      <div>Models:</div>
+      </div>
+      <div className='createModelClass'>
+        <h2>My Models</h2>
+        <form onSubmit={handleSubmit} className='createModelForm'>
+          <label htmlFor='name'>Name of Model:</label>
+          <input name='name' type='text' placeholder='name for model'></input>
+          {/* Error Messege */}
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          {/* Drag and drop box */}
+          <p>Upload 10-20 Images:</p>
+          <div {...getRootProps()} className='formDragAndDrop'>
+            <input {...getInputProps()} />
+            <p>Upload .png, .jpeg, .jpg</p>
+            {/* Uploaded image previews */}
+            <div>
+              {uploadedImages.length > 0 && (
+                <div className="image-preview">
+                  {uploadedImages.map((image, index) => (
+                    <img key={index} src={image} alt={`Preview ${index}`} style={{ width: 'auto', height: '80px', margin: '5px', borderRadius: '10px' }} />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <button type='submit'>Start Training</button>
+        </form>
+      </div>
     </div>
   );
 }

@@ -1,29 +1,24 @@
 import { NextResponse } from "next/server";
 import Replicate from "replicate";
 import sharp from 'sharp'; // Resizing images
+import { uploadImages } from '../../firebase/storage';
 
 // Initialize the Replicate client with the API token
 const replicateClient = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
 
-// Disable the default body parser to handle file uploads with formidable
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export async function POST(req) {
-
   try {
-    const prePrompt = 'Ensure the scene is rendered with 100% photorealistic detail, including lifelike lighting, textures, and natural imperfections, to maintain complete realism in every generated image.'
+    const prePrompt = 'Ensure the scene is rendered with 100% photorealistic detail, including lifelike lighting, textures, and natural imperfections. Create the house from the prompt img in the style of TOK.';
     const formData = await req.formData();
-    const prompt = prePrompt + formData.get('prompt');
-    const file = formData.get('file');
+    const prompt = prePrompt + formData.get('prompt'); // user prompt
+    const file = formData.get('file'); // image file
+    const userUID = formData.get('uid'); // user.uid is sent from the client side
+    const model = 'whitehousecaptiontest'; // Assuming model is hardcoded for now
 
-    if (!prompt || !file) {
-      return NextResponse.json({ detail: "Prompt and file are required" }, { status: 400 });
+    if (!prompt || !file || !userUID) {
+      return NextResponse.json({ detail: "Prompt, file, and user UID are required" }, { status: 400 });
     }
 
     // Read the file data using FileReader
@@ -32,40 +27,38 @@ export async function POST(req) {
     // Convert ArrayBuffer to Buffer
     const buffer = Buffer.from(fileData);
 
-
     // Check the file size
     const fileSizeInBytes = buffer.length;
-    const maxSizeInBytes = 5 * 1024 * 1024; // Example: 5MB
+    const maxSizeInBytes = 100 * 1024; // 500KB
 
     let resizedBuffer = buffer; // Default to original buffer
 
     // Resize the image if the file size exceeds the threshold
     if (fileSizeInBytes > maxSizeInBytes) {
-      const bufferImage = sharp(buffer);
-      resizedBuffer = await bufferImage
-        .resize(2000, 2000, { // Set desired width and height
-          fit: sharp.fit.inside,
-          withoutEnlargement: true,
-        })
-        .toBuffer();
+      let bufferImage = sharp(buffer);
+      let quality = 80; // Initial quality
+      let width = 2000; // Initial width
+      let height = 2000; // Initial height
+
+      while (resizedBuffer.length > maxSizeInBytes && quality > 10) {
+        resizedBuffer = await bufferImage
+          .resize(width, height, {
+            fit: sharp.fit.inside,
+            withoutEnlargement: true,
+          })
+          .jpeg({ quality }) // Adjust quality for JPEG format
+          .toBuffer();
+
+        // Reduce quality and dimensions iteratively
+        quality -= 10;
+        width -= 200;
+        height -= 200;
+      }
     }
 
-
-    // CLOUDINARY API CALL
-    let imageUrl;
-    try {
-      // Upload the image to Cloudinary
-      const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.v2.uploader.upload_stream({ resource_type: 'image' }, (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }).end(resizedBuffer);
-      });
-      imageUrl = uploadResult.secure_url; // Get url of img hosted on cloudinary after call
-    } catch (error) {
-      console.error('Error uploading to Cloudinary:', error);
-      return NextResponse.json({ detail: "Error uploading to Cloudinary" }, { status: 500 });
-    }
+    // Upload the image to Firebase Storage
+    const uploadedImages = await uploadImages([new File([resizedBuffer], file.name)], userUID, model);
+    const imageUrl = uploadedImages[0]; // Assuming uploadImages returns an array of URLs
 
     // REPLICATE API CALL
     let apiResponse;
@@ -73,23 +66,25 @@ export async function POST(req) {
     // example on what to use for a user created model
     // accountname/UserGivenModelName:Version
     // "dalsabrook/testingr2:4ac1394f3b9276d033cc17d8e1672d92b1f094c566c3caf79610ad1f6901aea1"
-    const modelToUse = "black-forest-labs/flux-dev";
+    const modelToUse = `dalsabrook/${model}:19ac825df65a4f3ed5a7395c28ce023979a2085c8940b01a2a9de955dffe51bb`;
     try {
       // Send the file URI and prompt to the external API
       apiResponse = await replicateClient.run(modelToUse, {
         input: {
           prompt: prompt, // String
-          image: imageUrl, // User Image hosted on Cloudinary
+          image: imageUrl, // User Image hosted on Firebase Storage
           guidance: 10, // 0-10 : Higher values means strict prompt following but may reduce overall image quality. Lower values allow for more creative freedom
           aspect_ratio: "1:1",
           output_format: "webp",
           output_quality: 80, // 0-100 : Higher means better image quality
-          num_outputs: 1, // 1-4
+          num_outputs: 4, // 1-4
           prompt_strength: 0.6, // 1.0 corresponds to full changing of image
-          num_inference_steps: 50, // 1-50 : Number of denoising steps.
+          num_inference_steps: 30, // 1-50 : Number of denoising steps.
           disable_safety_checker: false, // Offensive or inappropriate content
         },
       });
+      console.log('successful prediction')
+      console.log(apiResponse)
     } catch (error) {
       console.error('Error calling replicate API:', error);
       return NextResponse.json({ detail: "Error calling replicate API" }, { status: 500 });

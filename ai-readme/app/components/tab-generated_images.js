@@ -1,31 +1,26 @@
 'use client';
 import Image from "next/image";
+import '../styles/tab-generated_images.css';
 
 
-export default function TabGenerated({ uploadedImage, prediction }) {
+export default function TabGenerated({ prediction }) {
   return (
-    <div className="tabLiveContent">
-      <div>Generated panel</div>
-      <div className="image-wrapper">
-        {uploadedImage && (
-          <Image
-            src={uploadedImage}
-            alt="Uploaded Preview"
-            height={300}
-            width={300}
-          />
-        )}
-      </div>
-      <div className="image-wrapper">
-        {prediction && (
-          <Image
-            src={prediction[0]}
-            alt="Output"
-            height={300}
-            width={300}
-          />
-        )}
-      </div>
+    <div className="tabGeneratedContent">
+      {prediction && prediction.length > 0 ? (
+        prediction.map((imageUrl, index) => (
+          <div className="image-wrapper">
+            <Image
+              key={index}
+              src={imageUrl}
+              alt={`Output ${index + 1}`}
+              height={300}
+              width={300}
+            />
+          </div>
+        ))
+      ) : (
+        <p>No images to display</p>
+      )}
     </div>
   )
 }
