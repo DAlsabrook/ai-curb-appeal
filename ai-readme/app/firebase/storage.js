@@ -29,7 +29,7 @@ const uploadZip = async (zipFile, userUID, modelName) => {
   } catch (error) {
     // Handle upload errors
     console.error('Upload error:', error);
-    throw error; // Rethrow the error to handle it in the calling function
+    throw error; // throw the error to handle it in the calling function
   }
 }
 

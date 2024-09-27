@@ -1,16 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionItemHeading,
-  AccordionItemButton,
-  AccordionItemPanel,
-} from 'react-accessible-accordion';
-
-// Demo styles, see 'Styles' section below for some notes on use.
-// import 'react-accessible-accordion/dist/fancy-example.css';
+import { useDropzone } from 'react-dropzone';
 
 // Tab import
 import TabModels from './tab-models.js'
@@ -55,7 +46,6 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
     }
   };
 
-
   // Control Panel submit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,59 +73,70 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
     setPrediction(prediction);
   };
 
+  // Handle file drag and drop in console
+  const [selectedFile, setSelectedFile] = useState(null); // This will contain the single file to send to backend
+  const [uploadedImagePreview, setUploadedImagePreview] = useState(null); // Used to preview the uploaded image
+
+  const onDrop = (acceptedFiles) => {
+    if (acceptedFiles.length > 1) {
+      setError('You may only upload 1 file.');
+      return;
+    }
+
+    const file = acceptedFiles[0];
+    setSelectedFile(file);
+    setUploadedImagePreview(URL.createObjectURL(file));
+    setError('');
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      'image/jpeg': ['.jpeg', '.jpg'],
+      'image/png': ['.png']
+    }, // Accept only valid image MIME types
+    multiple: false, // Only allow one file
+  });
+
   return (
     <div className="dashboardContainer">
-      <div className="controlPanel threeD">
-        <h2>Control Panel</h2>
-        <Accordion allowZeroExpanded>
-          <AccordionItem>
-            <AccordionItemHeading>
-              <AccordionItemButton>
-                Styles
-              </AccordionItemButton>
-            </AccordionItemHeading>
-            <AccordionItemPanel>
-              <p>
-                In ad velit in ex nostrud dolore cupidatat consectetur
-                ea in ut nostrud velit in irure cillum tempor laboris
-                sed adipisicing eu esse duis nulla non.
-              </p>
-            </AccordionItemPanel>
-          </AccordionItem>
-        </Accordion>
-        <form onSubmit={handleSubmit} className="fileUploadForm">
-
-          <label htmlFor="model">Model to use:</label>
-          <select name="model" id="modelToUse">
-            <option value="volvo">Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="opel">Opel</option>
-            <option value="audi">Audi</option>
-          </select>
-          <p onClick={() => {
-            console.log(user)
-          }}>-Print User- {user.email}</p>
-          <label htmlFor="prompt">Prompt:</label>
-          <input type="text" name="prompt" placeholder="enter a prompt to display an image"/>
-
-          <label htmlFor="negPrompt">Negative Prompt: &#40;optional&#41;</label>
-          <input type="text" name="negPrompt" placeholder='e.g. "old, broken, dirty, run down"'/>
-
-          <label htmlFor="file">Upload File:</label>
-          <input type="file" name="file" accept="image/*"/>
-
-          <button type="submit">Generate</button>
-        </form>
+      <div className="controlPanel">
+        <div className="controlPanelContent">
+          <div>
+            <button className="styleSelectButton">Select a Style</button>
+          </div>
+          <div {...getRootProps()} className='controlFileDragAndDrop'>
+            <input {...getInputProps()} />
+            {!uploadedImagePreview &&
+            // Only display when no image is in preview
+              <p>Upload .png, .jpeg, .jpg</p>
+            }
+            {/* Uploaded image preview */}
+            <div>
+              {uploadedImagePreview && (
+                <div className="prompt-image-preview">
+                  <img src={uploadedImagePreview} alt="Preview" />
+                </div>
+              )}
+            </div>
+          </div>
+          <form onSubmit={handleSubmit} className="promptForm">
+            <label htmlFor="prompt">Prompt:</label>
+            <input type="text" name="prompt" placeholder="enter a prompt to display an image" />
+            <label htmlFor="negPrompt">Negative Prompt: &#40;optional&#41;</label>
+            <input type="text" name="negPrompt" placeholder='e.g. "old, broken, dirty, run down"' />
+            <button type="submit">Generate</button>
+          </form>
+        </div>
+        {error && <div>{error}</div>}
       </div>
-
-      {error && <div>{error}</div>}
 
       <div className="consolePanel">
         <div className="consolePanelNav">
           <ul>
             <li onClick={() => setSelectedNavItem('Generated images')}>Generated Images</li>
             <li onClick={() => setSelectedNavItem('Saved images')}>Saved Images</li>
-            <li onClick={() => setSelectedNavItem('My Models')}>My Models</li>
+            <li onClick={() => setSelectedNavItem('My Models')}>Model Library</li>
           </ul>
         </div>
 

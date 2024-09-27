@@ -27,6 +27,7 @@
 html,
 body {
   margin: 0;
+  padding: 0;
   background-color: var(--color-background);
   color: white;
   font-family: 'Noto Sans';
@@ -42,11 +43,8 @@ h4 {
 }
 
 .pageContent {
-  height: 100%;
+  height: auto;
   width: 100%;
-  padding-right: 1px;
-  margin: auto;
-  box-sizing: border-box;
   position: relative;
 }
 
@@ -187,28 +185,4 @@ ol {
 /* Remove default styles for list items */
 li {
   list-style: none;
-}
-
-
-/* KEYFRAMES for CSS animations */
-@keyframes border-raindow-pulsate {
-  0% {
-    border-color: var(--color-blue);
-  }
-
-  25% {
-    border-color: var(--color-purple);
-  }
-
-  50% {
-    border-color: var(--color-peach);
-  }
-
-  75% {
-    border-color: var(--color-orange);
-  }
-
-  100% {
-    border-color: var(--color-blue);
-  }
 }

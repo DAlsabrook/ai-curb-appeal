@@ -1,94 +1,91 @@
 .dashboardContainer {
   height: 100%;
-  max-height: calc(100% - 50px);
-  padding-top: 50px;
+  margin-top: 50px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: center;
   overflow: hidden;
+  padding: 0 15px;
 }
 
 .controlPanel {
   display: flex;
   flex-direction: column;
-  width: 30%;
-  height: 100%;
-  padding: 10px;
-  padding-bottom: 20px;
-  overflow: scroll;
-  color: white;
-}
-
-.accordion {
-  border-radius: 20px;
-}
-
-.accordion__item {
-  border-bottom: 1px solid var(--color-borders);
-}
-
-.accordion__button {
-  cursor: pointer;
-  padding: 15px 0;
+  justify-content: center;
   width: 100%;
-  text-align: left;
-  border: none;
+  height: 200px;
+  padding: 10px;
+  color: white;
+  background-color: rgb(30, 30, 30);
 }
 
-.accordion__button:hover {
-  opacity: .8;
+.controlPanelContent{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+  width: 100%;
 }
 
-.accordion__button:before {
-  display: inline-block;
-  content: '';
-  height: 10px;
-  width: 10px;
-  margin-right: 12px;
-  border-bottom: 2px solid currentColor;
-  border-right: 2px solid currentColor;
-  transform: rotate(-45deg);
+.styleSelectButton {
+  height: 150px;
+  width: 150px;
+  border: 1px solid grey;
+  border-radius: 20px;
+  background-color: black;
+  color: grey;
 }
 
-.accordion__button[aria-expanded='true']::before,
-.accordion__button[aria-selected='true']::before {
-  transform: rotate(45deg);
+.controlFileDragAndDrop {
+  width: 150px;
+  height: 150px;
+  border: 1px solid grey;
+  border-radius: 20px;
+  background-color: black;
+  color: grey;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
 }
 
-[hidden] {
-  display: none;
+.controlFileDragAndDrop p {
+  margin: 0;
+  text-align: center;
 }
 
-.accordion__panel {
-  padding: 20px;
-  padding-top: 0;
-  animation: fadein 0.5s ease-in;
+.prompt-image-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-@keyframes fadein {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
+.prompt-image-preview img {
+  width: auto;
+  height: 100%;
+  object-fit: cover;
+  /* Ensures the image covers the container while maintaining aspect ratio */
 }
 
-.fileUploadForm {
+.promptForm {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  height: 450px;
-  padding: 5px;
+  height: 100%;
 }
 
-.fileUploadForm label {
+.promptForm label {
   font-size: 1rem;
   margin-bottom: -20px;
   font-weight: 600;
 }
 
-.fileUploadForm input {
+.promptForm input {
   background-color: var(--color-background);
   padding: 5px;
   color: grey;
@@ -99,14 +96,13 @@
   outline: none;
 }
 
-.fileUploadForm button {
+.promptForm button {
   border: 1px solid var(--color-borders);
   border-radius: 20px;
   cursor: pointer;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 5px 20px;
   background-color: var(--color-background);
-  animation: border-raindow-pulsate 20s infinite;
 }
 
 .consolePanel {
