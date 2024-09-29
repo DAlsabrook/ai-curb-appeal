@@ -12,13 +12,13 @@ import { auth } from './firebase/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import { logoutUser } from './firebase/auth'
 
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export default function Home() {
   const [openAppLanding, setOpenAppLanding] = useState(true);
   const [openAppDashboard, setOpenAppDashboard] = useState(false);
   const [openAppPayment, setOpenAppPayment] = useState(false);
   const [user, setUser] = useState(null);
+  // Add useState for userData that gets the user info from DB to use through site
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {

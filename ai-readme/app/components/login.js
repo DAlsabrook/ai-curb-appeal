@@ -1,6 +1,6 @@
 // components/Login.js
 import { useState } from 'react';
-import { loginUser } from '../firebase/auth';
+import { loginUser } from '../firebase/auth'; //REMOVE THIS. Create a route to handle login
 import Modal from './modal.js';
 
 const Login = () => {
