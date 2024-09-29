@@ -1,23 +1,41 @@
-// components/Login.js
+"use client";
+
 import { useState } from 'react';
-import { loginUser } from '../firebase/auth'; //REMOVE THIS. Create a route to handle login
 import Modal from './modal.js';
+import { useUser } from './UserContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const { setUser } = useUser(); // Use the useUser hook to get setUser
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Set loading to true
     try {
-      const user = await loginUser(email, password);
-      console.log('Logged in user:', user);
-      // Handle successful login (e.g., redirect to dashboard)
-      setIsModalOpen(false); // Close the modal on successful login
+      const response = await fetch('/api/firebase/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Logged in user:', data.user);
+        setUser(data.user); // Update the user state globally
+        setIsModalOpen(false); // Close the modal on successful login
+      } else {
+        setError(data.error);
+      }
     } catch (error) {
-      setError(error.message);
+      setError('An unexpected error occurred');
+    } finally {
+      setIsLoading(false); // Set loading to false
     }
   };
 
@@ -46,7 +64,9 @@ const Login = () => {
             />
           </div>
           {error && <p style={{ color: 'red' }}>{error}</p>}
-          <button type="submit">Login</button>
+          <button type="submit" disabled={isLoading}>
+            {isLoading ? 'Logging in...' : 'Login'}
+          </button>
         </form>
       </Modal>
     </div>

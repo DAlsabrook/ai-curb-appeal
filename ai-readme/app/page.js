@@ -6,26 +6,25 @@ import Landing from './components/landing';
 import PaymentPage from "./components/payment";
 import Login from './components/login';
 import Image from 'next/image';
+import { useUser } from './components/UserContext'; // Import the useUser hook
 
 // Firebase
 import { auth } from './firebase/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import { logoutUser } from './firebase/auth'
 
-
 export default function Home() {
   const [openAppLanding, setOpenAppLanding] = useState(true);
   const [openAppDashboard, setOpenAppDashboard] = useState(false);
   const [openAppPayment, setOpenAppPayment] = useState(false);
-  const [user, setUser] = useState(null);
-  // Add useState for userData that gets the user info from DB to use through site
+  const { user, setUser } = useUser(); // Use the useUser hook to get user and setUser
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
     return () => unsubscribe();
-  }, []);
+  }, [setUser]);
 
   return (
     <div className="pageContent">
@@ -49,7 +48,7 @@ export default function Home() {
               setOpenAppDashboard(true);
               setOpenAppLanding(false);
               setOpenAppPayment(false)
-              }}>Dashboard</button>
+            }}>Dashboard</button>
 
             <button onClick={() => {
               logoutUser();

@@ -1,4 +1,5 @@
 "use client";
+
 import '../styles/landing.css'
 import Image from 'next/image';
 import Button from '@mui/material/Button';
