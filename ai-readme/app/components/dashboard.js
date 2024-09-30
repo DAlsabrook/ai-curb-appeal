@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import Modal from './modal.js';
+import { useUser } from './UserContext'; // Import the useUser hook
 
 // Tab import
 import TabModels from './tab-models.js'
@@ -10,7 +11,7 @@ import TabGenerated from "./tab-generated_images.js";
 import '../styles/dashboard.css';
 
 
-export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment, user }) {
+export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment }) {
   // Control panel
   const [prediction, setPrediction] = useState(null);
   const [error, setError] = useState(null);
@@ -19,6 +20,7 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
   const [selectedFile, setSelectedFile] = useState(null); // This will contain the single file to send to backend
   const [uploadedImagePreview, setUploadedImagePreview] = useState(null); // Used to preview the uploaded image
   const [isControlPanelVisible, setIsControlPanelVisible] = useState(true); // State to control visibility of control panel
+  const { user, setUser } = useUser(); // Use the useUser hook to get user and setUser
 
   // Consol panel
   const [selectedNavItem, setSelectedNavItem] = useState('Generated images');
@@ -111,7 +113,7 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
                 Select a Model
               </button>
               <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <TabModels user={user} />
+                <TabModels/>
               </Modal>
             </div>
             <div {...getRootProps()} className='controlFileDragAndDrop'>

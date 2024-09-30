@@ -1,8 +1,10 @@
 "use client";
 import '../styles/payments.css'
+import { useUser } from './UserContext'; // Import the useUser hook
 
 
-export default function PaymentPage({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment, user }) {
+export default function PaymentPage({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment }) {
+  const { user, setUser } = useUser(); // Use the useUser hook to get user and setUser
 
   return (
     <div className="paymentContainer">

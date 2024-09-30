@@ -7,17 +7,40 @@ import PaymentPage from "./components/payment";
 import Login from './components/login';
 import Image from 'next/image';
 import { useUser } from './components/UserContext'; // Import the useUser hook
+import Admin from '@/app/components/admin'
 
 // Firebase
 import { auth } from './firebase/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
-import { logoutUser } from './firebase/auth'
 
 export default function Home() {
   const [openAppLanding, setOpenAppLanding] = useState(true);
   const [openAppDashboard, setOpenAppDashboard] = useState(false);
   const [openAppPayment, setOpenAppPayment] = useState(false);
+  const [error, setError] = useState(null); // Define the error state
   const { user, setUser } = useUser(); // Use the useUser hook to get user and setUser
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    setUser(null);
+    if (openAppDashboard) {
+      setOpenAppPayment(false);
+      setOpenAppDashboard(false);
+      setOpenAppLanding(true);
+    }
+    try {
+      const response = await fetch('/api/firebase/auth/logout', {
+        method: 'POST',
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error);
+      }
+    } catch (error) {
+      setError('An unexpected error occurred');
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -39,9 +62,7 @@ export default function Home() {
           <div className="headerUserItems">
 
             {user && user.email === 'dfalsabrook@gmail.com' && (
-              <button onClick={() => {
-                console.log(user)
-              }}>Admin</button>
+              <Admin/>
             )}
 
             <button onClick={() => {
@@ -50,14 +71,7 @@ export default function Home() {
               setOpenAppPayment(false)
             }}>Dashboard</button>
 
-            <button onClick={() => {
-              logoutUser();
-              if (openAppDashboard) {
-                setOpenAppPayment(false);
-                setOpenAppDashboard(false);
-                setOpenAppLanding(true);
-              }
-            }}>Logout</button>
+            <button onClick={handleLogout}>Logout</button>
 
           </div>
         )}
@@ -68,7 +82,6 @@ export default function Home() {
           setOpenAppDashboard={setOpenAppDashboard}
           setOpenAppLanding={setOpenAppLanding}
           setOpenAppPayment={setOpenAppPayment}
-          user={user}
         />
       )}
 
@@ -77,7 +90,6 @@ export default function Home() {
           setOpenAppDashboard={setOpenAppDashboard}
           setOpenAppLanding={setOpenAppLanding}
           setOpenAppPayment={setOpenAppPayment}
-          user={user}
         />
       )}
 
@@ -86,7 +98,6 @@ export default function Home() {
           setOpenAppDashboard={setOpenAppDashboard}
           setOpenAppLanding={setOpenAppLanding}
           setOpenAppPayment={setOpenAppPayment}
-          user={user}
         />
       )}
 

@@ -3,11 +3,14 @@
 import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import '../styles/tab-models.css'
+import { useUser } from './UserContext'; // Import the useUser hook
 
-export default function TabModels({user}) {
+
+export default function TabModels() {
   const [selectedFiles, setSelectedFiles] = useState([]); // This array will contain the list of files to send to backend
   const [error, setError] = useState('');
   const [uploadedImages, setUploadedImages] = useState([]); //Used to preview uploaded images
+  const { user, setUser } = useUser(); // Use the useUser hook to get user and setUser
 
   // training dragndrop logic
   const onDrop = (acceptedFiles) => {

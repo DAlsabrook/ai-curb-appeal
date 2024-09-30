@@ -4,10 +4,12 @@ import '../styles/landing.css'
 import Image from 'next/image';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
+import { useUser } from './UserContext'; // Import the useUser hook
 
 
 export default function Landing({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment }) {
   const [promptResultsImg, setPromptResultsImg] = useState("/results/replicate-prediction-ttzkweh5nxrm20chtkcvqx13bm-0.png"); // Initialize state
+  const { user, setUser } = useUser(); // Use the useUser hook to get user and setUser
 
   return (
   <div className="landingContainer">

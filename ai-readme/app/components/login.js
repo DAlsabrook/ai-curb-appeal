@@ -26,7 +26,6 @@ const Login = () => {
 
       const data = await response.json();
       if (response.ok) {
-        console.log('Logged in user:', data.user);
         setUser(data.user); // Update the user state globally
         setIsModalOpen(false); // Close the modal on successful login
       } else {
