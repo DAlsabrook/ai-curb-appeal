@@ -7,7 +7,7 @@
 
 /* IN SELECT OUR MODEL MODAL */
 .OurModels {
-  width: 70%;
+  /* Width set in-line */
   overflow: scroll;
   padding: 20px;
 }

@@ -66,9 +66,7 @@ export async function db_UpdateUser(userId, updates) {
   try {
     const userRef = doc(db, 'users', userId);
     await updateDoc(userRef, updates);
-    console.log('User updated successfully:', userId);
   } catch (error) {
-    console.error('Error updating user:', error);
     throw error; // Re-throw the error to handle it in the calling code
   }
 }

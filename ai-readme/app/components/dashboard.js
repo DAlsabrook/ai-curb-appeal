@@ -21,9 +21,14 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
   const [uploadedImagePreview, setUploadedImagePreview] = useState(null); // Used to preview the uploaded image
   const [isControlPanelVisible, setIsControlPanelVisible] = useState(true); // State to control visibility of control panel
   const { user, setUser } = useUser(); // Use the useUser hook to get user and setUser
+  const [sliderValue, setSliderValue] = useState(5); // Default value of the slider
 
   // Consol panel
   const [selectedNavItem, setSelectedNavItem] = useState('Generated images');
+
+  const handleSliderChange = (event) => {
+    setSliderValue(event.target.value);
+  };
 
   // Handle what page is shown on the bottom half of page
   const renderContent = () => {
@@ -110,7 +115,7 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
             <div>
               <button className="styleSelectButton"
                 onClick={() => setIsModalOpen(true)}>
-                Select a Model
+                Select a Style
               </button>
               <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <TabModels/>
@@ -120,7 +125,10 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
               <input {...getInputProps()} />
               {!uploadedImagePreview &&
               // Only display when no image is in preview
-                <p>Upload .png, .jpeg, .jpg</p>
+                <div>
+                  <p>Image of house to apply styling to</p>
+                  <p>Upload .png, .jpeg, .jpg</p>
+                </div>
               }
               {/* Uploaded image preview */}
               <div>
@@ -132,18 +140,35 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
               </div>
             </div>
             <form onSubmit={handleSubmit} className="promptForm">
+
               <label htmlFor="prompt">Prompt:</label>
-              <input type="text" name="prompt" placeholder="enter a prompt to display an image" />
-              <label htmlFor="negPrompt">Negative Prompt: &#40;optional&#41;</label>
-              <input type="text" name="negPrompt" placeholder='e.g. "old, broken, dirty, run down"' />
+              <textarea name="prompt" placeholder="enter a prompt to display an image" />
+
+              <div className="formDiv">
+                <div className="formDivLeft">
+                  <label htmlFor="negPrompt">Negative Prompt: &#40;optional&#41;</label>
+                  <input type="text" name="negPrompt" placeholder='e.g. "old, broken, dirty, run down"' />
+
+                </div>
+                <div className="formDivRight">
+                  <label htmlFor="slider">Style Strength: <span>{sliderValue}</span></label>
+                  <input
+                    type="range"
+                    name="slider"
+                    min="0"
+                    max="10"
+                    step="1"
+                    value={sliderValue}
+                    onChange={handleSliderChange}
+                  />
+                </div>
+              </div>
+
               <button type="submit">Generate</button>
             </form>
           </div>
         )}
         {error && <div>{error}</div>}
-        <button className="toggleControlPanelButton" onClick={toggleControlPanel}>
-          {isControlPanelVisible ? 'Hide' : 'Show'}
-        </button>
       </div>
 
       <div className="consolePanel">

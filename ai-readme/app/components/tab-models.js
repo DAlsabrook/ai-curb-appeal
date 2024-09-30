@@ -9,6 +9,7 @@ import { useUser } from './UserContext'; // Import the useUser hook
 export default function TabModels() {
   const [selectedFiles, setSelectedFiles] = useState([]); // This array will contain the list of files to send to backend
   const [error, setError] = useState('');
+  const [isCreateYourOwnVisible, setisCreateYourOwnVisible] = useState(false);
   const [uploadedImages, setUploadedImages] = useState([]); //Used to preview uploaded images
   const { user, setUser } = useUser(); // Use the useUser hook to get user and setUser
 
@@ -85,8 +86,9 @@ export default function TabModels() {
 
   return (
     <div className="tabModelsContent">
-      <div className='OurModels'>
-        <h2>Select one of our models!</h2>
+      <div className='OurModels' style={{width: isCreateYourOwnVisible ? '70%': '100%' }}>
+        <h2>Select a style</h2>
+        <button onClick={() => setisCreateYourOwnVisible(prevState => !prevState)}>or create your own</button>
         <p>Choose a model, upload an image of your house, and have our models style applied to your house.</p>
         <div className='modelsImages'>
           <img src='/results/test_house1.jpg' alt='testhouseimg' className='testModelImg'></img>
@@ -95,32 +97,34 @@ export default function TabModels() {
           <img src='/results/test_house4.jpg' alt='testhouseimg' className='testModelImg'></img>
         </div>
       </div>
-      <div className='createModelClass'>
-        <h2>My Models</h2>
-        <form onSubmit={handleSubmit} className='createModelForm'>
-          <label htmlFor='name'>Name of Model:</label>
-          <input name='name' type='text' placeholder='name for model'></input>
-          {/* Error Messege */}
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          {/* Drag and drop box */}
-          <p>Upload 10-20 Images:</p>
-          <div {...getRootProps()} className='formDragAndDrop'>
-            <input {...getInputProps()} />
-            <p>Upload .png, .jpeg, .jpg</p>
-            {/* Uploaded image previews */}
-            <div>
-              {uploadedImages.length > 0 && (
-                <div className="image-preview">
-                  {uploadedImages.map((image, index) => (
-                    <img key={index} src={image} alt={`Preview ${index}`} style={{ width: 'auto', height: '80px', margin: '5px', borderRadius: '10px' }} />
-                  ))}
-                </div>
-              )}
+      {isCreateYourOwnVisible && (
+        <div className='createModelClass'>
+          <h2>My Models</h2>
+          <form onSubmit={handleSubmit} className='createModelForm'>
+            <label htmlFor='name'>Name of Model:</label>
+            <input name='name' type='text' placeholder='name for model'></input>
+            {/* Error Messege */}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {/* Drag and drop box */}
+            <p>Upload 10-20 Images:</p>
+            <div {...getRootProps()} className='formDragAndDrop'>
+              <input {...getInputProps()} />
+              <p>Upload .png, .jpeg, .jpg</p>
+              {/* Uploaded image previews */}
+              <div>
+                {uploadedImages.length > 0 && (
+                  <div className="image-preview">
+                    {uploadedImages.map((image, index) => (
+                      <img key={index} src={image} alt={`Preview ${index}`} style={{ width: 'auto', height: '80px', margin: '5px', borderRadius: '10px' }} />
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-          <button type='submit'>Start Training</button>
-        </form>
-      </div>
+            <button type='submit'>Start Training</button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

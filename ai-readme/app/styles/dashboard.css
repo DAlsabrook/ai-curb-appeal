@@ -77,22 +77,40 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  height: 100%;
+  height: 200px;
+  width: 50%;
 }
 
+.formDiv {
+  display: flex;
+  flex-direction: row;
+}
+
+.formDivLeft,
+.formDivRight {
+  width: 50%;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 0 10px;
+}
+
+
 .promptForm label {
-  font-size: 1rem;
-  margin-bottom: -20px;
+  font-size: .9rem;
+  margin-bottom: -10px;
   font-weight: 600;
 }
 
-.promptForm input {
+.promptForm input,
+.promptForm textarea {
   background-color: var(--color-background);
-  padding: 5px;
+  /* padding: 5px; */
   color: grey;
   border: none;
   border-radius: 10px;
-  height: 30px;
+  height: 25px;
   border: 1.5px solid var(--color-borders);
   outline: none;
 }
