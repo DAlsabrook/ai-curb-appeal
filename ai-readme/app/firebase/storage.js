@@ -1,5 +1,6 @@
 import { storage } from './firebaseConfig';
 import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
+import axios from 'axios';
 
 const uploadImages = async (files, userUID, modelName) => {
   try {
@@ -34,7 +35,7 @@ const uploadZip = async (zipFile, userUID, modelName) => {
 }
 
 // Function to get all images in a specific folder
-async function getUploadedImages(folderPath) {
+async function getGeneratedImages(folderPath) {
   try {
     // Create a reference to the folder
     const folderRef = ref(storage, folderPath);
@@ -57,5 +58,26 @@ async function getUploadedImages(folderPath) {
   }
 }
 
+// Function to save an image from a URL to Firebase storage
+async function saveImageToStorage(folderPath, imageUrl) {
+  try {
+    // Download the image from the URL
+    const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+    const imageBuffer = Buffer.from(response.data, 'binary');
 
-export { uploadImages, uploadZip }; // Export the function
+    // Create a reference to the file in Firebase storage
+    const imageRef = ref(storage, `${folderPath}/${Date.now()}.webp`);
+
+    // Upload the image buffer to Firebase storage
+    await uploadBytes(imageRef, imageBuffer, { contentType: 'image/webp' });
+
+    // Get the download URL of the uploaded image
+    const downloadURL = await getDownloadURL(imageRef);
+    return downloadURL;
+  } catch (error) {
+    console.error("Error saving image to storage:", error);
+    throw error;
+  }
+}
+
+export { uploadImages, uploadZip, getGeneratedImages, saveImageToStorage }; // Export the function

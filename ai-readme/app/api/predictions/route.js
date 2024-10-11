@@ -83,7 +83,7 @@ export async function POST(req) {
           disable_safety_checker: false, // Offensive or inappropriate content
         },
       });
-      console.log('successful prediction')
+      console.log('In prediction route:')
       console.log(apiResponse)
     } catch (error) {
       console.error('Error calling replicate API:', error);

@@ -44,7 +44,7 @@ export async function db_GetUser(userId) {
 
     if (userDoc.exists()) {
       const userData = userDoc.data();
-      console.log('firebase/database db_GetUser:', userData);
+      // console.log('firebase/database db_GetUser:', userData);
       return userData; // Return the user data
     } else {
       console.log('firebase/database db_GetUser: No such user!');

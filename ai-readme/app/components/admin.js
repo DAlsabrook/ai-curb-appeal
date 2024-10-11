@@ -6,29 +6,32 @@ import { useUser } from './UserContext';
 
 const Admin = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { user, setUser } = useUser(); // Use the useUser hook to get setUser
+  const { user } = useUser(); // Access the user context
 
   return (
     <div className='adminContainer'>
       <button onClick={() => setIsModalOpen(true)}>Admin</button>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <p>Global context User:</p>
-        {user && (
+        {user ? (
           <div>
-            <p>UID: {user.uid}</p>
-            <p>CREDITS: {user.credits}</p>
-            <p>MODELS:</p>
-            <ul>
-              {user && user.models && user.models.length > 0 ? (
-                user.models.map((model, index) => (
-                  <li key={index}>{model}</li>
-                ))
-              ) : (
-                <li>No models available</li>
-              )}
-            </ul>
+            {Object.keys(user).map((key) => (
+              <div key={key}>
+                <strong>{key.toUpperCase()}:</strong> {Array.isArray(user[key]) ? (
+                  <ul>
+                    {user[key].map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span>{user[key]}</span>
+                )}
+              </div>
+            ))}
           </div>
-          )}
+        ) : (
+          <p>No user logged in</p>
+        )}
       </Modal>
     </div>
   );

@@ -7,7 +7,7 @@ import { useUser } from './UserContext'; // Import the useUser hook
 
 // Tab import
 import TabModels from './tab-models.js'
-import TabGenerated from "./tab-generated_images.js";
+import TabGeneratedImages from "./tab-generated_images.js";
 import '../styles/dashboard.css';
 
 
@@ -36,7 +36,7 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
 
       case 'Generated images':
         return (
-          <TabGenerated
+          <TabGeneratedImages
             prediction={prediction}
           />
         );
@@ -70,15 +70,33 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
       method: "POST",
       body: formData,
     });
-
     let prediction = await response.json(); // response from predictions/route.js
     if (response.status !== 201) {
       setError(prediction.detail);
       return;
     }
     setPrediction(prediction);
-  };
+    // Call a route to save prediction images to DB
+    const saveResponse = await fetch("/api/firebase/storage", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        uid: user.uid,
+        action: 'save',
+        imageUrls: prediction,
+      }),
+    });
 
+    const saveResult = await saveResponse.json();
+    if (saveResponse.status !== 200) {
+      setError(saveResult.detail);
+      return;
+    }
+
+    console.log('Saved Image URLs:', saveResult.savedImageURLs); // I need to somehow append this to the database list inside tab-generated_images component
+  };
 
   // Handle file drag and drop for single image used for img2img
   const onDrop = (acceptedFiles) => {
