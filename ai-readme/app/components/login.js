@@ -26,6 +26,8 @@ const Login = () => {
 
       const data = await response.json();
       if (response.ok) {
+        console.log('components/login.js Response from backend')
+        console.log(data.user)
         setUser(data.user); // Update the user state globally
         setIsModalOpen(false); // Close the modal on successful login
       } else {

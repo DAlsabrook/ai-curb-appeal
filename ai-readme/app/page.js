@@ -61,7 +61,7 @@ export default function Home() {
         ) : (
           <div className="headerUserItems">
 
-            {user && user.email === 'dfalsabrook@gmail.com' && (
+              {user && user.uid === 'ghKALyqoHHOMOknTGMsrk86sqOW2' && (
               <Admin/>
             )}
 

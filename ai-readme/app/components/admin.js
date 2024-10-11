@@ -12,10 +12,23 @@ const Admin = () => {
     <div className='adminContainer'>
       <button onClick={() => setIsModalOpen(true)}>Admin</button>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <button onClick={() => {
-          console.log("User from context:")
-          console.log(user)
-        }}>Log User</button>
+        <p>Global context User:</p>
+        {user && (
+          <div>
+            <p>UID: {user.uid}</p>
+            <p>CREDITS: {user.credits}</p>
+            <p>MODELS:</p>
+            <ul>
+              {user && user.models && user.models.length > 0 ? (
+                user.models.map((model, index) => (
+                  <li key={index}>{model}</li>
+                ))
+              ) : (
+                <li>No models available</li>
+              )}
+            </ul>
+          </div>
+          )}
       </Modal>
     </div>
   );

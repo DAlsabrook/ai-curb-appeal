@@ -4,7 +4,7 @@
 // services/auth.js
 import { auth } from './firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { db_AddUser, db_UpdateUser } from './database'
+import { db_AddUser, db_UpdateUser, db_GetUser } from './database'
 
 export const registerUser = async (email, password) => {
   // Sign up
@@ -19,12 +19,20 @@ export const registerUser = async (email, password) => {
 };
 
 export const loginUser = async (email, password) => {
-  // Sign in
-  // Returns user object
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    await db_UpdateUser(userCredential.user.uid, { 'last login': new Date().toISOString() }) // Update user last login in db
-    return userCredential.user;
+    const user = userCredential.user;
+    await db_UpdateUser(user.uid, { 'last login': new Date().toISOString() }); // Update user last login in db
+
+    // Fetch additional user data from the database
+    const userData = await db_GetUser(user.uid);
+    // console.log('Firebase/auth user data:')
+    // console.log(userData)
+    return {
+      uid: user.uid,
+      models: userData.models,
+      credits: userData.credits,
+    };
   } catch (error) {
     throw error;
   }

@@ -16,7 +16,7 @@ const uploadImages = async (files, userUID, modelName) => {
 };
 
 const uploadZip = async (zipFile, userUID, modelName) => {
-  const storageRef = ref(storage, `${userUID}/${modelName}`);
+  const storageRef = ref(storage, `${userUID}/User_Model_Uploads/${modelName}`);
   // Create a reference to the file in Cloud Storage
   const fileRef = ref(storageRef, `${modelName}-Images.zip`);
 

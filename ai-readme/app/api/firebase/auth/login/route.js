@@ -15,6 +15,8 @@ export async function POST(req) {
   try {
     const { email, password } = await req.json();
     const user = await loginUser(email, password);
+    console.log("in login route Responding with:")
+    console.log(user)
     return NextResponse.json({ message: 'User logged in', user: user }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ detail: 'Error in Login POST request', error: error.message }, { status: 500 });
