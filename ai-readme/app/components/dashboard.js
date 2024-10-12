@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDropzone } from 'react-dropzone';
 import Modal from './modal.js';
 import { useUser } from './UserContext'; // Import the useUser hook
@@ -10,10 +10,9 @@ import TabModels from './tab-models.js'
 import TabGeneratedImages from "./tab-generated_images.js";
 import '../styles/dashboard.css';
 
-
 export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setOpenAppPayment }) {
   // Control panel
-  const [prediction, setPrediction] = useState(null);
+  // const [prediction, setPrediction] = useState(null);
   const [error, setError] = useState(null);
   const [uploadedImage, setUploadedImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,7 +20,8 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
   const [uploadedImagePreview, setUploadedImagePreview] = useState(null); // Used to preview the uploaded image
   const [isControlPanelVisible, setIsControlPanelVisible] = useState(true); // State to control visibility of control panel
   const { user, setUser } = useUser(); // Use the useUser hook to get user and setUser
-  const [sliderValue, setSliderValue] = useState(5); // Default value of the slider
+  const [sliderValue, setSliderValue] = useState(10); // Default value of the slider
+  const [imageUrls, setImageUrls] = useState([]); // State to store image URLs
 
   // Consol panel
   const [selectedNavItem, setSelectedNavItem] = useState('Generated images');
@@ -33,11 +33,10 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
   // Handle what page is shown on the bottom half of page
   const renderContent = () => {
     switch (selectedNavItem) {
-
       case 'Generated images':
         return (
           <TabGeneratedImages
-            prediction={prediction}
+            imageUrls={imageUrls}
           />
         );
 
@@ -55,11 +54,12 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const file = selectedFile
+    const file = selectedFile;
     const formData = new FormData();
     formData.append('prompt', e.target.prompt.value);
     formData.append('file', file);
-    formData.append('uid', user.uid)
+    formData.append('uid', user.uid);
+    formData.append('prompt_strength', sliderValue)
 
     // Create a preview URL for the uploaded image
     if (file) {
@@ -75,7 +75,7 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
       setError(prediction.detail);
       return;
     }
-    setPrediction(prediction);
+
     // Call a route to save prediction images to DB
     const saveResponse = await fetch("/api/firebase/storage", {
       method: "POST",
@@ -95,7 +95,10 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
       return;
     }
 
-    console.log('Saved Image URLs:', saveResult.savedImageURLs); // I need to somehow append this to the database list inside tab-generated_images component
+    // Append saved image URLs to the state
+    setImageUrls((prevUrls) => [...saveResult.savedImageURLs, ...prevUrls]);
+
+    console.log('Saved Image URLs:', saveResult.savedImageURLs);
   };
 
   // Handle file drag and drop for single image used for img2img
@@ -120,6 +123,38 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
     multiple: false, // Only allow one file
   });
 
+  // Get all images from database if imageUrls is empty
+  useEffect(() => {
+    const fetchGeneratedImages = async () => {
+      try {
+        const response = await fetch('/api/firebase/storage', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            uid: user.uid,
+            action: 'get',
+          }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setImageUrls(data.imageURLs);
+        } else {
+          setError(data.error);
+        }
+      } catch (error) {
+        setError('An unexpected error occurred getting images from database.');
+      }
+    };
+
+    if (user && imageUrls.length <= 0) {
+      fetchGeneratedImages();
+    }
+  }, [user]);
+
+
   // Toggle control panel visibility
   const toggleControlPanel = () => {
     setIsControlPanelVisible(!isControlPanelVisible);
@@ -136,13 +171,13 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
                 Select a Style
               </button>
               <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <TabModels/>
+                <TabModels />
               </Modal>
             </div>
             <div {...getRootProps()} className='controlFileDragAndDrop'>
               <input {...getInputProps()} />
               {!uploadedImagePreview &&
-              // Only display when no image is in preview
+                // Only display when no image is in preview
                 <div>
                   <p>Image of house to apply styling to</p>
                   <p>Upload .png, .jpeg, .jpg</p>
@@ -169,12 +204,12 @@ export default function Dashboard({ setOpenAppDashboard, setOpenAppLanding, setO
 
                 </div>
                 <div className="formDivRight">
-                  <label htmlFor="slider">Style Strength: <span>{sliderValue}</span></label>
+                  <label htmlFor="slider">Style Strength: <span>{sliderValue}</span> (Higher looks more like style)</label>
                   <input
                     type="range"
                     name="slider"
                     min="0"
-                    max="10"
+                    max="20"
                     step="1"
                     value={sliderValue}
                     onChange={handleSliderChange}

@@ -6,6 +6,13 @@
   flex-wrap: wrap;
 }
 
+.images_wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  height: auto;
+}
 .image-wrapper {
   width: 280px;
   height: 280px;

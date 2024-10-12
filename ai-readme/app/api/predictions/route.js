@@ -15,6 +15,7 @@ export async function POST(req) {
     const prompt = prePrompt + formData.get('prompt'); // user prompt
     const file = formData.get('file'); // image file
     const userUID = formData.get('uid'); // user.uid is sent from the client side
+    const formPromptStrength = Number(formData.get('prompt_strength'));
     const model = 'whitehousecaptiontest'; // Assuming model is hardcoded for now
 
     if (!prompt || !file || !userUID) {
@@ -78,7 +79,7 @@ export async function POST(req) {
           output_format: "webp",
           output_quality: 80, // 0-100 : Higher means better image quality
           num_outputs: 4, // 1-4
-          prompt_strength: 0.6, // 1.0 corresponds to full changing of image
+          prompt_strength: .5 + (.01 * formPromptStrength), // value from .5 - .7
           num_inference_steps: 30, // 1-50 : Number of denoising steps.
           disable_safety_checker: false, // Offensive or inappropriate content
         },
