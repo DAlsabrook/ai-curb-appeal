@@ -5,7 +5,7 @@ Operating on a subscription model, the site helps homeowners and property owners
 Next.js, NoSQL, CSS
 
 ## Project
-<img width="818" alt="AICurb-prompts" src="https://github.com/user-attachments/assets/4f73f788-299c-46d1-b0f3-5adfc898beb5">  
+<img width="818" alt="AICurb-prompts" src="https://github.com/user-attachments/assets/4f73f788-299c-46d1-b0f3-5adfc898beb5">  <br/>
 -Users can upload images of their home to train a custom AI model based on their unique property. With text prompts, they can then explore design possibilities—changing colors, materials, structures, and even the landscaping—creating a personalized vision for their home.
 
 ![AICURB login](https://github.com/user-attachments/assets/0238f229-0684-492b-9472-3b3a0bce586e)  
