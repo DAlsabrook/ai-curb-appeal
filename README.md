@@ -20,5 +20,5 @@ Once a model is chosen and a prompt is provided, the system generates four image
 ## Reach out
 My name is David Alsabrook full stack developer of this project. This was my first large Next.js project. If you would like to work together feel free to reach out!
 
-[Follow me on X](https://X.com/David_Alsabrook)
+[Follow me on X](https://X.com/David_Alsabrook)<br/>
 [Lets connect on LinkedIn](https://www.linkedin.com/in/david-alsabrook/)
