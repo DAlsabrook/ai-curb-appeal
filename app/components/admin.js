@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Modal from './modal.js';
-import { useUser } from './UserContext';
+import { useUser } from './UserContext.js';
 
 const Admin = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

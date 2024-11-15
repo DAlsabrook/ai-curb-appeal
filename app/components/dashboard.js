@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useDropzone } from 'react-dropzone';
 import Modal from './modal.js';
-import { useUser } from './UserContext'; // Import the useUser hook
+import { useUser } from './UserContext.js'; // Import the useUser hook
 
 // Tab import
 import TabModels from './tab-models.js'
