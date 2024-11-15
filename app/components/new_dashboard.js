@@ -12,6 +12,7 @@ import { Upload, Home, Loader2, Save, Check, Trash2, X, Info } from 'lucide-reac
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import '../styles/new_dashboard.css'
+import CreateModelModal from './new_create_model.js'
 
 
 function InfoTooltip({ content }) {
@@ -41,6 +42,7 @@ export default function Dashboard() {
   const [loadingImages, setLoadingImages] = useState([])
   const generateButtonRef = useRef(null)
   const [isModelDialogOpen, setIsModelDialogOpen] = useState(false)
+  const [isCreateModelModalOpen, setIsCreateModelModalOpen] = useState(false)
   const [models, setModels] = useState([
     { id: 'default', name: 'Default Model', image: '/placeholder.svg?height=96&width=377&text=Default+Model' },
     { id: 'custom1', name: 'Custom Model 1', image: '/placeholder.svg?height=96&width=377&text=Custom+Model+1' },
@@ -80,23 +82,14 @@ export default function Dashboard() {
     setGeneratedImages(prev => prev.map(img => img.id === image.id ? { ...img, isSaved: false } : img))
   }
 
-  const handleModelUpload = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const fileName = e.target.files[0].name
-      const newModel = {
-        id: `custom-${Date.now()}`,
-        name: `Custom Model: ${fileName}`,
-        image: URL.createObjectURL(e.target.files[0])
-      }
-      setModels(prev => [...prev, newModel])
-      setSelectedModel(newModel.name)
-      setIsModelDialogOpen(false)
-    }
-  }
-
   const handleModelSelect = (modelName) => {
     setSelectedModel(modelName)
     setIsModelDialogOpen(false)
+  }
+
+ const handleCreateModel = (newModel) => {
+    setModels(prev => [...prev, newModel])
+    setSelectedModel(newModel.name)
   }
 
   const handleModelRemove = (modelId) => {
@@ -124,15 +117,14 @@ export default function Dashboard() {
           <Card className="sidebar-card">
             <CardContent className="sidebar-content">
               <div className="model-upload">
-                <Input id="model-upload" type="file" className="hidden" onChange={handleModelUpload} />
-                <Button asChild className="upload-button">
-                  <label htmlFor="model-upload" className="upload-label">
-                    <Upload className="upload-icon" />
-                    Create New Model
-                  </label>
+                <Button onClick={() => setIsCreateModelModalOpen(true)} className="upload-button">
+                  <Upload className="upload-icon" />
+                  Create New Model
                 </Button>
               </div>
 
+              {/* Add conditional statement to open create model modal */}
+              
               <Dialog open={isModelDialogOpen} onOpenChange={setIsModelDialogOpen}>
                 <DialogTrigger asChild>
                   <Button className="model-select-button">
