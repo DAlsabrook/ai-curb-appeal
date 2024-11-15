@@ -123,6 +123,16 @@ export default function Dashboard() {
         <aside className="sidebar">
           <Card className="sidebar-card">
             <CardContent className="sidebar-content">
+              <div className="model-upload">
+                <Input id="model-upload" type="file" className="hidden" onChange={handleModelUpload} />
+                <Button asChild className="upload-button">
+                  <label htmlFor="model-upload" className="upload-label">
+                    <Upload className="upload-icon" />
+                    Create New Model
+                  </label>
+                </Button>
+              </div>
+
               <Dialog open={isModelDialogOpen} onOpenChange={setIsModelDialogOpen}>
                 <DialogTrigger asChild>
                   <Button className="model-select-button">
@@ -168,15 +178,6 @@ export default function Dashboard() {
                         )}
                       </div>
                     ))}
-                    <div className="model-upload">
-                      <Input id="model-upload" type="file" className="hidden" onChange={handleModelUpload} />
-                      <Button asChild className="upload-button">
-                        <label htmlFor="model-upload" className="upload-label">
-                          <Upload className="upload-icon" />
-                          Upload New Model Images
-                        </label>
-                      </Button>
-                    </div>
                   </div>
                 </DialogContent>
               </Dialog>
