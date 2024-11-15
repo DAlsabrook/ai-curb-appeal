@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Dashboard from './components/dashboard'; // Switching dashboards here
+import Dashboard from './components/new_dashboard'; // Switching dashboards here
 import Landing from './components/landing';
 import PaymentPage from "./components/payment";
 import Login from './components/login';
