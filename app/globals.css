@@ -52,7 +52,7 @@ h4 {
   position: relative;
 }
 
-header {
+/* header {
   height: 50px;
   width: 100%;
   margin: 0;
@@ -67,14 +67,14 @@ header {
   align-items: center;
   background: rgba(255, 255, 255, 0.05);
   /* Semi-transparent background */
-  backdrop-filter: blur(10px);
+  /* backdrop-filter: blur(10px); */
   /* Apply blur effect */
-  -webkit-backdrop-filter: blur(10px);
+  /* -webkit-backdrop-filter: blur(10px); */
   /* For Safari support */
-  box-shadow: 0 5px 10px rgba(0, 0, 0, .5);
+  /* box-shadow: 0 5px 10px rgba(0, 0, 0, .5); */
   /* Optional: Add a subtle shadow */
-  z-index: 100;
-}
+  /* z-index: 100; */
+/* } */
 
 .logo {
   display: flex;

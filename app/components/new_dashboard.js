@@ -1,23 +1,16 @@
 'use client'
 
-
-// Need to ask V0 about what to install for all @/component imports
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Slider } from "@/components/ui/slider"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { ImagePlus, Upload, Zap, Home, Loader2, Save, Check, LogOut, Settings, CreditCard, Trash2, X, Info } from 'lucide-react'
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
+import { Upload, Home, Loader2, Save, Check, Trash2, X, Info } from 'lucide-react'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import '../styles/new_dashboard.css';
 
 function InfoTooltip({ content }) {
   return (
@@ -34,86 +27,6 @@ function InfoTooltip({ content }) {
   )
 }
 
-function AccountSettingsModal() {
-  const [email, setEmail] = useState('user@example.com')
-  const [isSubscriptionActive, setIsSubscriptionActive] = useState(true)
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value)
-  }
-
-  const handlePasswordChange = () => {
-    console.log('Password change requested')
-  }
-
-  const handleImageUpload = (e) => {
-    console.log('Image upload requested')
-  }
-
-  const handleSubscriptionToggle = () => {
-    setIsSubscriptionActive(!isSubscriptionActive)
-  }
-
-  const handleAccountDeactivation = () => {
-    console.log('Account deactivation requested')
-  }
-
-  return (
-    <DialogContent className="account-settings-modal">
-      <DialogHeader>
-        <DialogTitle>Account Settings</DialogTitle>
-      </DialogHeader>
-      <div className="account-settings-content">
-        <div className="avatar-section">
-          <Avatar className="avatar-large">
-            <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <div>
-            <Input id="picture" type="file" className="hidden" onChange={handleImageUpload} />
-            <Button asChild>
-              <Label htmlFor="picture">Change Picture</Label>
-            </Button>
-          </div>
-        </div>
-        <div className="form-group">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" value={email} onChange={handleEmailChange} />
-        </div>
-        <div className="form-group">
-          <Label htmlFor="password">Password</Label>
-          <Button onClick={handlePasswordChange} variant="outline">Change Password</Button>
-        </div>
-        <div className="form-group subscription-toggle">
-          <Label htmlFor="subscription">Subscription Status</Label>
-          <Switch
-            id="subscription"
-            checked={isSubscriptionActive}
-            onCheckedChange={handleSubscriptionToggle}
-          />
-        </div>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive">Deactivate Account</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your account and remove your data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleAccountDeactivation}>Deactivate</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-    </DialogContent>
-  )
-}
-
 export default function Dashboard() {
   const [generatedImages, setGeneratedImages] = useState([])
   const [savedImages, setSavedImages] = useState([])
@@ -125,7 +38,6 @@ export default function Dashboard() {
   const [selectedModel, setSelectedModel] = useState('Default Model')
   const [loadingImages, setLoadingImages] = useState([])
   const generateButtonRef = useRef(null)
-  const [isAccountSettingsOpen, setIsAccountSettingsOpen] = useState(false)
   const [isModelDialogOpen, setIsModelDialogOpen] = useState(false)
   const [models, setModels] = useState([
     { id: 'default', name: 'Default Model', image: '/placeholder.svg?height=96&width=377&text=Default+Model' },
@@ -205,41 +117,6 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
-      <header className="header">
-        <div className="logo">
-          <ImagePlus className="logo-icon" />
-          <h1>AI Image Gen</h1>
-        </div>
-        <div className="user-menu">
-          <div className="credits">
-            <Zap className="credits-icon" />
-            <span>Credits: 100</span>
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Avatar className="user-avatar">
-                <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onSelect={() => setIsAccountSettingsOpen(true)}>
-                <Settings className="menu-icon" />
-                <span>Account Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard className="menu-icon" />
-                <span>Add Credits</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <LogOut className="menu-icon" />
-                <span>Sign Out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </header>
-
       <div className="main-content">
         <aside className="sidebar">
           <Card className="sidebar-card">
@@ -522,9 +399,6 @@ export default function Dashboard() {
           </Tabs>
         </main>
       </div>
-      <Dialog open={isAccountSettingsOpen} onOpenChange={setIsAccountSettingsOpen}>
-        <AccountSettingsModal />
-      </Dialog>
     </div>
   )
 }
