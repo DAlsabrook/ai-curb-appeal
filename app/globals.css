@@ -2,122 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* https://github.com/features/codespaces
-      Style inspiration rgb(8, 8, 9)*/
-  --color-background: black;
-  --color-dark-panel: rgb(14, 15, 15);
-  --color-borders: rgb(57, 57, 57);
-  --color-blue: rgb(66, 107, 243);
-  --color-purple: rgb(171, 125, 248);
-  --color-peach: rgb(255, 126, 95);
-  --color-orange: rgb(254, 180, 123);
-}
-
-.threeD {
-  box-shadow:
-    inset .5px 1px 1px rgba(125, 147, 176, 0.2),
-    inset .5px 2px 2px rgba(125, 147, 176, 0.05),
-    inset 0 3px 3px rgba(21, 27, 35, 0.05),
-    inset 0 4px 4px rgba(21, 27, 35, 0.1),
-    0px 5px 10px rgba(0, 0, 0, 1),
-    -15px -20px 20px rgba(255, 255, 255, .02);
-
-  background-color: var(--color-dark-panel) !important;
-  border-radius: 6px !important;
-  border: 1px solid black !important;
-}
-
 html,
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--color-background);
-  color: white;
   font-family: 'Noto Sans';
   z-index: -2;
   box-sizing: border-box;
-}
-
-h1,
-h2,
-h3,
-h4 {
-  font-weight: 900;
-}
-
-.pageContent {
-  height: auto;
-  width: 100%;
-  position: relative;
-}
-
-/* header {
-  height: 50px;
-  width: 100%;
-  margin: 0;
-  position: fixed;
-  box-sizing: border-box;
-  padding: 0 15px;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.05);
-  /* Semi-transparent background */
-  /* backdrop-filter: blur(10px); */
-  /* Apply blur effect */
-  /* -webkit-backdrop-filter: blur(10px); */
-  /* For Safari support */
-  /* box-shadow: 0 5px 10px rgba(0, 0, 0, .5); */
-  /* Optional: Add a subtle shadow */
-  /* z-index: 100; */
-/* } */
-
-.logo {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-
-.logo:hover {
-  opacity: .8;
-}
-
-/* .logoImg {
-
-} */
-
-.logo p {
-  font-weight: 600;
-  font-size: 1.7rem;
-  margin-left: 5px;
-}
-
-.logo p span {
-  font-weight: 200;
-  color: var(--color-peach);
-  /* Gradient text for supported browsers */
-  background: linear-gradient(45deg, var(--color-orange), var(--color-blue));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  /* Standard property */
-  text-fill-color: transparent;
-  /* Safari? */
-}
-
-.headerUserItems {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  width: 200px;
-  height: 50px;
 }
 
 /* Custom scrollbar styles for webkit-based browsers */
@@ -125,71 +16,7 @@ h4 {
   display: none;
 }
 
-.xLink {
-  border-top-left-radius: 15px;
-  border: 1px solid var(--color-borders);
-  background-color: var(--color-background);
-  height: 15px;
-  font-size: .7rem;
-  text-align: center;
-  font-weight: 800;
-  padding: 10px;
-  position: fixed;
-  bottom: -2px;
-  right: -2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
 
-.xLink:hover {
-  opacity: .6;
-}
-
-.xLink span {
-  color: var(--color-peach);
-  /* Gradient text for supported browsers */
-  background: linear-gradient(90deg, var(--color-peach), var(--color-orange));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  /* Standard property */
-  text-fill-color: transparent;
-  /* Safari? */
-}
-
-/* Remove default styles for buttons */
-button {
-  outline: none;
-  border: none;
-  background: none;
-  color: inherit;
-  font: inherit;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-}
-
-/* Remove default styles for anchor tags */
-a {
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-}
-
-/* Remove default styles for lists */
-ul,
-ol {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* Remove default styles for list items */
-li {
-  list-style: none;
-}
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -1,36 +1,96 @@
 'use client'
 
 import { useState } from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useUser } from './UserContext'
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-import { ImagePlus, Zap, Settings, CreditCard, LogOut } from 'lucide-react'
+import { Zap, Settings, CreditCard, LogOut } from 'lucide-react'
 
-export default function HeaderWithAccountSettings({ isLoggedIn, onLogin, onLogout }) {
-  const [isAccountSettingsOpen, setIsAccountSettingsOpen] = useState(false)
+export default function Header() {
+  const { user, setUser } = useUser()
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
-  const [email, setEmail] = useState('user@example.com')
-  const [isSubscriptionActive, setIsSubscriptionActive] = useState(true)
-  const [loginEmail, setLoginEmail] = useState('')
-  const [loginPassword, setLoginPassword] = useState('')
+  const [isAccountSettingsOpen, setIsAccountSettingsOpen] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loginError, setLoginError] = useState('')
+  const [isSubscriptionActive, setIsSubscriptionActive] = useState(false)
+
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    setLoginError('')
+    try {
+      const response = await fetch('/api/firebase/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log('components/login.js Response from backend')
+        console.log(data.user)
+        setUser(data.user); // Update the user state globally
+      } else {
+        setError(data.error);
+      }
+    } catch (error) {
+      setError('An unexpected error occurred');
+    }
+  }
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    setUser(null);
+    if (openAppDashboard) {
+      setOpenAppPayment(false);
+      setOpenAppDashboard(false);
+      setOpenAppLanding(true);
+    }
+    try {
+      const response = await fetch('/api/firebase/auth/logout', {
+        method: 'POST',
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error);
+      }
+    } catch (error) {
+      setError('An unexpected error occurred');
+    }
+  };
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value)
   }
 
-  const handlePasswordChange = () => {
-    console.log('Password change requested')
-    // TODO: Implement password change functionality
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value)
   }
 
-  const handleImageUpload = (e) => {
-    console.log('Image upload requested')
-    // TODO: Implement image upload functionality
+  const handleAccountPasswordChange = () => {
+    // TODO: Implement password change functionality
+    console.log('Password change requested')
   }
 
   const handleSubscriptionToggle = () => {
@@ -39,85 +99,101 @@ export default function HeaderWithAccountSettings({ isLoggedIn, onLogin, onLogou
   }
 
   const handleAccountDeactivation = () => {
-    console.log('Account deactivation requested')
     // TODO: Implement account deactivation logic
-  }
-
-  const handleLogin = (e) => {
-    e.preventDefault()
-    // TODO: Implement actual login logic
-    onLogin()
-    setIsLoginModalOpen(false)
+    console.log('Account deactivation requested')
   }
 
   return (
-    <header className="header">
-      <div className="logo">
-        <ImagePlus className="logo-icon" />
-        <h1>AI Image Gen</h1>
+    <header className="flex items-center justify-between p-4 bg-background border-b">
+      <div className="flex items-center">
+        <img src="/whiteCircle-black.png" alt="House logo" className="logoImg" width={35} height={35} />
+        <p>AI CurbAppeal</p>
       </div>
-      <div className="user-menu">
-        {isLoggedIn ? (
-          <>
-            <div className="credits">
-              <Zap className="credits-icon" />
-              <span>Credits: 100</span>
+      <nav>
+        {user ? (
+          <div className="flex items-center gap-4">
+            <div className="flex items-center">
+              <Zap className="h-5 w-5 mr-1 text-yellow-500" />
+              <span>Credits: {user.credits}</span>
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Avatar className="user-avatar">
-                  <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
-                  <AvatarFallback>CN</AvatarFallback>
+                <Avatar className="cursor-pointer">
+                  <AvatarImage src={user.avatarUrl} alt={user.name} />
+                  <AvatarFallback>{user.name}</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onSelect={() => setIsAccountSettingsOpen(true)}>
-                  <Settings className="menu-icon" />
+                  <Settings className="mr-2 h-4 w-4" />
                   <span>Account Settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <CreditCard className="menu-icon" />
+                  <CreditCard className="mr-2 h-4 w-4" />
                   <span>Add Credits</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={onLogout}>
-                  <LogOut className="menu-icon" />
-                  <span>Sign Out</span>
+                <DropdownMenuItem onSelect={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log Out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </>
+          </div>
         ) : (
-          <Button onClick={() => setIsLoginModalOpen(true)}>Login</Button>
+          <Button onClick={() => setIsLoginModalOpen(true)}>Log In</Button>
         )}
-      </div>
+      </nav>
+
+      <Dialog open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Log In</DialogTitle>
+            <DialogDescription>Enter your credentials to access your account</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={handleEmailChange}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={handlePasswordChange}
+                required
+              />
+            </div>
+            {loginError && <p className="text-red-500">{loginError}</p>}
+            <Button type="submit" className="w-full">Log In</Button>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={isAccountSettingsOpen} onOpenChange={setIsAccountSettingsOpen}>
-        <DialogContent className="account-settings-modal">
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Account Settings</DialogTitle>
           </DialogHeader>
-          <div className="account-settings-content">
-            <div className="avatar-section">
-              <Avatar className="avatar-large">
-                <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <div>
-                <Input id="picture" type="file" className="hidden" onChange={handleImageUpload} />
-                <Button asChild>
-                  <Label htmlFor="picture">Change Picture</Label>
-                </Button>
-              </div>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="account-email">Email</Label>
+              <Input id="account-email" value={user ? user.email : ''} onChange={handleEmailChange} />
             </div>
-            <div className="form-group">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" value={email} onChange={handleEmailChange} />
+            <div className="grid gap-2">
+              <Label htmlFor="account-password">Password</Label>
+              <Button onClick={handleAccountPasswordChange} variant="outline">Change Password</Button>
             </div>
-            <div className="form-group">
-              <Label htmlFor="password">Password</Label>
-              <Button onClick={handlePasswordChange} variant="outline">Change Password</Button>
-            </div>
-            <div className="form-group subscription-toggle">
+            <div className="flex items-center justify-between">
               <Label htmlFor="subscription">Subscription Status</Label>
               <Switch
                 id="subscription"
@@ -125,6 +201,8 @@ export default function HeaderWithAccountSettings({ isLoggedIn, onLogin, onLogou
                 onCheckedChange={handleSubscriptionToggle}
               />
             </div>
+          </div>
+          <DialogFooter>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive">Deactivate Account</Button>
@@ -142,38 +220,7 @@ export default function HeaderWithAccountSettings({ isLoggedIn, onLogin, onLogou
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen}>
-        <DialogContent className="login-modal">
-          <DialogHeader>
-            <DialogTitle>Login</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleLogin} className="login-form">
-            <div className="form-group">
-              <Label htmlFor="login-email">Email</Label>
-              <Input
-                id="login-email"
-                type="email"
-                value={loginEmail}
-                onChange={(e) => setLoginEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <Label htmlFor="login-password">Password</Label>
-              <Input
-                id="login-password"
-                type="password"
-                value={loginPassword}
-                onChange={(e) => setLoginPassword(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit" className="login-button">Login</Button>
-          </form>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </header>
