@@ -1,5 +1,5 @@
 import { storage } from './firebaseConfig';
-import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, listAll, getStorage } from 'firebase/storage';
 import axios from 'axios';
 
 const uploadImages = async (files, userUID, modelName) => {
@@ -59,6 +59,28 @@ async function getGeneratedImages(folderPath) {
 }
 
 
+async function getImageFromStorage(imagePath) {
+  // const imagePath = 'ghKALyqoHHOMOknTGMsrk86sqOW2/Black_house/trained/replicate-prediction-ttzkweh5nxrm20chtkcvqx13bm-0.png'
+
+  try {
+    // 1. Initialize Firebase Storage
+    const storage = getStorage();
+
+    // 2. Create a reference to the image in Storage
+    const imageRef = ref(storage, imagePath);
+
+    // 3. Get the download URL
+    const downloadURL = await getDownloadURL(imageRef);
+
+    // 4. Return the download URL
+    return downloadURL;
+  } catch (error) {
+    // Handle any errors
+    console.error('Error getting image:', error);
+    return null;
+  }
+}
+
 
 // Function to save an image from a URL to Firebase storage
 async function saveImageToStorage(folderPath, imageUrl) {
@@ -82,4 +104,4 @@ async function saveImageToStorage(folderPath, imageUrl) {
   }
 }
 
-export { uploadImages, uploadZip, getGeneratedImages, saveImageToStorage }; // Export the function
+export { uploadImages, uploadZip, getGeneratedImages, saveImageToStorage, getImageFromStorage }; // Export the function

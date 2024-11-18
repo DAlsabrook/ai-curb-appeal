@@ -45,60 +45,7 @@ export default function Dashboard() {
   const [isModelDialogOpen, setIsModelDialogOpen] = useState(false)
   const { user, setUser } = useUser(); // Use the useUser hook to get user and setUser
   const [isCreateModelModalOpen, setIsCreateModelModalOpen] = useState(false)
-  const userModels = user.data.models; // models from database
   const [models, setModels] = useState([])
-
-  // Add models to list from database
-  useEffect(() => {
-    const newModels = [];
-    Object.entries(userModels).forEach(([key, value]) => {
-      const modelName = key.split('/')[0].replace('_', ' ');
-      const modelID = modelName.replace(' ', '');
-      const newModel = {
-        id: modelID,
-        name: modelName,
-        image: 'https://placehold.co/600x400'
-      };
-
-      newModels.push(newModel);
-    });
-    setModels(prevModels => [...prevModels, ...newModels]);
-  }, [userModels]);
-
-  // Load generated images from database models object
-  useEffect(() => {
-    const newGeneratedImages = [];
-    let counter = 0; // Initialize a counter for unique IDs
-    Object.entries(userModels).forEach(([key, value]) => {
-      if (value.generated) {
-        value.generated.forEach((img) => {
-          /**
-           * need to create a function in storage to take uid/modelName/generated for file path
-           * that returns the list of images for me to use in this
-           */
-          console.log(img)
-          newGeneratedImages.push({
-            id: `${key}-${Date.now()}-${counter++}`,
-            url: img,
-            isSaved: false,
-            model: key.split('/')[0].replace('_', ' ')
-          });
-        });
-      }
-    });
-    setGeneratedImages(newGeneratedImages);
-  }, [userModels]);
-
-  // Load saved images from database models object
-  useEffect(() => {
-    const newSavedImages = [];
-    Object.entries(userModels).forEach((model) => {
-      if (model.saved) {
-        newSavedImages.push(...model.saved);
-      }
-    });
-    setSavedImages(newSavedImages);
-  }, [userModels]);
 
   const handleGenerate = () => {
     setIsGenerating(true)
