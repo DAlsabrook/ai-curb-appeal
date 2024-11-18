@@ -5,6 +5,7 @@
 import { auth } from './firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { db_AddUser, db_UpdateUser, db_GetUser } from './database'
+import { getGeneratedImages } from './storage'
 
 export const registerUser = async (email, password) => {
   // Sign up
@@ -23,15 +24,11 @@ export const loginUser = async (email, password) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     await db_UpdateUser(user.uid, { 'last login': new Date().toISOString() }); // Update user last login in db
-
     // Fetch additional user data from the database
     const userData = await db_GetUser(user.uid);
-    // console.log('Firebase/auth user data:')
-    // console.log(userData)
     return {
       uid: user.uid,
-      models: userData.models,
-      credits: userData.credits,
+      data: userData,
     };
   } catch (error) {
     throw error;

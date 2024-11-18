@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
@@ -13,6 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import '../styles/new_dashboard.css'
 import CreateModelModal from './new_create_model.js'
+import { useUser } from './UserContext.js'; // Import the useUser hook
 
 
 function InfoTooltip({ content }) {
@@ -38,16 +39,66 @@ export default function Dashboard() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [numImages, setNumImages] = useState(1)
   const [styleStrength, setStyleStrength] = useState(50)
-  const [selectedModel, setSelectedModel] = useState('Default Model')
+  const [selectedModel, setSelectedModel] = useState('Select Model')
   const [loadingImages, setLoadingImages] = useState([])
   const generateButtonRef = useRef(null)
   const [isModelDialogOpen, setIsModelDialogOpen] = useState(false)
+  const { user, setUser } = useUser(); // Use the useUser hook to get user and setUser
   const [isCreateModelModalOpen, setIsCreateModelModalOpen] = useState(false)
-  const [models, setModels] = useState([
-    { id: 'default', name: 'Default Model', image: '/placeholder.svg?height=96&width=377&text=Default+Model' },
-    { id: 'custom1', name: 'Custom Model 1', image: '/placeholder.svg?height=96&width=377&text=Custom+Model+1' },
-    { id: 'custom2', name: 'Custom Model 2', image: '/placeholder.svg?height=96&width=377&text=Custom+Model+2' },
-  ])
+  const userModels = user.data.models; // models from database
+  const [models, setModels] = useState([])
+
+  // Add models to list from database
+  useEffect(() => {
+    const newModels = [];
+    Object.entries(userModels).forEach(([key, value]) => {
+      const modelName = key.split('/')[0].replace('_', ' ');
+      const modelID = modelName.replace(' ', '');
+      const newModel = {
+        id: modelID,
+        name: modelName,
+        image: 'https://placehold.co/600x400'
+      };
+
+      newModels.push(newModel);
+    });
+    setModels(prevModels => [...prevModels, ...newModels]);
+  }, [userModels]);
+
+  // Load generated images from database models object
+  useEffect(() => {
+    const newGeneratedImages = [];
+    let counter = 0; // Initialize a counter for unique IDs
+    Object.entries(userModels).forEach(([key, value]) => {
+      if (value.generated) {
+        value.generated.forEach((img) => {
+          /**
+           * need to create a function in storage to take uid/modelName/generated for file path
+           * that returns the list of images for me to use in this
+           */
+          console.log(img)
+          newGeneratedImages.push({
+            id: `${key}-${Date.now()}-${counter++}`,
+            url: img,
+            isSaved: false,
+            model: key.split('/')[0].replace('_', ' ')
+          });
+        });
+      }
+    });
+    setGeneratedImages(newGeneratedImages);
+  }, [userModels]);
+
+  // Load saved images from database models object
+  useEffect(() => {
+    const newSavedImages = [];
+    Object.entries(userModels).forEach((model) => {
+      if (model.saved) {
+        newSavedImages.push(...model.saved);
+      }
+    });
+    setSavedImages(newSavedImages);
+  }, [userModels]);
 
   const handleGenerate = () => {
     setIsGenerating(true)
@@ -58,7 +109,7 @@ export default function Dashboard() {
 
     setTimeout(() => {
       const newImages = Array(numImages).fill(null).map((_, index) => ({
-        id: `generated-${Date.now()}-${index}`,
+        id: `${selectedModel}-${Date.now()}-${index}`,
         url: `/placeholder.svg?height=200&width=200&text=${encodeURIComponent(prompt)}`,
         isSaved: false,
         model: selectedModel
@@ -124,7 +175,7 @@ export default function Dashboard() {
               </div>
 
               {/* Add conditional statement to open create model modal */}
-              
+
               <Dialog open={isModelDialogOpen} onOpenChange={setIsModelDialogOpen}>
                 <DialogTrigger asChild>
                   <Button className="model-select-button">

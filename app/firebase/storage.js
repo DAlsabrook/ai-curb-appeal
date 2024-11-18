@@ -58,6 +58,8 @@ async function getGeneratedImages(folderPath) {
   }
 }
 
+
+
 // Function to save an image from a URL to Firebase storage
 async function saveImageToStorage(folderPath, imageUrl) {
   try {

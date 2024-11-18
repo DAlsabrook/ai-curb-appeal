@@ -44,11 +44,8 @@ export default function Header() {
         },
         body: JSON.stringify({ email, password }),
       });
-
       const data = await response.json();
       if (response.ok) {
-        console.log('components/login.js Response from backend')
-        console.log(data.user)
         setUser(data.user); // Update the user state globally
       } else {
         setError(data.error);
@@ -114,13 +111,13 @@ export default function Header() {
           <div className="flex items-center gap-4">
             <div className="flex items-center">
               <Zap className="h-5 w-5 mr-1 text-yellow-500" />
-              <span>Credits: {user.credits}</span>
+              <span>Credits: {user.data.credits}</span>
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar className="cursor-pointer">
-                  <AvatarImage src={user.avatarUrl} alt={user.name} />
-                  <AvatarFallback>{user.name}</AvatarFallback>
+                  <AvatarImage src={user.data.avatarUrl} alt={user.data.first} />
+                  <AvatarFallback>{user.data.first}</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -187,7 +184,7 @@ export default function Header() {
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Label htmlFor="account-email">Email</Label>
-              <Input id="account-email" value={user ? user.email : ''} onChange={handleEmailChange} />
+              <Input id="account-email" value={user ? user.data.email : ''} onChange={handleEmailChange} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="account-password">Password</Label>
