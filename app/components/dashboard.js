@@ -15,7 +15,6 @@ import '../styles/new_dashboard.css'
 import CreateModelModal from './create_model.js'
 import { useUser } from './UserContext.js'; // Import the useUser hook
 
-
 function InfoTooltip({ content }) {
   return (
     <TooltipProvider>
@@ -46,6 +45,37 @@ export default function Dashboard() {
   const { user, setUser } = useUser(); // Use the useUser hook to get user and setUser
   const [isCreateModelModalOpen, setIsCreateModelModalOpen] = useState(false)
   const [models, setModels] = useState([])
+
+// Load models and generated images from user data
+useEffect(() => {
+  if (user && user.data && user.data.models) {
+    const userModels = user.data.models;
+    setModels(userModels);
+
+    const newGeneratedImages = [];
+    const newSavedImages = [];
+    userModels.forEach((model) => {
+      if (model.generatedURLs) {
+        for (let i = 0; i < model.generatedURLs.length; i += 2) {
+          const url = model.generatedURLs[i];
+          const isSaved = model.generatedURLs[i + 1];
+          const image = {
+            id: `${model.name}-${Date.now()}-${Math.random()}`,
+            url: url,
+            isSaved: isSaved,
+            model: model.name
+          };
+          newGeneratedImages.push(image);
+          if (isSaved) {
+            newSavedImages.push(image);
+          }
+        }
+      }
+    });
+    setGeneratedImages(newGeneratedImages);
+    setSavedImages(newSavedImages);
+  }
+}, [user]);
 
   const handleGenerate = () => {
     setIsGenerating(true)

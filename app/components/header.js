@@ -47,6 +47,7 @@ export default function Header() {
       const data = await response.json();
       if (response.ok) {
         setUser(data.user); // Update the user state globally
+        setIsLoginModalOpen(false);
       } else {
         setError(data.error);
       }

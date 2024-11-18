@@ -51,6 +51,7 @@ export const loginUser = async (email, password) => {
           const url = await getImageFromStorage(filePath);
           if (url) {
             newModel.generatedURLs.push(url);
+            newModel.generatedURLs.push(imgData[1]); // bool: If saved or not
           } else {
             // delete whatever img path didn't work from the database
             console.error('Failed to get image URL');
@@ -63,7 +64,6 @@ export const loginUser = async (email, password) => {
     }));
 
     userResult.data.models = dbModels;
-    console.log(userResult)
     return userResult;
   } catch (error) {
     console.error('Error logging in user:', error);
