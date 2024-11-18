@@ -1,9 +1,9 @@
 'use client'
 
 import { useUser } from './components/UserContext'
-import Header from './components/new_header'
+import Header from './components/header'
 import LandingPage from './components/landing'
-import Dashboard from './components/new_dashboard'
+import Dashboard from './components/dashboard'
 import './styles/new_page.css'
 
 export default function Home() {
