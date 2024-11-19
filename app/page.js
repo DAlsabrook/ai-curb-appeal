@@ -4,7 +4,7 @@ import { useUser } from './components/UserContext'
 import Header from './components/header'
 import LandingPage from './components/landing'
 import Dashboard from './components/dashboard'
-import './styles/new_page.css'
+import './styles/page.css'
 
 export default function Home() {
   const { user } = useUser()

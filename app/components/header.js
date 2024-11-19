@@ -26,6 +26,7 @@ import { Zap, Settings, CreditCard, LogOut } from 'lucide-react'
 
 export default function Header() {
   const { user, setUser } = useUser()
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [isAccountSettingsOpen, setIsAccountSettingsOpen] = useState(false)
   const [email, setEmail] = useState('')
@@ -138,7 +139,10 @@ export default function Header() {
             </DropdownMenu>
           </div>
         ) : (
-          <Button onClick={() => setIsLoginModalOpen(true)}>Log in</Button>
+          <div>
+            <Button onClick={() => setIsSignUpModalOpen(true)}>Sign up</Button>
+            <Button onClick={() => setIsLoginModalOpen(true)}>Log in</Button>
+          </div>
         )}
       </nav>
 

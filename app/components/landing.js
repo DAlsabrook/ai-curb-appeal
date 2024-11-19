@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import '../styles/landing.css'
 
 const LandingPage = () => {
-  const [currentPrompt, setCurrentPrompt] = useState('Modern')
+  const [currentPrompt, setCurrentPrompt] = useState('"Red brick with dark paint"')
   const containerRef = React.useRef(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -15,13 +15,19 @@ const LandingPage = () => {
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
 
   const prompts = [
-    'Modern',
-    'Victorian',
-    'Mediterranean',
+    '"Red brick with dark paint"',
+    '"Add a modern beige paint"',
+    '"Add fresh white paint and better landscaping"',
   ]
 
   const getImageForPrompt = (prompt) => {
-    return `/prompt_images/${prompt.toLowerCase()}-house.jpg`
+    const promptImages = {
+      'Red brick with dark paint': '/prompt_images/red_brick_house.png',
+      'Add a modern beige paint': '/prompt_images/beige.png',
+      'Add fresh white paint and better landscaping': '/prompt_images/white_paint.png',
+    }
+    console.log(prompt.replace(/"/g, ''))
+    return promptImages[prompt.replace(/"/g, '')]
   }
 
   const houseImages = [
@@ -136,7 +142,6 @@ const LandingPage = () => {
               <img
                 src={getImageForPrompt(currentPrompt)}
                 alt={`${currentPrompt} style house`}
-                className='fade-in'
               />
             </div>
           </div>
