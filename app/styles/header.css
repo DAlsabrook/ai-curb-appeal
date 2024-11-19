@@ -1,26 +1,19 @@
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
+  justify-content: space-between;
+  padding: 1rem;
   background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
 }
 
-.logo-icon {
-  width: 2rem;
-  height: 2rem;
-}
-
-.logo h1 {
-  font-size: 1.5rem;
-  font-weight: bold;
+.logoImg {
+  margin-right: 0.5rem;
 }
 
 .user-menu {
@@ -32,61 +25,149 @@
 .credits {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
 }
 
 .credits-icon {
-  width: 1.25rem;
   height: 1.25rem;
+  width: 1.25rem;
+  margin-right: 0.25rem;
+  color: #eab308;
 }
 
-.user-avatar {
+.dropdown {
+  position: relative;
+}
+
+.avatar-button {
   cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
 }
 
-.menu-icon {
-  width: 1rem;
+.avatar-image {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #ffffff;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dropdown-content button:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-icon {
   height: 1rem;
+  width: 1rem;
   margin-right: 0.5rem;
 }
 
-.account-settings-modal {
-  max-width: 500px;
+.button {
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  margin-left: 0.5rem;
 }
 
-.account-settings-content {
+.button:hover {
+  background-color: #2563eb;
+}
+
+.button.outline {
+  background-color: transparent;
+  border: 1px solid #3b82f6;
+  color: #3b82f6;
+}
+
+.button.destructive {
+  background-color: #ef4444;
+}
+
+.button.destructive:hover {
+  background-color: #dc2626;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  max-width: 425px;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-}
-
-.avatar-section {
-  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 1rem;
+  border: 1px solid red;
 }
 
-.avatar-large {
-  width: 5rem;
-  height: 5rem;
+.login-form,
+.account-settings {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+}
+
+.login-form div,
+.account-settings div {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.error {
+  color: #ef4444;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  margin-top: 1rem;
+  align-self: flex-end;
 }
 
 .subscription-toggle {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.login-modal {
-  max-width: 400px;
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.login-button {
-  align-self: flex-end;
 }

@@ -2,27 +2,8 @@
 
 import { useState } from 'react'
 import { useUser } from './UserContext'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Zap, Settings, CreditCard, LogOut } from 'lucide-react'
+import '../styles/header.css'
 
 export default function Header() {
   const { user, setUser } = useUser()
@@ -33,6 +14,11 @@ export default function Header() {
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
   const [isSubscriptionActive, setIsSubscriptionActive] = useState(false)
+
+  // TODO: Implement sign-up functionality
+  // const handleSignUp = async (e) => {
+  //   // Add sign-up logic here
+  // }
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -47,24 +33,19 @@ export default function Header() {
       });
       const data = await response.json();
       if (response.ok) {
-        setUser(data.user); // Update the user state globally
+        setUser(data.user);
         setIsLoginModalOpen(false);
       } else {
-        setError(data.error);
+        setLoginError(data.error);
       }
     } catch (error) {
-      setError('An unexpected error occurred');
+      setLoginError('An unexpected error occurred');
     }
   }
 
   const handleLogout = async (e) => {
     e.preventDefault();
     setUser(null);
-    if (openAppDashboard) {
-      setOpenAppPayment(false);
-      setOpenAppDashboard(false);
-      setOpenAppLanding(true);
-    }
     try {
       const response = await fetch('/api/firebase/auth/logout', {
         method: 'POST',
@@ -72,159 +53,173 @@ export default function Header() {
 
       const data = await response.json();
       if (!response.ok) {
-        setError(data.error);
+        setLoginError(data.error);
       }
     } catch (error) {
-      setError('An unexpected error occurred');
+      setLoginError('An unexpected error occurred');
     }
   };
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value)
-  }
+  const handleEmailChange = (e) => setEmail(e.target.value)
+  const handlePasswordChange = (e) => setPassword(e.target.value)
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value)
-  }
-
+  // TODO: Implement password change functionality
   const handleAccountPasswordChange = () => {
-    // TODO: Implement password change functionality
     console.log('Password change requested')
+    // Add logic to change password
   }
 
+  // TODO: Implement subscription toggle functionality
   const handleSubscriptionToggle = () => {
     setIsSubscriptionActive(!isSubscriptionActive)
-    // TODO: Update subscription status in the database
+    // Add logic to update subscription status in the database
   }
 
+  // TODO: Implement account deactivation functionality
   const handleAccountDeactivation = () => {
-    // TODO: Implement account deactivation logic
     console.log('Account deactivation requested')
+    // Add logic to deactivate the account
   }
 
   return (
-    <header className="flex items-center justify-between p-4 bg-background border-b">
-      <div className="flex items-center">
+    <header className="header">
+      <div className="logo">
         <img src="/whiteCircle-black.png" alt="House logo" className="logoImg" width={35} height={35} />
         <p>AI CurbAppeal</p>
       </div>
       <nav>
         {user ? (
-          <div className="flex items-center gap-4">
-            <div className="flex items-center">
-              <Zap className="h-5 w-5 mr-1 text-yellow-500" />
+          <div className="user-menu">
+            <div className="credits">
+              <Zap className="credits-icon" />
               <span>Credits: {user.data.credits}</span>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Avatar className="cursor-pointer">
-                  <AvatarImage src={user.data.avatarUrl} alt={user.data.first} />
-                  <AvatarFallback>{user.data.first}</AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onSelect={() => setIsAccountSettingsOpen(true)}>
-                  <Settings className="mr-2 h-4 w-4" />
+            <div className="dropdown">
+              <button className="avatar-button">
+                <img src={user.data.avatarUrl} alt={user.data.first} className="avatar-image" />
+              </button>
+              <div className="dropdown-content">
+                <button onClick={() => setIsAccountSettingsOpen(true)}>
+                  <Settings className="dropdown-icon" />
                   <span>Account Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <CreditCard className="mr-2 h-4 w-4" />
+                </button>
+                <button>
+                  <CreditCard className="dropdown-icon" />
                   <span>Add Credits</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={handleLogout}>
-                  <LogOut className="mr-2 h-4 w-4" />
+                </button>
+                <button onClick={handleLogout}>
+                  <LogOut className="dropdown-icon" />
                   <span>Log Out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                </button>
+              </div>
+            </div>
           </div>
         ) : (
           <div>
-            <Button onClick={() => setIsSignUpModalOpen(true)}>Sign up</Button>
-            <Button onClick={() => setIsLoginModalOpen(true)}>Log in</Button>
+            <button onClick={() => setIsSignUpModalOpen(true)} className="button">Sign up</button>
+            <button onClick={() => setIsLoginModalOpen(true)} className="button">Log in</button>
           </div>
         )}
       </nav>
 
-      <Dialog open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Log In</DialogTitle>
-            <DialogDescription>Enter your credentials to access your account</DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={handleEmailChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={handlePasswordChange}
-                required
-              />
-            </div>
-            {loginError && <p className="text-red-500">{loginError}</p>}
-            <Button type="submit" className="w-full">Log In</Button>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isAccountSettingsOpen} onOpenChange={setIsAccountSettingsOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Account Settings</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="account-email">Email</Label>
-              <Input id="account-email" value={user ? user.data.email : ''} onChange={handleEmailChange} />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="account-password">Password</Label>
-              <Button onClick={handleAccountPasswordChange} variant="outline">Change Password</Button>
-            </div>
-            <div className="flex items-center justify-between">
-              <Label htmlFor="subscription">Subscription Status</Label>
-              <Switch
-                id="subscription"
-                checked={isSubscriptionActive}
-                onCheckedChange={handleSubscriptionToggle}
-              />
-            </div>
+      {/* TODO: Implement sign-up modal */}
+      {isSignUpModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <button onClick={() => setIsSignUpModalOpen(false)} className="close-button">Close</button>
+            <p>Sign Up Form</p>
+            <form onSubmit={handleLogin} className="login-form">
+              <div>
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  required
+                />
+              </div>
+              {loginError && <p className="error">{loginError}</p>}
+              <button type="submit" className="button">Log In</button>
+            </form>
           </div>
-          <DialogFooter>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive">Deactivate Account</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete your account and remove your data from our servers.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleAccountDeactivation}>Deactivate</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
+
+      {isLoginModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <button onClick={() => setIsLoginModalOpen(false)} className="close-button">Close</button>
+            <form onSubmit={handleLogin} className="login-form">
+              <div>
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  required
+                />
+              </div>
+              {loginError && <p className="error">{loginError}</p>}
+              <button type="submit" className="button">Log In</button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {isAccountSettingsOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <button onClick={() => setIsAccountSettingsOpen(false)} className="close-button">Close</button>
+            <h2>Account Settings</h2>
+            <div className="account-settings">
+              <div>
+                <label htmlFor="account-email">Email</label>
+                <input id="account-email" value={user ? user.data.email : ''} onChange={handleEmailChange} />
+              </div>
+              <div>
+                <label htmlFor="account-password">Password</label>
+                <button onClick={handleAccountPasswordChange} className="button outline">Change Password</button>
+              </div>
+              <div className="subscription-toggle">
+                <label htmlFor="subscription">Subscription Status</label>
+                <input
+                  type="checkbox"
+                  id="subscription"
+                  checked={isSubscriptionActive}
+                  onChange={handleSubscriptionToggle}
+                />
+              </div>
+            </div>
+            <button onClick={handleAccountDeactivation} className="button destructive">Deactivate Account</button>
+          </div>
+        </div>
+      )}
     </header>
   )
 }
