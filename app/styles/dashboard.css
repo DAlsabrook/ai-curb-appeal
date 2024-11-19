@@ -269,6 +269,7 @@
   justify-content: center;
   align-items: center;
   height: 100%;
+  margin-top: 30px;
 }
 
 .upload-button {
@@ -276,11 +277,19 @@
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
+  background: white;
+  color: black;
+}
+
+.upload-button:hover {
+  background: rgb(228, 228, 228);
+  color: blue;
 }
 
 .upload-icon {
   width: 2rem;
   height: 2rem;
+  color: blue;
 }
 
 .upload-label {

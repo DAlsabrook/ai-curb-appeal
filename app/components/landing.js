@@ -26,7 +26,6 @@ const LandingPage = () => {
       'Add a modern beige paint': '/prompt_images/beige.png',
       'Add fresh white paint and better landscaping': '/prompt_images/white_paint.png',
     }
-    console.log(prompt.replace(/"/g, ''))
     return promptImages[prompt.replace(/"/g, '')]
   }
 

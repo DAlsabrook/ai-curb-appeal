@@ -31,18 +31,23 @@ function InfoTooltip({ content }) {
 }
 
 export default function Dashboard() {
-  const [generatedImages, setGeneratedImages] = useState([])
-  const [savedImages, setSavedImages] = useState([])
+  // Control Panel
   const [prompt, setPrompt] = useState('')
   const [negativePrompt, setNegativePrompt] = useState('')
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [numImages, setNumImages] = useState(1)
   const [styleStrength, setStyleStrength] = useState(50)
   const [selectedModel, setSelectedModel] = useState('Select Model')
+
+  // Create Model Modal
+
+  // Image window
+  const [generatedImages, setGeneratedImages] = useState([])
+  const [savedImages, setSavedImages] = useState([])
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [numImages, setNumImages] = useState(1)
   const [loadingImages, setLoadingImages] = useState([])
   const generateButtonRef = useRef(null)
   const [isModelDialogOpen, setIsModelDialogOpen] = useState(false)
-  const { user, setUser } = useUser(); // Use the useUser hook to get user and setUser
+  const { user } = useUser(); // Use the useUser hook to get user and setUser
   const [isCreateModelModalOpen, setIsCreateModelModalOpen] = useState(false)
   const [models, setModels] = useState([])
 
@@ -170,7 +175,8 @@ useEffect(() => {
                         <Button onClick={() => handleModelSelect(model.name)} className="model-select-overlay">
                           {model.name}
                         </Button>
-                        {model.id !== 'default' && (
+
+                          {/* Alert for deleting a model */}
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button variant="destructive" size="icon" className="model-delete-button">
@@ -190,18 +196,32 @@ useEffect(() => {
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
-                        )}
                       </div>
                     ))}
                   </div>
+                  {/* Create a new model alert form */}
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button onClick={() => setIsCreateModelModalOpen(true)} className="upload-button">
+                        <Upload className="upload-icon" />
+                        Create New Model
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Create New AI Model</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Name the model and upload 10 - 20 images to train your new AI model
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleModelRemove(model.id)}>Delete</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </DialogContent>
               </Dialog>
-              <div className="model-upload">
-                <Button onClick={() => setIsCreateModelModalOpen(true)} className="upload-button">
-                  <Upload className="upload-icon" />
-                  Create New Model
-                </Button>
-              </div>
 
               <div className="form-group">
                 <h2 className='sidebar-title'>Craft Your Prompt</h2>
