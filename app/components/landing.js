@@ -183,7 +183,7 @@ const LandingPage = () => {
       <footer>
         <div className="footer-content">
           <div className="footer-logo">
-            <img src="/images/logo.png" alt="AI Curb Appeal Logo" />
+            <img src="/whiteCircle-black.png" alt="AI Curb Appeal Logo" />
           </div>
           <div className="footer-links">
             <a href="/privacy">Privacy Policy</a>
@@ -195,7 +195,7 @@ const LandingPage = () => {
           </div>
         </div>
         <div className="copyright">
-          © 2023 AI Curb Appeal. All rights reserved.
+          © 2024 AI Curb Appeal. All rights reserved.
         </div>
       </footer>
     </div>

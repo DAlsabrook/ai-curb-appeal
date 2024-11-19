@@ -15,9 +15,11 @@ export default function Home() {
       <main className="flex-grow">
         {user ? <Dashboard /> : <LandingPage />}
       </main>
-      <footer className="py-4 text-center bg-background border-t">
-        <p>&copy; 2024 AI Curb Appeal. All rights reserved.</p>
-      </footer>
+      {!user && (
+        <footer className="py-4 text-center bg-background border-t">
+          <p>&copy; 2024 AI Curb Appeal. All rights reserved.</p>
+        </footer>
+      )}
     </div>
   )
 }

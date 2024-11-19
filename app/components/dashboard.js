@@ -144,12 +144,7 @@ useEffect(() => {
         <aside className="sidebar">
           <Card className="sidebar-card">
             <CardContent className="sidebar-content">
-              <div className="model-upload">
-                <Button onClick={() => setIsCreateModelModalOpen(true)} className="upload-button">
-                  <Upload className="upload-icon" />
-                  Create New Model
-                </Button>
-              </div>
+               <h2 className='sidebar-title'>Choose Your Model</h2>
 
               {/* Add conditional statement to open create model modal */}
 
@@ -201,8 +196,15 @@ useEffect(() => {
                   </div>
                 </DialogContent>
               </Dialog>
+              <div className="model-upload">
+                <Button onClick={() => setIsCreateModelModalOpen(true)} className="upload-button">
+                  <Upload className="upload-icon" />
+                  Create New Model
+                </Button>
+              </div>
 
               <div className="form-group">
+                <h2 className='sidebar-title'>Craft Your Prompt</h2>
                 <label htmlFor="prompt" className="input-label">
                   Prompt
                   <InfoTooltip content="Describe the image you want to generate in detail." />

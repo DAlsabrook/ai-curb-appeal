@@ -15,8 +15,17 @@
   overflow-y: auto;
 }
 
+.sidebar-title {
+  margin: auto;
+  font-size: 1.3rem;
+  color: black;
+  border-bottom: 1.2px solid orange;
+  font-weight: 600;
+}
 .sidebar-card {
   height: 100%;
+  overflow: scroll;
+  border: 1px solid blueviolet;
 }
 
 .sidebar-content {
@@ -83,7 +92,7 @@
 .main-area {
   flex: 1;
   padding: 1rem;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 .image-tabs {
