@@ -18,13 +18,10 @@ const LandingPage = () => {
     'Modern',
     'Victorian',
     'Mediterranean',
-    'Minimalist',
-    'Rustic',
-    'Contemporary'
   ]
 
   const getImageForPrompt = (prompt) => {
-    return `/images/${prompt.toLowerCase()}-house.jpg`
+    return `/prompt_images/${prompt.toLowerCase()}-house.jpg`
   }
 
   const houseImages = [
@@ -53,9 +50,11 @@ const LandingPage = () => {
       <section className="hero">
         <div className="hero-background">
           {columns.map((column, colIndex) => (
-            <div key={colIndex} className={`image-column ${colIndex % 2 === 0 ? 'scroll-up' : 'scroll-down'}`}>
-              {column.map((img, imgIndex) => (
-                <img key={`${colIndex}-${imgIndex}`} src={img} alt={`House ${imgIndex + 1}`} />
+            <div key={colIndex} className={`image-column ${colIndex % 2 === 0 ? 'up' : 'down'}`}>
+              {Array.from({ length: 2 }).map((_, repeatIndex) => (
+                column.map((img, imgIndex) => (
+                  <img key={`${colIndex}-${imgIndex}-${repeatIndex}`} src={img} alt={`House ${imgIndex + 1}`} />
+                ))
               ))}
             </div>
           ))}
@@ -95,7 +94,7 @@ const LandingPage = () => {
           <div className="step">
             <div className="step-number">1</div>
             <h3>Upload Your Home</h3>
-            <p>Take a photo or upload an existing image of your property</p>
+            <p>Take a photos or upload existing 10 - 20 images of your property</p>
           </div>
           <div className="step">
             <div className="step-number">2</div>
@@ -113,21 +112,8 @@ const LandingPage = () => {
       <section className="interactive-demo">
         <h2>See the Magic in Action</h2>
         <div className="demo-container">
-          <div className="image-comparison">
-            <div className="before-image">
-              <h3>Before</h3>
-              <img src="/images/before-house.jpg" alt="House before renovation" />
-            </div>
-            <div className="after-image">
-              <h3>After: {currentPrompt} Style</h3>
-              <img
-                src={getImageForPrompt(currentPrompt)}
-                alt={`${currentPrompt} style house`}
-              />
-            </div>
-          </div>
           <div className="prompt-selector">
-            <p>Select a style to visualize:</p>
+            <p>Select a prompt to visualize:</p>
             <div className="prompt-buttons">
               {prompts.map((prompt) => (
                 <button
@@ -138,6 +124,20 @@ const LandingPage = () => {
                   {prompt}
                 </button>
               ))}
+            </div>
+          </div>
+          <div className="image-comparison">
+            <div className="before-image">
+              <h3>Before</h3>
+              <img src="/prompt_images/before-house.jpg" alt="House before renovation" />
+            </div>
+            <div className="after-image">
+              <h3>After Prompt: {currentPrompt}</h3>
+              <img
+                src={getImageForPrompt(currentPrompt)}
+                alt={`${currentPrompt} style house`}
+                className='fade-in'
+              />
             </div>
           </div>
         </div>
