@@ -138,7 +138,7 @@ export default function Header() {
             </DropdownMenu>
           </div>
         ) : (
-          <Button onClick={() => setIsLoginModalOpen(true)}>Log In</Button>
+          <Button onClick={() => setIsLoginModalOpen(true)}>Log in</Button>
         )}
       </nav>
 
