@@ -264,6 +264,17 @@
   height: 1rem;
 }
 
+.modal-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.modal-background {
+  z-index: 100;
+}
+
 .model-upload {
   display: flex;
   justify-content: center;
@@ -292,6 +303,29 @@
   color: blue;
 }
 
+.upload-icon-drag-zone {
+  color: blue;
+  margin: auto;
+}
+
 .upload-label {
   text-align: center;
+}
+
+.create-model-form {
+  width: 90%;
+
+}
+
+.drag-n-drop-zone {
+  background: rgb(223, 223, 223);
+  border: 1px solid black;
+  border-radius: 20px;
+  box-shadow: 0 3px 4px 1px rgba(0, 0, 0, 0.5);
+  color: rgb(114, 114, 114);
+  text-align: center;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }

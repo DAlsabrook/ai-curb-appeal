@@ -12,8 +12,8 @@ import { Upload, Home, Loader2, Save, Check, Trash2, X, Info } from 'lucide-reac
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import '../styles/dashboard.css'
-import CreateModelModal from './create_model.js'
 import { useUser } from './UserContext.js'; // Import the useUser hook
+import { useDropzone } from 'react-dropzone';
 
 function InfoTooltip({ content }) {
   return (
@@ -38,6 +38,8 @@ export default function Dashboard() {
   const [selectedModel, setSelectedModel] = useState('Select Model')
 
   // Create Model Modal
+  const [modelName, setModelName] = useState(''); // State for model name
+  const [modelNameError, setModelNameError] = useState(''); // State for model name error
 
   // Image window
   const [generatedImages, setGeneratedImages] = useState([])
@@ -51,36 +53,36 @@ export default function Dashboard() {
   const [isCreateModelModalOpen, setIsCreateModelModalOpen] = useState(false)
   const [models, setModels] = useState([])
 
-// Load models and generated images from user data
-useEffect(() => {
-  if (user && user.data && user.data.models) {
-    const userModels = user.data.models;
-    setModels(userModels);
+  // Load models and generated images from user data
+  useEffect(() => {
+    if (user && user.data && user.data.models) {
+      const userModels = user.data.models;
+      setModels(userModels);
 
-    const newGeneratedImages = [];
-    const newSavedImages = [];
-    userModels.forEach((model) => {
-      if (model.generatedURLs) {
-        for (let i = 0; i < model.generatedURLs.length; i += 2) {
-          const url = model.generatedURLs[i];
-          const isSaved = model.generatedURLs[i + 1];
-          const image = {
-            id: `${model.name}-${Date.now()}-${Math.random()}`,
-            url: url,
-            isSaved: isSaved,
-            model: model.name
-          };
-          newGeneratedImages.push(image);
-          if (isSaved) {
-            newSavedImages.push(image);
+      const newGeneratedImages = [];
+      const newSavedImages = [];
+      userModels.forEach((model) => {
+        if (model.generatedURLs) {
+          for (let i = 0; i < model.generatedURLs.length; i += 2) {
+            const url = model.generatedURLs[i];
+            const isSaved = model.generatedURLs[i + 1];
+            const image = {
+              id: `${model.name}-${Date.now()}-${Math.random()}`,
+              url: url,
+              isSaved: isSaved,
+              model: model.name
+            };
+            newGeneratedImages.push(image);
+            if (isSaved) {
+              newSavedImages.push(image);
+            }
           }
         }
-      }
-    });
-    setGeneratedImages(newGeneratedImages);
-    setSavedImages(newSavedImages);
-  }
-}, [user]);
+      });
+      setGeneratedImages(newGeneratedImages);
+      setSavedImages(newSavedImages);
+    }
+  }, [user]);
 
   const handleGenerate = () => {
     setIsGenerating(true)
@@ -143,6 +145,64 @@ useEffect(() => {
     return Object.entries(groups)
   }
 
+  // Drag and drop files
+  const [files, setFiles] = useState([]);
+  const [isSubmitted, setisSubmitted] = useState(false);
+
+  const onDrop = (acceptedFiles) => {
+    setFiles(acceptedFiles);
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+  const validateModelName = (name) => {
+    const isValidName = /^[a-zA-Z0-9 ]+$/.test(name);
+    if (!isValidName) {
+      setModelNameError('Name must contain only letters and numbers');
+      return false;
+    }
+    setModelNameError('');
+    return true;
+  };
+
+  const handleStartTraining = async () => {
+    if (!validateModelName(modelName)) {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', modelName);
+    formData.append('uid', user.uid);
+    if (files.length < 10) {
+      setModelNameError('Must have at least 10 images');
+      return;
+    } else if (files.length > 20) {
+      setModelNameError('Too many images (20 max)');
+      return;
+    }
+    files.forEach((file, index) => {
+      formData.append(`filesList[${index}]`, file);
+    });
+
+    try {
+      const response = await fetch('/api/training', {
+        method: 'POST',
+        body: formData,
+      });
+      console.log(response)
+      if (response.ok) {
+        // Handle successful response
+        console.log('Model training started successfully');
+        setIsCreateModelModalOpen(false);
+      } else {
+        // Handle error response
+        console.error(`Error from training route`);
+      }
+    } catch (error) {
+      console.error('An unexpected error occurred:', error);
+    }
+  };
+
   return (
     <div className="dashboard">
       <div className="main-content">
@@ -150,8 +210,6 @@ useEffect(() => {
           <Card className="sidebar-card">
             <CardContent className="sidebar-content">
                <h2 className='sidebar-title'>Choose Your Model</h2>
-
-              {/* Add conditional statement to open create model modal */}
 
               <Dialog open={isModelDialogOpen} onOpenChange={setIsModelDialogOpen}>
                 <DialogTrigger asChild>
@@ -199,29 +257,65 @@ useEffect(() => {
                       </div>
                     ))}
                   </div>
-                  {/* Create a new model alert form */}
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button onClick={() => setIsCreateModelModalOpen(true)} className="upload-button">
-                        <Upload className="upload-icon" />
-                        Create New Model
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Create New AI Model</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Name the model and upload 10 - 20 images to train your new AI model
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleModelRemove(model.id)}>Delete</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+
+                  <Button onClick={() => {
+                    setIsCreateModelModalOpen(true);
+                    setIsModelDialogOpen(false);
+                    }} className="upload-button">
+                    <Upload className="upload-icon" />
+                    Create New Model
+                  </Button>
                 </DialogContent>
               </Dialog>
+
+              {/* Create Model modal */}
+              {isCreateModelModalOpen && (
+                <div className='modal-background'>
+                  <div className="modal">
+                    <div className="modal-content">
+                      <div className='modal-buttons'>
+                        <button onClick={() => {
+                          setIsModelDialogOpen(true);
+                          setIsCreateModelModalOpen(false);
+                          }} className="close-button">&larr; back</button>
+                        <button onClick={() => setIsCreateModelModalOpen(false)} className="close-button">close</button>
+                      </div>
+
+                      <h2>Create Your Own AI Model</h2>
+                      <p>Upload 10-20 images of your home</p>
+                      <div className="create-model-form">
+                        <div>
+                          <label htmlFor="model-name">Model Name: </label>
+                          <input
+                            id="model-name"
+                            type="text"
+                            placeholder="Enter model name"
+                            value={modelName}
+                            onChange={(e) => setModelName(e.target.value)}
+                            onBlur={() => validateModelName(modelName)}
+                            required
+                          />
+                          {modelNameError && <p className="error">{modelNameError}</p>}
+                        </div>
+                        <div {...getRootProps({ className: 'dropzone' })}>
+                          <input {...getInputProps()} />
+                          <p className='drag-n-drop-zone'><Upload className="upload-icon-drag-zone" />Drag 'n' drop or click to select files</p>
+                          <ul>
+                            {files.map((file) => (
+                              <li key={file.path}>{file.path}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        {isSubmitted ? (
+                          <p>Form Submitted</p>
+                        ):(
+                          <button onClick={handleStartTraining}>Start Training</button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="form-group">
                 <h2 className='sidebar-title'>Craft Your Prompt</h2>

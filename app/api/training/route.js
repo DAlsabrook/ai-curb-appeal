@@ -59,7 +59,9 @@ async function checkEnvVariables() {
 
 // Function to handle the POST request
 export async function POST(req) {
+
   if (!checkEnvVariables()) {
+    console.log('Did not pass env var check');
     return NextResponse.json({ detail: "Environment variables not set correctly in training route" }, { status: 400 });
   }
 
@@ -68,12 +70,14 @@ export async function POST(req) {
   const userUID = formData.get('uid');
 
   if (!userGivenName) {
+    console.log('Did not pass name check');
     return NextResponse.json({ detail: "Model name is required" }, { status: 400 });
   }
 
   // Check if the name contains only letters and numbers
-  const isValidName = /^[a-zA-Z0-9]+$/.test(userGivenName);
+  const isValidName = /^[a-zA-Z0-9_]+$/.test(userGivenName);
   if (!isValidName) {
+    console.log('Did not pass name formatting check');
     return NextResponse.json({ detail: "Model name must contain only letters and numbers" }, { status: 400 });
   }
 
@@ -86,6 +90,7 @@ export async function POST(req) {
   });
 
   if (images.length === 0) {
+    console.log('Did not pass images > 0 check');
     return NextResponse.json({ detail: "Error loading images" }, { status: 400 });
   }
 
@@ -162,4 +167,8 @@ export async function POST(req) {
     console.error('Error creating model:', error);
     return NextResponse.json({ detail: 'Error creating the model', error: error.message }, { status: 500 });
   }
+}
+
+function GET(req, res) {
+  return NextResponse.json('Working!', { status: 200 });
 }
