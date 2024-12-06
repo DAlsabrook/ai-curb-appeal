@@ -90,14 +90,17 @@ export default function Header() {
       <nav>
         {user ? (
           <div className="user-menu">
-            <div className="credits">
-              <Zap className="credits-icon" />
-              <span>Credits: {user.data.credits}</span>
-            </div>
+
             <div className="dropdown">
-              <button className="avatar-button">
-                <img src={user.data.avatarUrl} alt={user.data.first} className="avatar-image" />
-              </button>
+              <div className='user-display'>
+                <div className="credits">
+                  <Zap className="credits-icon" />
+                  <span>Credits: {user.data.credits}</span>
+                </div>
+                <button className="avatar-button">
+                  <img src={user.data.avatarUrl} alt={user.data.first} className="avatar-image" />
+                </button>
+              </div>
               <div className="dropdown-content">
                 <button onClick={() => setIsAccountSettingsOpen(true)}>
                   <Settings className="dropdown-icon" />

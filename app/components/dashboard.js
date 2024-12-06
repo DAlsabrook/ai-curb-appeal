@@ -262,7 +262,6 @@ export default function Dashboard() {
                     setIsCreateModelModalOpen(true);
                     setIsModelDialogOpen(false);
                     }} className="upload-button">
-                    <Upload className="upload-icon" />
                     Create New Model
                   </Button>
                 </DialogContent>
@@ -309,7 +308,7 @@ export default function Dashboard() {
                         {isSubmitted ? (
                           <p>Form Submitted</p>
                         ):(
-                          <button onClick={handleStartTraining}>Start Training</button>
+                          <button className='create-model-form-button' onClick={handleStartTraining}>Start Training<Upload className="upload-icon"/></button>
                         )}
                       </div>
                     </div>

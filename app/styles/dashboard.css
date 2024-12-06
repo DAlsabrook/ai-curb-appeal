@@ -297,12 +297,6 @@
   color: blue;
 }
 
-.upload-icon {
-  width: 2rem;
-  height: 2rem;
-  color: blue;
-}
-
 .upload-icon-drag-zone {
   color: blue;
   margin: auto;
@@ -316,6 +310,33 @@
   width: 90%;
 
 }
+
+.create-model-form-button {
+  text-align: center;
+  margin: auto;
+  width: 80%;
+  height: 40px;
+  background-color: rgb(72, 102, 255);
+  color: white;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  font-size: medium;
+  margin-top: 20px;
+}
+
+.create-model-form-button:hover {
+  background-color: blue;
+}
+
+.upload-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  color: white;
+}
+
 
 .drag-n-drop-zone {
   background: rgb(223, 223, 223);
