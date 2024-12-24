@@ -13,10 +13,20 @@
 .logo {
   display: flex;
   align-items: center;
+  font-size: 1.5rem;
 }
 
 .logoImg {
   margin-right: 0.5rem;
+  width: 50px;
+}
+
+.login-buttons {
+  display: flex;
+  flex-direction: row;
+  width: 200px;
+  justify-content: space-between;
+  margin-right: 50px;
 }
 
 .user-menu {
