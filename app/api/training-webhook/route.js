@@ -64,12 +64,13 @@ export async function POST(req) {
     logger.info("Webhook source validated");
 
     const parsedBody = JSON.parse(body);
-    logger.info(parsedBody);
     // Extract relevant data from the request body
+    const userUID = parsedBody.uid;
     const modelId = parsedBody.id;
     const status = parsedBody.status; // possible "starting", "processing", "succeeded", "failed", "canceled"
     const versionId = parsedBody.version; // I think this is what we need to make predictions
 
+    logger.info(userUID);
     logger.info(`Data received from Replicate: ${JSON.stringify(parsedBody)}`);
 
     // Check if the model training is completed

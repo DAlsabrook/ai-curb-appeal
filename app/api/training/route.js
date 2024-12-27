@@ -142,7 +142,7 @@ export async function POST(req) {
           caption_dropout_rate: 0.05,
           wandb_sample_interval: 100
         },
-        webhook: "https://ai-curb-appeal.vercel.app/api/training-webhook?TESTIDDDDD=123"
+        webhook: `https://ai-curb-appeal.vercel.app/api/training-webhook?uid=${userUID}`
         // Add query params like user.uid, model name? to then save in db from webhook?
       };
 
