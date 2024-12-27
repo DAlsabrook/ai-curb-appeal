@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import '../styles/loader.css'
 
 export default function Loader() {
     return (

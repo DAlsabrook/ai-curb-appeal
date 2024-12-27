@@ -1,20 +1,24 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import logger from '../../../lib/logger'; // Adjust the import path as needed
+import { headers } from 'next/headers';
 
 const WEBHOOK_SECRET = process.env.REPLICATE_WEBHOOK_SECRET;
 
 async function verifyWebhook(req) {
-  const webhookId = req.headers['webhook-id'];
-  const webhookTimestamp = req.headers['webhook-timestamp'];
-  const webhookSignature = req.headers['webhook-signature'];
+  const headers = req.headers;
+  const webhookId = headers.get('webhook-id');
+  const webhookTimestamp = headers.get('webhook-timestamp');
+  const webhookSignature = headers.get('webhook-signature');
   const body = await req.text(); // Get the raw body
 
-  logger.info(webhookId);
-  logger.info(req.headers)
-  logger.info(webhookTimestamp);
-  logger.info(webhookSignature)
-  logger.info(WEBHOOK_SECRET);
+  // Log all headers for debugging
+  logger.info('Headers:', JSON.stringify([...headers.entries()]));
+
+  logger.info(`webhook-id: ${webhookId}`);
+  logger.info(`webhook-timestamp: ${webhookTimestamp}`);
+  logger.info(`webhook-signature: ${webhookSignature}`);
+  logger.info(`WEBHOOK_SECRET: ${WEBHOOK_SECRET}`);
 
   if (!WEBHOOK_SECRET) {
     logger.error('Webhook secret is not set');
