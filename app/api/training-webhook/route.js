@@ -11,6 +11,7 @@ async function verifyWebhook(req) {
   const body = await req.text(); // Get the raw body
 
   logger.info(`webhook-id: ${webhookId}`);
+  logger.info(`headers: ${req.headers}`)
   logger.info(`webhook-timestamp ${webhookTimestamp}`);
   logger.info(`webhook-signature ${webhookSignature}`)
   logger.info(`WEBHOOK_SECRET: ${WEBHOOK_SECRET}`);
