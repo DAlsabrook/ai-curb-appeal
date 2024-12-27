@@ -74,7 +74,7 @@ export async function POST(req) {
     const searchParams = url.searchParams;
     const userUID = searchParams.get('uid');
     const userGivenName = searchParams.get('modelName');
-    logger.info(`Query parameter uid: ${myParam}\nModel Name: ${userGivenName}`);
+    logger.info(`Query parameter uid: ${userUID}\nModel Name: ${userGivenName}`);
 
     logger.info(`Data received from Replicate: ${JSON.stringify(parsedBody)}`);
 
