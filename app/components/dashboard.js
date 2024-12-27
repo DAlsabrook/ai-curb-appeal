@@ -42,6 +42,8 @@ export default function Dashboard() {
   // Create Model Modal
   const [modelName, setModelName] = useState(''); // State for model name
   const [modelNameError, setModelNameError] = useState(''); // State for model name error
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Image window
   const [generatedImages, setGeneratedImages] = useState([])
@@ -149,7 +151,6 @@ export default function Dashboard() {
 
   // Drag and drop files
   const [files, setFiles] = useState([]);
-  const [isSubmitted, setisSubmitted] = useState(false);
 
   const onDrop = (acceptedFiles) => {
     setFiles(acceptedFiles);
@@ -168,6 +169,7 @@ export default function Dashboard() {
   };
 
   const handleStartTraining = async () => {
+    setIsSubmitting(true);
     if (!validateModelName(modelName)) {
       return;
     }
@@ -177,9 +179,11 @@ export default function Dashboard() {
     formData.append('uid', user.uid);
     if (files.length < 10) {
       setModelNameError('Must have at least 10 images');
+      setIsSubmitting(false);
       return;
     } else if (files.length > 20) {
       setModelNameError('Too many images (20 max)');
+      setIsSubmitting(false);
       return;
     }
     files.forEach((file, index) => {
@@ -191,16 +195,21 @@ export default function Dashboard() {
         method: 'POST',
         body: formData,
       });
-      console.log(response)
       if (response.ok) {
         // Handle successful response
-        console.log('Model training started successfully');
-        setIsCreateModelModalOpen(false);
+        setIsSubmitted(true);
+        setIsSubmitting(false);
+        setTimeout(() => {
+          setIsCreateModelModalOpen(false);
+          setIsSubmitted(false);
+          }, 2000);
       } else {
         // Handle error response
+        setIsSubmitting(false);
         console.error(`Error from training route`);
       }
     } catch (error) {
+      setIsSubmitting(false);
       console.error('An unexpected error occurred:', error);
     }
   };
@@ -286,7 +295,13 @@ export default function Dashboard() {
 
                       <h2>Create Your Own AI Model</h2>
                       <p>Upload 10-20 images of your home</p>
-                      <div className="create-model-form">
+                      {isSubmitting ? (
+                        <Loader/>
+                      ):(
+                        isSubmitted ? (
+                          <div> Submitted </div>
+                        ):(
+                        <div className="create-model-form">
                         <div>
                           <label htmlFor="model-name">Model Name: </label>
                           <input
@@ -309,12 +324,11 @@ export default function Dashboard() {
                             ))}
                           </ul>
                         </div>
-                        {isSubmitted ? (
-                          <p>Form Submitted</p>
-                        ):(
-                          <button className='create-model-form-button' onClick={handleStartTraining}>Start Training<Upload className="upload-icon"/></button>
-                        )}
+                        <button className='create-model-form-button' onClick={handleStartTraining}>Start Training<Upload className="upload-icon" /></button>
                       </div>
+                      )
+                    )}
+
                     </div>
                   </div>
                 </div>

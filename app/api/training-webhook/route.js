@@ -10,11 +10,11 @@ async function verifyWebhook(req) {
   const webhookSignature = req.headers['webhook-signature'];
   const body = await req.text(); // Get the raw body
 
-  logger.info(`webhook-id: ${webhookId}`);
-  logger.info(`headers: ${req.headers}`)
-  logger.info(`webhook-timestamp ${webhookTimestamp}`);
-  logger.info(`webhook-signature ${webhookSignature}`)
-  logger.info(`WEBHOOK_SECRET: ${WEBHOOK_SECRET}`);
+  logger.info(webhookId);
+  logger.info(req.headers)
+  logger.info(webhookTimestamp);
+  logger.info(webhookSignature)
+  logger.info(WEBHOOK_SECRET);
 
   if (!WEBHOOK_SECRET) {
     logger.error('Webhook secret is not set');
