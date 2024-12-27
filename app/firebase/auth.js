@@ -6,6 +6,7 @@ import { auth } from './firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { db_AddUser, db_UpdateUser, db_GetUser } from './database'
 import { getImageFromStorage } from './storage'
+import Logger from '@/lib/logger'
 
 export const registerUser = async (email, password) => {
   // Sign up
@@ -54,10 +55,10 @@ export const loginUser = async (email, password) => {
             newModel.generatedURLs.push(imgData[1]); // bool: If saved or not
           } else {
             // delete whatever img path didn't work from the database
-            console.error('Failed to get image URL');
+            Logger.error('Firebase Auth File: Failed to get image URL');
           }
         } catch (error) {
-          console.error(`Error fetching image from storage for path ${filePath}:`, error);
+          Logger.error(`Firebase Auth File: Error fetching image from storage for path ${filePath}:`, error);
         }
       }));
       dbModels.push(newModel);
@@ -66,7 +67,7 @@ export const loginUser = async (email, password) => {
     userResult.data.models = dbModels;
     return userResult;
   } catch (error) {
-    console.error('Error logging in user:', error);
+    Logger.error('Firebase Auth File: Error logging in user:', error);
     throw error;
   }
 };

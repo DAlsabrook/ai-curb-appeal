@@ -9,6 +9,7 @@ body {
   font-family: 'Noto Sans';
   z-index: -2;
   box-sizing: border-box;
+  /* overflow: hidden; */
 }
 
 /* Custom scrollbar styles for webkit-based browsers */

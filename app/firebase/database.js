@@ -1,6 +1,7 @@
 // services/database.js
 import { db, auth } from './firebaseConfig';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import Logger from '@/lib/logger'
 
 export async function db_AddUser(user) {
   try {
@@ -11,10 +12,10 @@ export async function db_AddUser(user) {
       created_at: new Date().toISOString(),
       credits: 0
     });
-    console.log('User created successfully:', user);
+    Logger.info('User created successfully:', user);
     return user; // Return the created user object
   } catch (error) {
-    console.error('Error creating user:', error);
+    Logger.error('Database.js - Error creating user:', error);
     throw error; // Re-throw the error to handle it in the calling code
   }
 }
@@ -30,9 +31,9 @@ export async function db_DeleteUser(userId) {
     // Delete user data from Firestore
     const userRef = doc(db, 'users', userId);
     await deleteDoc(userRef);
-    console.log('User deleted successfully:', userId);
+    Logger.info('User deleted successfully:', userId);
   } catch (error) {
-    console.error('Error deleting user:', error);
+    Logger.error('Database.js - Error deleting user:', error);
     throw error; // Re-throw the error to handle it in the calling code
   }
 }
@@ -46,11 +47,11 @@ export async function db_GetUser(userId) {
       const userData = userDoc.data();
       return userData; // Return the user data
     } else {
-      console.log('firebase/database db_GetUser: No such user!');
+      Logger.info('firebase/database db_GetUser: No such user!');
       return null; // Return null if the user doesn't exist
     }
   } catch (error) {
-    console.error('Error getting user:', error);
+    Logger.error('Database.js - Error getting user:', error);
     throw error; // Re-throw the error to handle it in the calling code
   }
 }

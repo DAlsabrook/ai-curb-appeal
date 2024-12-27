@@ -1,6 +1,7 @@
 import { storage } from './firebaseConfig';
 import { ref, uploadBytes, getDownloadURL, listAll, getStorage } from 'firebase/storage';
 import axios from 'axios';
+import Logger from '@lib/logger'
 
 const uploadImages = async (files, userUID, modelName) => {
   try {
@@ -29,7 +30,7 @@ const uploadZip = async (zipFile, userUID, modelName) => {
     return downloadURL; // Return the download URL
   } catch (error) {
     // Handle upload errors
-    console.error('Upload error:', error);
+    Logger.error('Storage.js - Upload error:', error);
     throw error; // throw the error to handle it in the calling function
   }
 }
@@ -53,7 +54,7 @@ async function getGeneratedImages(folderPath) {
 
     return imageUrls;
   } catch (error) {
-    console.error("Error getting images:", error);
+    Logger.error("Storage.js - Error getting images:", error);
     return []; // Return an empty array on error
   }
 }
@@ -76,7 +77,7 @@ async function getImageFromStorage(imagePath) {
     return downloadURL;
   } catch (error) {
     // Handle any errors
-    console.error('Error getting image:', error);
+    Logger.error('Storage.js - Error getting image:', error);
     return null;
   }
 }
@@ -99,7 +100,7 @@ async function saveImageToStorage(folderPath, imageUrl) {
     const downloadURL = await getDownloadURL(imageRef);
     return downloadURL;
   } catch (error) {
-    console.error("Error saving image to storage:", error);
+    Logger.error("Storage.js - Error saving image to storage:", error);
     throw error;
   }
 }

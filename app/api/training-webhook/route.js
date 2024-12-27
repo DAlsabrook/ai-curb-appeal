@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
+import Logger from '@/lib/logger'
 
 // Your webhook signing key (retrieve this from Replicate and store securely)
 const WEBHOOK_SECRET = process.env.REPLICATE_WEBHOOK_SECRET;
@@ -14,8 +15,11 @@ async function verifyWebhook(req) {
   const signedContent = `${webhookId}.${webhookTimestamp}.${body}`;
 
   if (!WEBHOOK_SECRET) {
+    Logger.error('Training-Webhook route - WEBHOOK_SECRET not set.')
     return NextResponse.json({ message: 'Secret not set' }, { status: 400 });
   }
+
+  Logger.info(WEBHOOK_SECRET);
   // Base64 decode the secret
   const secretBytes = Buffer.from(WEBHOOK_SECRET.split('_')[1], 'base64');
 

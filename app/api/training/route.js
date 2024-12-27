@@ -3,6 +3,7 @@ import Replicate from "replicate";
 import sharp from 'sharp'; // Resizing images
 import JSZip from 'jszip'; // Create zip files
 import { uploadZip } from '../../firebase/storage'; // Import the uploadZip function
+import Logger from '@/lib/logger'
 
 // Initialize Rep client with the API token
 const replicate = new Replicate({
@@ -50,7 +51,7 @@ async function checkEnvVariables() {
 
   for (const key in tokens) {
     if (!tokens[key]) {
-      console.log(`${key} is not set`);
+      Logger.error(`${key} is not set`);
       return false;
     }
   }
@@ -61,7 +62,7 @@ async function checkEnvVariables() {
 export async function POST(req) {
 
   if (!checkEnvVariables()) {
-    console.log('Did not pass env var check');
+    Logger.error('Training Route - Did not pass all env var checks.');
     return NextResponse.json({ detail: "Environment variables not set correctly in training route" }, { status: 400 });
   }
 
@@ -70,14 +71,14 @@ export async function POST(req) {
   const userUID = formData.get('uid');
 
   if (!userGivenName) {
-    console.log('Did not pass name check');
+    Logger.error('Training Route - Model name is required.');
     return NextResponse.json({ detail: "Model name is required" }, { status: 400 });
   }
 
   // Check if the name contains only letters and numbers
   const isValidName = /^[a-zA-Z0-9_]+$/.test(userGivenName);
   if (!isValidName) {
-    console.log('Did not pass name formatting check');
+    Logger.error('Training Route - Model name must contain only letters and numbers');
     return NextResponse.json({ detail: "Model name must contain only letters and numbers" }, { status: 400 });
   }
 
@@ -90,23 +91,18 @@ export async function POST(req) {
   });
 
   if (images.length === 0) {
-    console.log('Did not pass images > 0 check');
+    Logger.error('Training Route - Did not pass images > 0 check.');
     return NextResponse.json({ detail: "Error loading images" }, { status: 400 });
   }
 
   // Resize images to a maximum size of 1MB
   const resizedImages = await resizeImages(images);
-  console.log('Images resized');
 
   // Create zip file from resized images
   const zipContent = await createZip(resizedImages);
-  console.log('Zip Created');
 
   // Upload the zip file to Firebase Storage
   const downloadURL = await uploadZip(zipContent, userUID, userGivenName);
-  console.log('Zip uploaded');
-  console.log(downloadURL)
-
 
   try { // Create the model
     const owner = 'dalsabrook';
@@ -155,14 +151,14 @@ export async function POST(req) {
       // Possibly delete the .zip from firebase after use.
       // Not sure if it is cheaper to keep the files or use operations to delete them
 
-      console.log(`Training URL: https://replicate.com/p/${training.id}`);
+      Logger.info(`Training Route - Training URL: https://replicate.com/p/${training.id}`);
       return NextResponse.json({ detail: 'Model training has started!', trainedModel: training }, { status: 200 });
     } catch (error) {
-      console.log(error);
+      Logger.error(error);
       return NextResponse.json({ detail: 'Error during model training', error: error.message }, { status: 500 });
     }
   } catch (error) {
-    console.error('Error creating model:', error);
+    Logger.error('Training Route - Error creating model:', error);
     return NextResponse.json({ detail: 'Error creating the model', error: error.message }, { status: 500 });
   }
 }
