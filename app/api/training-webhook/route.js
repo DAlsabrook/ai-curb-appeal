@@ -1,24 +1,13 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import logger from '../../../lib/logger'; // Adjust the import path as needed
-import { headers } from 'next/headers';
 
 const WEBHOOK_SECRET = process.env.REPLICATE_WEBHOOK_SECRET;
 
-async function verifyWebhook(req) {
-  const headers = req.headers;
+async function verifyWebhook(headers, body) {
   const webhookId = headers.get('webhook-id');
   const webhookTimestamp = headers.get('webhook-timestamp');
   const webhookSignature = headers.get('webhook-signature');
-  const body = await req.text(); // Get the raw body
-
-  // Log all headers for debugging
-  logger.info('Headers:', JSON.stringify([...headers.entries()]));
-
-  logger.info(`webhook-id: ${webhookId}`);
-  logger.info(`webhook-timestamp: ${webhookTimestamp}`);
-  logger.info(`webhook-signature: ${webhookSignature}`);
-  logger.info(`WEBHOOK_SECRET: ${WEBHOOK_SECRET}`);
 
   if (!WEBHOOK_SECRET) {
     logger.error('Webhook secret is not set');
@@ -27,7 +16,6 @@ async function verifyWebhook(req) {
 
   // Construct the signed content
   const signedContent = `${webhookId}.${webhookTimestamp}.${body}`;
-  logger.info(`signedContent from replicate: ${signedContent}`)
 
   // Base64 decode the secret
   const secretParts = WEBHOOK_SECRET.split('_');
@@ -35,24 +23,19 @@ async function verifyWebhook(req) {
     logger.error('Invalid webhook secret format');
     throw new Error('Invalid webhook secret format');
   }
-  logger.info(`secretParts: ${secretParts}`)
   const secretBytes = Buffer.from(secretParts[1], 'base64');
-  logger.info(`secretBytes: ${secretBytes}`);
 
   // Calculate the expected signature
   const computedSignature = crypto
     .createHmac('sha256', secretBytes)
     .update(signedContent)
     .digest('base64');
-  logger.info(`computedSignature: ${computedSignature}`);
 
   // Extract the expected signatures from the webhook-signature header
   const expectedSignatures = webhookSignature.split(' ').map(sig => sig.split(',')[1]);
-  logger.info(`expectedSignatures: ${expectedSignatures}`);
 
   // Verify the signature
   const isValid = expectedSignatures.some(expectedSignature => expectedSignature === computedSignature);
-  logger.info(`isValid: ${isValid}`);
 
   // Verify the timestamp to prevent replay attacks
   const tolerance = 5 * 60 * 1000; // 5 minutes
@@ -70,21 +53,24 @@ async function verifyWebhook(req) {
 // Handles POST requests from the webhook
 export async function POST(req) {
   try {
+    const body = await req.text(); // Get the raw body
+
     // Verify the webhook
-    const isValid = await verifyWebhook(req);
+    const isValid = await verifyWebhook(req.headers, body);
     if (!isValid) {
       logger.warn('Invalid webhook signature');
       return NextResponse.json({ message: 'Invalid webhook signature' }, { status: 400 });
     }
+    logger.info("Webhook source validated");
 
-    const body = JSON.parse(await req.text());
-
+    const parsedBody = JSON.parse(body);
+    logger.info(parsedBody);
     // Extract relevant data from the request body
-    const modelId = body.id;
-    const status = body.status; // possible "starting", "processing", "succeeded", "failed", "canceled"
-    const versionId = body.version; // I think this is what we need to make predictions
+    const modelId = parsedBody.id;
+    const status = parsedBody.status; // possible "starting", "processing", "succeeded", "failed", "canceled"
+    const versionId = parsedBody.version; // I think this is what we need to make predictions
 
-    logger.info(`Data received from Replicate: ${JSON.stringify(body)}`);
+    logger.info(`Data received from Replicate: ${JSON.stringify(parsedBody)}`);
 
     // Check if the model training is completed
     if (status === 'succeeded') {
