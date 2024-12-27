@@ -13,6 +13,9 @@ async function verifyWebhook(req) {
   // Construct the signed content
   const signedContent = `${webhookId}.${webhookTimestamp}.${body}`;
 
+  if (!WEBHOOK_SECRET) {
+    return NextResponse.json({ message: 'Secret not set' }, { status: 400 });
+  }
   // Base64 decode the secret
   const secretBytes = Buffer.from(WEBHOOK_SECRET.split('_')[1], 'base64');
 

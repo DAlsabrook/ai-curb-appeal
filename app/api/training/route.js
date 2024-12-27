@@ -147,8 +147,7 @@ export async function POST(req) {
           wandb_sample_interval: 100
         },
         webhook: "https://ai-curb-appeal.vercel.app/api/training-webhook?TESTIDDDDD=123"
-        //commented out because site isnt live yet and this would go unanswered
-        // Docs for webhooks: https://replicate.com/docs/reference/webhooks
+        // Add query params like user.uid, model name? to then save in db from webhook?
       };
 
       const training = await replicate.trainings.create(modelOwner, modelName, versionId, options);
@@ -157,7 +156,6 @@ export async function POST(req) {
       // Not sure if it is cheaper to keep the files or use operations to delete them
 
       console.log(`Training URL: https://replicate.com/p/${training.id}`);
-      // console.log(`Training object passed to frontend: \n${JSON.stringify(training, null, 2) }`)
       return NextResponse.json({ detail: 'Model training has started!', trainedModel: training }, { status: 200 });
     } catch (error) {
       console.log(error);
