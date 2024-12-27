@@ -13,27 +13,31 @@ async function verifyWebhook(req) {
 
   // Construct the signed content
   const signedContent = `${webhookId}.${webhookTimestamp}.${body}`;
+  Logger.info("Content from Replicate: ", signedContent);
 
   if (!WEBHOOK_SECRET) {
     Logger.error('Training-Webhook route - WEBHOOK_SECRET not set.')
     return NextResponse.json({ message: 'Secret not set' }, { status: 400 });
   }
 
-  Logger.info(WEBHOOK_SECRET);
+  Logger.info("WEBHOOK_SECRET", WEBHOOK_SECRET);
   // Base64 decode the secret
   const secretBytes = Buffer.from(WEBHOOK_SECRET.split('_')[1], 'base64');
-
+  Logger.info('secretBytes: ', secretBytes);
   // Calculate the expected signature
   const computedSignature = crypto
     .createHmac('sha256', secretBytes)
     .update(signedContent)
     .digest('base64');
+  Logger.info('computedSignature: ', computedSignature);
 
   // Extract the expected signatures from the webhook-signature header
   const expectedSignatures = webhookSignature.split(' ').map(sig => sig.split(',')[1]);
+  Logger.info("expectedSignatures: ", expectedSignatures)
 
   // Verify the signature
   const isValid = expectedSignatures.some(expectedSignature => expectedSignature === computedSignature);
+  Logger.info("isValid: ", isValid);
 
   // Verify the timestamp to prevent replay attacks
   const tolerance = 5 * 60 * 1000; // 5 minutes
@@ -41,6 +45,7 @@ async function verifyWebhook(req) {
   const webhookTime = parseInt(webhookTimestamp, 10) * 1000;
 
   if (Math.abs(currentTime - webhookTime) > tolerance) {
+    Logger.error("Training-webhook route - Timestamp outside of tolerance.")
     throw new Error('Timestamp outside of tolerance');
   }
 
