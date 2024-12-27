@@ -65,12 +65,17 @@ export async function POST(req) {
 
     const parsedBody = JSON.parse(body);
     // Extract relevant data from the request body
-    const userUID = parsedBody.uid;
     const modelId = parsedBody.id;
     const status = parsedBody.status; // possible "starting", "processing", "succeeded", "failed", "canceled"
     const versionId = parsedBody.version; // I think this is what we need to make predictions
 
-    logger.info(userUID);
+    // Extract query parameters
+    const url = new URL(req.url);
+    const searchParams = url.searchParams;
+    const userUID = searchParams.get('uid');
+    const userGivenName = searchParams.get('modelName');
+    logger.info(`Query parameter uid: ${myParam}\nModel Name: ${userGivenName}`);
+
     logger.info(`Data received from Replicate: ${JSON.stringify(parsedBody)}`);
 
     // Check if the model training is completed

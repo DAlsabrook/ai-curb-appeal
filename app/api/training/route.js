@@ -104,6 +104,9 @@ export async function POST(req) {
   // Upload the zip file to Firebase Storage
   const downloadURL = await uploadZip(zipContent, userUID, userGivenName);
 
+  // Need to auto caption and include cations in zip
+  // https://replicate.com/fofr/batch-image-captioning/api
+
   try { // Create the model
     const owner = 'dalsabrook';
     const visibility = 'private';
@@ -142,7 +145,7 @@ export async function POST(req) {
           caption_dropout_rate: 0.05,
           wandb_sample_interval: 100
         },
-        webhook: `https://ai-curb-appeal.vercel.app/api/training-webhook?uid=${userUID}`
+        webhook: `https://ai-curb-appeal.vercel.app/api/training-webhook?uid=${userUID}&modelName=${userGivenName}`
         // Add query params like user.uid, model name? to then save in db from webhook?
       };
 
