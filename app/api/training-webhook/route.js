@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import Logger from '@/lib/logger'
+import Logger from '../../../lib/logger.js'
 
 // Your webhook signing key (retrieve this from Replicate and store securely)
 const WEBHOOK_SECRET = process.env.REPLICATE_WEBHOOK_SECRET;

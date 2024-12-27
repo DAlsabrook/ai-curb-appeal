@@ -1,7 +1,7 @@
 import { storage } from './firebaseConfig';
 import { ref, uploadBytes, getDownloadURL, listAll, getStorage } from 'firebase/storage';
 import axios from 'axios';
-import Logger from '@lib/logger'
+import Logger from '../../lib/logger.js'
 
 const uploadImages = async (files, userUID, modelName) => {
   try {

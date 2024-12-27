@@ -3,7 +3,7 @@ import Replicate from "replicate";
 import sharp from 'sharp'; // Resizing images
 import JSZip from 'jszip'; // Create zip files
 import { uploadZip } from '../../firebase/storage'; // Import the uploadZip function
-import Logger from '@/lib/logger'
+import Logger from '../../../lib/logger.js'
 
 // Initialize Rep client with the API token
 const replicate = new Replicate({

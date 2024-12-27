@@ -6,7 +6,7 @@ import { auth } from './firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { db_AddUser, db_UpdateUser, db_GetUser } from './database'
 import { getImageFromStorage } from './storage'
-import Logger from '@/lib/logger'
+import Logger from '../../lib/logger.js'
 
 export const registerUser = async (email, password) => {
   // Sign up
