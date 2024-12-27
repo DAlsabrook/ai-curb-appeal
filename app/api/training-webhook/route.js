@@ -1,21 +1,63 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 
+// Your webhook signing key (retrieve this from Replicate and store securely)
+const WEBHOOK_SECRET = process.env.REPLICATE_WEBHOOK_SECRET;
 
-// Route would be aicurbappeal.com/api/training-webhook
+async function verifyWebhook(req) {
+  const webhookId = req.headers['webhook-id'];
+  const webhookTimestamp = req.headers['webhook-timestamp'];
+  const webhookSignature = req.headers['webhook-signature'];
+  const body = await req.text(); // Get the raw body
+
+  // Construct the signed content
+  const signedContent = `${webhookId}.${webhookTimestamp}.${body}`;
+
+  // Base64 decode the secret
+  const secretBytes = Buffer.from(WEBHOOK_SECRET.split('_')[1], 'base64');
+
+  // Calculate the expected signature
+  const computedSignature = crypto
+    .createHmac('sha256', secretBytes)
+    .update(signedContent)
+    .digest('base64');
+
+  // Extract the expected signatures from the webhook-signature header
+  const expectedSignatures = webhookSignature.split(' ').map(sig => sig.split(',')[1]);
+
+  // Verify the signature
+  const isValid = expectedSignatures.some(expectedSignature => expectedSignature === computedSignature);
+
+  // Verify the timestamp to prevent replay attacks
+  const tolerance = 5 * 60 * 1000; // 5 minutes
+  const currentTime = Date.now();
+  const webhookTime = parseInt(webhookTimestamp, 10) * 1000;
+
+  if (Math.abs(currentTime - webhookTime) > tolerance) {
+    throw new Error('Timestamp outside of tolerance');
+  }
+
+  return isValid;
+}
+
 // Handles POST requests from the webhook
 export async function POST(req) {
-  console.log('Webhook has fired and recieved request: ')
-  console.log(req)
   try {
-    const body = await req.json();
+    // Verify the webhook
+    const isValid = await verifyWebhook(req);
+    if (!isValid) {
+      return NextResponse.json({ message: 'Invalid webhook signature' }, { status: 400 });
+    }
+
+    const body = JSON.parse(await req.text());
 
     // Extract relevant data from the request body
     const modelId = body.id;
     const status = body.status; // possible "starting", "processing", "succeeded", "failed", "canceled"
     const versionId = body.version; // I think this is what we need to make predictions
 
-    console.log('Data recieved from Replicate:')
-    console.log(body)
+    console.log('Data received from Replicate:');
+    console.log(body);
 
     // Check if the model training is completed
     if (status === 'succeeded') {
@@ -44,21 +86,3 @@ export function GET() {
 export function PUT() {
   return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 });
 }
-
-
-// Recieved data from replicate
-// {
-//   "id": "ufawqhfynnddngldkgtslldrkq",
-//   "version": "5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa",
-//   "created_at": "2022-04-26T22:13:06.224088Z",
-//   "started_at": null,
-//   "completed_at": null,
-//   "status": "starting",
-//   "input": {
-//     "text": "Alice"
-//   },
-//   "output": null,
-//   "error": null,
-//   "logs": null,
-//   "metrics": { }
-// }

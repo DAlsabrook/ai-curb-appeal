@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
+import Loader from './loader'
 import '../styles/landing.css'
 
 const LandingPage = () => {
@@ -153,25 +154,26 @@ const LandingPage = () => {
 
               <div className="image-container">
                 {isLoading && (
-                  <div className="loader-container">
-                    <div className="ripple-loader">
-                      {[1, 2, 3].map((i) => (
-                        <motion.div
-                          key={i}
-                          className="ripple"
-                          animate={{
-                            scale: [1, 2, 1],
-                            opacity: [0.8, 0, 0.8],
-                          }}
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            delay: i * 0.2,
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
+                  <Loader/>
+                  // <div className="loader-container">
+                  //   <div className="ripple-loader">
+                  //     {[1, 2, 3].map((i) => (
+                  //       <motion.div
+                  //         key={i}
+                  //         className="ripple"
+                  //         animate={{
+                  //           scale: [1, 2, 1],
+                  //           opacity: [0.8, 0, 0.8],
+                  //         }}
+                  //         transition={{
+                  //           duration: 2,
+                  //           repeat: Infinity,
+                  //           delay: i * 0.2,
+                  //         }}
+                  //       />
+                  //     ))}
+                  //   </div>
+                  // </div>
                 )}
                 <AnimatePresence>
                   {showImage && (

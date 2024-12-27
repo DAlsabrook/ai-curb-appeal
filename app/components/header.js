@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import Loader from './loader'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function Header() {
@@ -21,6 +22,7 @@ export default function Header() {
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
   const [isSubscriptionActive, setIsSubscriptionActive] = useState(false)
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
 
   // Sign-up form state
   const [firstName, setFirstName] = useState('')
@@ -33,9 +35,11 @@ export default function Header() {
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoginError('')
+    setIsLoggingIn(true);
     try {
       if (email.toLowerCase() != "dfalsabrook@gmail.com") {
         setLoginError('This site is still under construction. Check back soon!')
+        setIsLoggingIn(false)
         return;
       }
       const response = await fetch('/api/firebase/auth/login', {
@@ -49,10 +53,13 @@ export default function Header() {
       if (response.ok) {
         setUser(data.user);
         setIsLoginModalOpen(false);
+        setIsLoggingIn(false)
       } else {
+        setIsLoggingIn(false)
         setLoginError(data.error);
       }
     } catch (error) {
+      setIsLoggingIn(false)
       setLoginError('An unexpected error occurred');
     }
   }
@@ -270,38 +277,49 @@ export default function Header() {
                     Enter your credentials to access your account.
                   </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleLogin}>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="email" className="text-right">
-                        Email
-                      </Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={handleEmailChange}
-                        className="col-span-3"
-                      />
+
+                  <form onSubmit={handleLogin}>
+                    <div className="grid gap-4 py-4">
+                      {isLoggingIn ? (
+                        <div className="p-20">
+                          <Loader />
+                        </div>
+                      ) : (
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="email" className="text-right">
+                            Email
+                          </Label>
+                          <Input
+                            id="email"
+                            type="email"
+                            value={email}
+                            onChange={handleEmailChange}
+                            className="col-span-3"
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="password" className="text-right">
+                            Password
+                          </Label>
+                          <Input
+                            id="password"
+                            type="password"
+                            value={password}
+                            onChange={handlePasswordChange}
+                            className="col-span-3"
+                          />
+                        </div>
+                      </div>
+                      )}
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="password" className="text-right">
-                        Password
-                      </Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        value={password}
-                        onChange={handlePasswordChange}
-                        className="col-span-3"
-                      />
-                    </div>
-                  </div>
-                  {loginError && <p className="text-red-500 text-sm mt-2">{loginError}</p>}
-                  <DialogFooter>
-                    <Button type="submit">Log In</Button>
-                  </DialogFooter>
-                </form>
+                    {loginError && <p className="text-red-500 text-sm mt-2">{loginError}</p>}
+                    <DialogFooter>
+                      <Button type="submit">Log In</Button>
+                    </DialogFooter>
+                  </form>
+
+
               </DialogContent>
             </Dialog>
           </div>

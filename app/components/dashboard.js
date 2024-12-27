@@ -15,6 +15,7 @@ import '../styles/dashboard.css'
 import { useUser } from './UserContext.js'; // Import the useUser hook
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image'
+import Loader from './loader'
 
 function InfoTooltip({ content }) {
   return (
