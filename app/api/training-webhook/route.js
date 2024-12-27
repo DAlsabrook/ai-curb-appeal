@@ -4,6 +4,8 @@ import { NextResponse } from 'next/server';
 // Route would be aicurbappeal.com/api/training-webhook
 // Handles POST requests from the webhook
 export async function POST(req) {
+  console.log('Webhook has fired and recieved request: ')
+  console.log(req)
   try {
     const body = await req.json();
 

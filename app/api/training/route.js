@@ -146,7 +146,7 @@ export async function POST(req) {
           caption_dropout_rate: 0.05,
           wandb_sample_interval: 100
         },
-        // webhook: "https://aicurbappeal.com/api/training-webhook"
+        webhook: "https://ai-curb-appeal.vercel.app/api/training-webhook"
         //commented out because site isnt live yet and this would go unanswered
         // Docs for webhooks: https://replicate.com/docs/reference/webhooks
       };
