@@ -1,12 +1,14 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import React, { useState, useEffect, useRef } from 'react'
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import '../styles/landing.css'
 
 const LandingPage = () => {
   const [currentPrompt, setCurrentPrompt] = useState('"Red brick with dark paint"')
-  const containerRef = React.useRef(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [showImage, setShowImage] = useState(true)
+  const containerRef = useRef(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -28,6 +30,18 @@ const LandingPage = () => {
     }
     return promptImages[prompt.replace(/"/g, '')]
   }
+
+  useEffect(() => {
+    if (currentPrompt) {
+      setIsLoading(true)
+      setShowImage(false)
+      const timer = setTimeout(() => {
+        setIsLoading(false)
+        setShowImage(true)
+      }, 2000) // Simulate 2 seconds of "AI generation"
+      return () => clearTimeout(timer)
+    }
+  }, [currentPrompt])
 
   const houseImages = [
     '/results/earhart-house-1.jpg',
@@ -52,7 +66,7 @@ const LandingPage = () => {
 
   return (
     <div ref={containerRef} className="landing-page">
-      <section className="hero">
+      <section className="hero no-box">
         <div className="hero-background">
           {columns.map((column, colIndex) => (
             <div key={colIndex} className={`image-column ${colIndex % 2 === 0 ? 'up' : 'down'}`}>
@@ -93,13 +107,13 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section className="how-it-works">
+      <section className="how-it-works no-box">
         <h2>How It Works</h2>
         <div className="steps">
           <div className="step">
             <div className="step-number">1</div>
             <h3>Upload Your Home</h3>
-            <p>Take a photos or upload existing 10 - 20 images of your property</p>
+            <p>Take 10 - 20 images of your property and upload them to our system</p>
           </div>
           <div className="step">
             <div className="step-number">2</div>
@@ -109,7 +123,7 @@ const LandingPage = () => {
           <div className="step">
             <div className="step-number">3</div>
             <h3>Generate Designs</h3>
-            <p>Use text prompts to create unlimited exterior design options</p>
+            <p>Use text prompts to change the exterior design of your home</p>
           </div>
         </div>
       </section>
@@ -117,6 +131,52 @@ const LandingPage = () => {
       <section className="interactive-demo">
         <h2>See the Magic in Action</h2>
         <div className="demo-container">
+          <div className="image-comparison">
+            <div className="before-image">
+              <h3>Before</h3>
+              <img src="/prompt_images/before-house.jpg" alt="House before renovation" />
+            </div>
+            <div className="after-image">
+              <h3>After Prompt: {currentPrompt}</h3>
+
+              <div className="image-container">
+                {isLoading && (
+                  <div className="loader-container">
+                    <div className="ripple-loader">
+                      {[1, 2, 3].map((i) => (
+                        <motion.div
+                          key={i}
+                          className="ripple"
+                          animate={{
+                            scale: [1, 2, 1],
+                            opacity: [0.8, 0, 0.8],
+                          }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            delay: i * 0.2,
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <AnimatePresence>
+                  {showImage && (
+                    <motion.img
+                      key={currentPrompt}
+                      src={getImageForPrompt(currentPrompt)}
+                      alt={`${currentPrompt} style house`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
           <div className="prompt-selector">
             <p>Select a prompt to visualize:</p>
             <div className="prompt-buttons">
@@ -131,23 +191,10 @@ const LandingPage = () => {
               ))}
             </div>
           </div>
-          <div className="image-comparison">
-            <div className="before-image">
-              <h3>Before</h3>
-              <img src="/prompt_images/before-house.jpg" alt="House before renovation" />
-            </div>
-            <div className="after-image">
-              <h3>After Prompt: {currentPrompt}</h3>
-              <img
-                src={getImageForPrompt(currentPrompt)}
-                alt={`${currentPrompt} style house`}
-              />
-            </div>
-          </div>
         </div>
       </section>
 
-      <section className="testimonials">
+      <section className="testimonials no-box">
         <h2>What Our Users Say</h2>
         <div className="testimonial-grid">
           <div className="testimonial-card">
@@ -202,3 +249,4 @@ const LandingPage = () => {
 }
 
 export default LandingPage
+
