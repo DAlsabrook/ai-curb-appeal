@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 import '../styles/landing.css'
 
 const LandingPage = () => {
@@ -72,7 +73,13 @@ const LandingPage = () => {
             <div key={colIndex} className={`image-column ${colIndex % 2 === 0 ? 'up' : 'down'}`}>
               {Array.from({ length: 2 }).map((_, repeatIndex) => (
                 column.map((img, imgIndex) => (
-                  <img key={`${colIndex}-${imgIndex}-${repeatIndex}`} src={img} alt={`House ${imgIndex + 1}`} />
+                  <Image
+                    src={img}
+                    alt={`House ${imgIndex + 1}`}
+                    key={`${colIndex}-${imgIndex}-${repeatIndex}`}
+                    width={150}
+                    height={100}
+                    />
                 ))
               ))}
             </div>
@@ -134,7 +141,12 @@ const LandingPage = () => {
           <div className="image-comparison">
             <div className="before-image">
               <h3>Before</h3>
-              <img src="/prompt_images/before-house.jpg" alt="House before renovation" />
+              <Image
+                src={"/prompt_images/before-house.jpg"}
+                alt={"House before renovation"}
+                width={200}
+                height={500}
+                />
             </div>
             <div className="after-image">
               <h3>After Prompt: {currentPrompt}</h3>
@@ -198,11 +210,11 @@ const LandingPage = () => {
         <h2>What Our Users Say</h2>
         <div className="testimonial-grid">
           <div className="testimonial-card">
-            <p>"I saved thousands on my renovation by visualizing different options first!"</p>
+            <p>&quot;I saved thousands on my renovation by visualizing different options first!&quot;</p>
             <h4>- Sarah J., Homeowner</h4>
           </div>
           <div className="testimonial-card">
-            <p>"My clients love seeing multiple design options. It's revolutionized my business."</p>
+            <p>&quot;My clients love seeing multiple design options. It&apos;s revolutionized my business.&quot;</p>
             <h4>- Mark T., Interior Designer</h4>
           </div>
         </div>
@@ -229,7 +241,12 @@ const LandingPage = () => {
       <footer>
         <div className="footer-content">
           <div className="footer-logo">
-            <img src="/whiteCircle-black.png" alt="AI Curb Appeal Logo" />
+            <Image
+              src={'/whiteCircle-black.png'}
+              alt={'AI Curb Appeal Logo'}
+              width={40}
+              height={40}
+              />
           </div>
           <div className="footer-links">
             <a href="/privacy">Privacy Policy</a>

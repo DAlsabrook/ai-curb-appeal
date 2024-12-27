@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { useUser } from './UserContext'
 import { Zap, Settings, CreditCard, LogOut } from 'lucide-react'
 import '../styles/header.css'
@@ -8,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function Header() {
@@ -133,7 +135,12 @@ export default function Header() {
   return (
     <header className="header">
       <div className="logo">
-        <img src="/whiteCircle-black.png" alt="House logo" className="logoImg" width={35} height={35} />
+        <Image
+          src={'/whiteCircle-black.png'}
+          alt={'AI Curb Appeal Logo'}
+          width={40}
+          height={40}
+          />
         <p>AI CurbAppeal</p>
       </div>
       <nav>
@@ -146,7 +153,13 @@ export default function Header() {
                   <span>Credits: {user.data.credits}</span>
                 </div>
                 <button className="avatar-button">
-                  <img src={user.data.avatarUrl} alt={user.data.first} className="avatar-image" />
+                  <Image
+                    src={user.data.avatarUrl}
+                    alt={user.data.first}
+                    className={'avatar-image'}
+                    width={40}
+                    height={40}
+                    />
                 </button>
               </div>
               <div className="dropdown-content">

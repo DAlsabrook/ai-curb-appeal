@@ -14,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import '../styles/dashboard.css'
 import { useUser } from './UserContext.js'; // Import the useUser hook
 import { useDropzone } from 'react-dropzone';
+import Image from 'next/image'
 
 function InfoTooltip({ content }) {
   return (
@@ -225,11 +226,13 @@ export default function Dashboard() {
                   <div className="model-list">
                     {models.map((model) => (
                       <div key={model.id} className="model-item">
-                        <img
+                        <Image
                           src={model.image}
                           alt={model.name}
-                          className="model-image"
-                        />
+                          className={"model-image"}
+                          width={150}
+                          height={100}
+                          />
                         <Button onClick={() => handleModelSelect(model.name)} className="model-select-overlay">
                           {model.name}
                         </Button>
@@ -298,7 +301,7 @@ export default function Dashboard() {
                         </div>
                         <div {...getRootProps({ className: 'dropzone' })}>
                           <input {...getInputProps()} />
-                          <p className='drag-n-drop-zone'><Upload className="upload-icon-drag-zone" />Drag 'n' drop or click to select files</p>
+                          <p className='drag-n-drop-zone'><Upload className="upload-icon-drag-zone" />Drag &apos;n&apos; drop or click to select files</p>
                           <ul>
                             {files.map((file) => (
                               <li key={file.path}>{file.path}</li>
@@ -429,7 +432,13 @@ export default function Dashboard() {
                         <Card key={`loading-${index}`} className="image-card loading">
                           <CardContent className="image-content">
                             <div className="image-wrapper">
-                              <img src={image} alt={`Generating ${index + 1}`} className="generating-image" />
+                              <Image
+                                src={image}
+                                alt={`Generating ${index + 1}`}
+                                className={"generating-image"}
+                                width={200}
+                                height={500}
+                                />
                               <div className="loading-overlay">
                                 <Loader2 className="loading-icon" />
                               </div>
