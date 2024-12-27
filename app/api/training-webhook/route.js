@@ -74,14 +74,11 @@ export async function POST(req) {
     const searchParams = url.searchParams;
     const userUID = searchParams.get('uid');
     const userGivenName = searchParams.get('modelName');
-    logger.info(`Query parameter uid: ${userUID}\nModel Name: ${userGivenName}`);
-
-    logger.info(`Data received from Replicate: ${JSON.stringify(parsedBody)}`);
 
     // Check if the model training is completed
     if (status === 'succeeded') {
       // Log the model ID and version ID
-      logger.info(`Model ID: ${modelId} is trained, Version ID: ${versionId}`);
+      logger.info(`Model ID: ${modelId}\nVersion ID: ${versionId}\nUser UID: ${userUID}\nModel Name: ${userGivenName}`);
 
       // Example: Save the model version ID to a database
 
