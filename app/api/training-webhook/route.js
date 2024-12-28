@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import logger from '../../../lib/logger'; // Adjust the import path as needed
+import { db_UpdateUser, db_GetUser } from '../firebase/database';
 
 const WEBHOOK_SECRET = process.env.REPLICATE_WEBHOOK_SECRET;
 
@@ -61,13 +62,12 @@ export async function POST(req) {
       logger.warn('Invalid webhook signature');
       return NextResponse.json({ message: 'Invalid webhook signature' }, { status: 400 });
     }
-    logger.info("Webhook source validated");
 
-    const parsedBody = JSON.parse(body);
     // Extract relevant data from the request body
+    const parsedBody = JSON.parse(body);
     const modelId = parsedBody.id;
     const status = parsedBody.status; // possible "starting", "processing", "succeeded", "failed", "canceled"
-    const versionId = parsedBody.version; // I think this is what we need to make predictions
+    const versionId = parsedBody.version;
 
     // Extract query parameters
     const url = new URL(req.url);
@@ -77,10 +77,25 @@ export async function POST(req) {
 
     // Check if the model training is completed
     if (status === 'succeeded') {
-      // Log the model ID and version ID
-      logger.info(`Model ID: ${modelId}\nVersion ID: ${versionId}\nUser UID: ${userUID}\nModel Name: ${userGivenName}`);
+      // Get the user current state in DB
+      const user = await db_GetUser(userUID);
+      if (!user) {
+        logger.error(`User with UID ${userUID} not found`);
+        return NextResponse.json({ message: 'User not found' }, { status: 404 });
+      }
 
-      // Example: Save the model version ID to a database
+      const newCredits = user.credits - 100;
+      const modelAndVersion = `${userGivenName}/${versionId}`;
+      const inputImages = parsedBody.input.input_images;
+      const updates = {
+        models: {
+          [modelAndVersion]: { "inputImagesZip": inputImages },
+        },
+        credits: newCredits
+      };
+
+      // Update the user in the database
+      await db_UpdateUser(userUID, updates);
 
       // Respond with a success message
       return NextResponse.json({ message: 'Webhook received and processed successfully' }, { status: 200 });

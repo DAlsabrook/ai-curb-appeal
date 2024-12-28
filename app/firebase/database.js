@@ -62,7 +62,7 @@ export async function db_UpdateUser(userId, updates) {
   //   displayName: 'New Display Name',
   //   // ... other fields to update
   // };
-  // updateUser('user123', updates);
+  // updateUser('userUID', updates);
   try {
     const userRef = doc(db, 'users', userId);
     await updateDoc(userRef, updates);
