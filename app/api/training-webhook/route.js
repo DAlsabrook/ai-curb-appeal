@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import logger from '../../../lib/logger'; // Adjust the import path as needed
-import { db_UpdateUser, db_GetUser } from '../firebase/database';
+import { db_UpdateUser, db_GetUser } from '../../firebase/database';
 
 const WEBHOOK_SECRET = process.env.REPLICATE_WEBHOOK_SECRET;
 
