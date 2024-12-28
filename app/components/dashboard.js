@@ -296,7 +296,9 @@ export default function Dashboard() {
                       <h2>Create Your Own AI Model</h2>
                       <p>Upload 10-20 images of your home</p>
                       {isSubmitting ? (
-                        <Loader/>
+                        <div className="mt-10 p-20">
+                          <Loader />
+                        </div>
                       ):(
                         isSubmitted ? (
                           <div> Submitted </div>

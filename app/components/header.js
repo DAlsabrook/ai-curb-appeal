@@ -31,6 +31,8 @@ export default function Header() {
   const [signUpPassword, setSignUpPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [signUpError, setSignUpError] = useState('')
+  const [userRole, setUserRole] = useState('')
+  const [referralSource, setReferralSource] = useState('')
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -65,41 +67,42 @@ export default function Header() {
   }
 
   const handleSignUp = async (e) => {
-    e.preventDefault()
-    setSignUpError('')
+    e.preventDefault();
+    setSignUpError('');
 
     if (signUpPassword !== confirmPassword) {
-      setSignUpError('Passwords do not match')
-      return
+      setSignUpError('Passwords do not match');
+      return;
     }
 
-    try {
-      setSignUpError("Working like is should.")
-      // const response = await fetch('/api/firebase/auth/signup', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     firstName,
-      //     lastName,
-      //     email: signUpEmail,
-      //     password: signUpPassword,
-      //   }),
-      // })
+    // try {
+    //   const response = await fetch('/api/firebase/auth/signup', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       firstName,
+    //       lastName,
+    //       email: signUpEmail,
+    //       password: signUpPassword,
+    //       userRole,
+    //       referralSource,
+    //     }),
+    //   });
 
-      // const data = await response.json()
+    //   const data = await response.json();
 
-      // if (response.ok) {
-      //   setUser(data.user)
-      //   setIsSignUpModalOpen(false)
-      // } else {
-      //   setSignUpError(data.error)
-      // }
-    } catch (error) {
-      setSignUpError('An unexpected error occurred')
-    }
-  }
+    //   if (response.ok) {
+    //     setUser(data.user);
+    //     setIsSignUpModalOpen(false);
+    //   } else {
+    //     setSignUpError(data.error);
+    //   }
+    // } catch (error) {
+    //   setSignUpError('An unexpected error occurred');
+    // }
+  };
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -195,75 +198,111 @@ export default function Header() {
                 <DialogHeader>
                   <DialogTitle>Sign Up</DialogTitle>
                   <DialogDescription>
-                    Create your account to get started.
+                    Join the waitlist! An email will be sent when the site goes live!
                   </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleSignUp}>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="firstName" className="text-right">
-                        First Name
-                      </Label>
-                      <Input
-                        id="firstName"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        className="col-span-3"
-                      />
+                  <form onSubmit={handleSignUp}>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="firstName" className="text-right">
+                          First Name
+                        </Label>
+                        <Input
+                          id="firstName"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="lastName" className="text-right">
+                          Last Name
+                        </Label>
+                        <Input
+                          id="lastName"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="userRole" className="text-right">
+                          I am a
+                        </Label>
+                        <select
+                          id="userRole"
+                          value={userRole}
+                          onChange={(e) => setUserRole(e.target.value)}
+                          className="col-span-3"
+                        >
+                          <option value="">Select your role</option>
+                          <option value="homeowner">Homeowner (Personal home)</option>
+                          <option value="landlord">Property Owner (Landlord)</option>
+                          <option value="tenant">Tenant</option>
+                          <option value="designer">Designer</option>
+                          <option value="contractor">Contractor</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="referralSource" className="text-right">
+                          How did you hear about us?
+                        </Label>
+                        <select
+                          id="referralSource"
+                          value={referralSource}
+                          onChange={(e) => setReferralSource(e.target.value)}
+                          className="col-span-3"
+                        >
+                          <option value="">Select an option</option>
+                          <option value="search_engine">Search Engine</option>
+                          <option value="advertisement">Advertisement</option>
+                          <option value="friend">Friend</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="signUpEmail" className="text-right">
+                          Email
+                        </Label>
+                        <Input
+                          id="signUpEmail"
+                          type="email"
+                          value={signUpEmail}
+                          onChange={(e) => setSignUpEmail(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="signUpPassword" className="text-right">
+                          Password
+                        </Label>
+                        <Input
+                          id="signUpPassword"
+                          type="password"
+                          value={signUpPassword}
+                          onChange={(e) => setSignUpPassword(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="confirmPassword" className="text-right">
+                          Confirm Password
+                        </Label>
+                        <Input
+                          id="confirmPassword"
+                          type="password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="lastName" className="text-right">
-                        Last Name
-                      </Label>
-                      <Input
-                        id="lastName"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="signUpEmail" className="text-right">
-                        Email
-                      </Label>
-                      <Input
-                        id="signUpEmail"
-                        type="email"
-                        value={signUpEmail}
-                        onChange={(e) => setSignUpEmail(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="signUpPassword" className="text-right">
-                        Password
-                      </Label>
-                      <Input
-                        id="signUpPassword"
-                        type="password"
-                        value={signUpPassword}
-                        onChange={(e) => setSignUpPassword(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="confirmPassword" className="text-right">
-                        Confirm
-                      </Label>
-                      <Input
-                        id="confirmPassword"
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-                  </div>
-                  {signUpError && <p className="text-red-500 text-sm mt-2">{signUpError}</p>}
-                  <DialogFooter>
-                    <Button type="submit">Sign Up</Button>
-                  </DialogFooter>
-                </form>
+                    {signUpError && <p className="text-red-500 text-sm mt-2">{signUpError}</p>}
+                    <DialogFooter>
+                      <Button type="submit">Sign Up</Button>
+                    </DialogFooter>
+                  </form>
               </DialogContent>
             </Dialog>
             <Dialog open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen}>
@@ -281,7 +320,7 @@ export default function Header() {
                   <form onSubmit={handleLogin}>
                     <div className="grid gap-4 py-4">
                       {isLoggingIn ? (
-                        <div className="p-20">
+                        <div className="mt-10 p-20">
                           <Loader />
                         </div>
                       ) : (
