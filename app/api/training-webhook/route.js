@@ -85,11 +85,12 @@ export async function POST(req) {
       }
 
       const newCredits = user.credits - 100;
-      const modelAndVersion = `${userGivenName}/${versionId}`;
       const inputImages = parsedBody.input.input_images;
       const updates = {
-        models: {
-          [modelAndVersion]: { "inputImagesZip": inputImages },
+        [`models.${userGivenName}`]: {
+          "inputImagesZip": inputImages,
+          "version": versionId,
+          "modelID": modelId
         },
         credits: newCredits
       };
