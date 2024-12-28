@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { registerUser } from '@/app/firebase/auth';
-import { db_AddUser, db_UpdateUser, db_GetUser } from './database';
+import { db_UpdateUser } from '@/app/firebase/database';
 
 export async function GET(req) {
   try {
@@ -14,14 +14,16 @@ export async function POST(req) {
   // Handle user signup function
   try {
     const user = await registerUser();
-    const updates = {
-        [`models.${userGivenName}`]: {
-            "inputImagesZip": inputImages,
-            "version": versionId,
-            "modelID": modelId
-        },
-        credits: newCredits
-    };
+
+    //Update this with data from the form
+    // const updates = {
+    //     [`models.${userGivenName}`]: {
+    //         "inputImagesZip": inputImages,
+    //         "version": versionId,
+    //         "modelID": modelId
+    //     },
+    //     credits: newCredits
+    // };
 
     // Update the user in the database
     await db_UpdateUser(userUID, updates);
