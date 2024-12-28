@@ -37,7 +37,6 @@ export const loginUser = async (email, password) => {
 
     // Check if userData.models exists and is an object
     if (userData.models && typeof userData.models === 'object') {
-      Logger.info(JSON.stringify(userData))
       // Add models to list from database
       await Promise.all(
         Object.entries(userData.models).map(async (model) => {

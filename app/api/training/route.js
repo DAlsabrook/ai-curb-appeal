@@ -44,6 +44,19 @@ async function createZip(images) {
   return await zip.generateAsync({ type: 'nodebuffer' });
 }
 
+// Function to extract zip file
+async function extractZip(zipBuffer) {
+  const zip = await JSZip.loadAsync(zipBuffer);
+  const files = [];
+  await Promise.all(Object.keys(zip.files).map(async (filename) => {
+    const file = zip.files[filename];
+    if (!file.dir) {
+      files.push({ name: filename, buffer: await file.async('nodebuffer') });
+    }
+  }));
+  return files;
+}
+
 async function checkEnvVariables() {
   const tokens = {
     'Replicate': process.env.REPLICATE_API_TOKEN
@@ -101,12 +114,30 @@ export async function POST(req) {
   // Create zip file from resized images
   const zipContent = await createZip(resizedImages);
 
-  // Upload the zip file to Firebase Storage
-  const downloadURL = await uploadZip(zipContent, userUID, userGivenName);
-
   // Need to auto caption and include cations in zip
   // https://replicate.com/fofr/batch-image-captioning/api
+  Logger.info('Caption started')
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+  const input = {
+    system_prompt: "Write a six-sentence caption for this image. In the first sentence, describe the style and type of the image, emphasizing its photorealistic, high-definition quality. In the remaining sentences, provide a precise and detailed description of the home and its surroundings, focusing on architectural features, textures, and landscaping elements. Use clear, descriptive language suitable for prompting a text-to-image model, highlighting the realism and intricacy of the details. Avoid subjective phrases like 'evokes a sense of' and instead describe the exact composition and features. Comma-separate keywords rather than using 'or'. Precision and attention to architectural and environmental detail are essential.\n\nGood examples are:\n\n'Photorealistic HD photo of a modern suburban home with a white facade, large glass windows, and a dark gray roof, surrounded by a manicured lawn and a cobblestone pathway, detailed textures on the siding, realistic reflections in the windows, vibrant lighting, and a clear blue sky.'\n\n'Photorealistic high-definition image of a classic Victorian-style home with red brick walls, a steeply pitched roof, and ornate wooden trim, lush green landscaping with blooming flowers, a wraparound porch with wooden railings, and dramatic shadows cast by afternoon sunlight.'\n\n'Photorealistic HD photo of a Mediterranean-style villa with stucco walls, a terracotta roof, and arched windows, surrounded by palm trees and a gravel driveway, intricate detailing in the balcony railings, warm evening light, and a vivid orange and pink sunset sky in the background.'\n",
+    openai_api_key: OPENAI_API_KEY,
+    image_zip_archive: zipContent,
+    model: "gpt-4o-mini"
+  };
 
+  const output = await replicate.run("fofr/batch-image-captioning:d0adb15f4826881a68f1d82e0b10fe2ee1af536632dc8313f7f777ed8d264726", { input });
+
+  // Fetch the caption zip file
+  const captionZipBuffer = Buffer.from(await fetch(output).then(res => res.arrayBuffer()));
+  const captionFiles = await extractZip(captionZipBuffer);
+  // Combine resized images and caption files into a new zip file
+  const combinedFiles = [...resizedImages, ...captionFiles];
+  const combinedZipContent = await createZip(combinedFiles);
+  // Upload the combined zip file to Firebase Storage
+  const combinedDownloadURL = await uploadZip(combinedZipContent, userUID, userGivenName);
+
+  // return NextResponse.json({ detail: 'Model training has started!' }, { status: 200 });
+  // end of caption
   try { // Create the model
     const owner = 'dalsabrook';
     const visibility = 'private';
@@ -137,7 +168,7 @@ export async function POST(req) {
           batch_size: 1,
           resolution: "512,768,1024",
           autocaption: false,
-          input_images: downloadURL,
+          input_images: combinedDownloadURL,
           trigger_word: "TOK", // Possibly Set to House?
           learning_rate: 0.0004,
           wandb_project: "flux_train_replicate",
