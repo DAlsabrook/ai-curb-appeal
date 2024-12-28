@@ -203,8 +203,8 @@ export default function Header() {
                 </DialogHeader>
                   <form onSubmit={handleSignUp}>
                     <div className="grid gap-4 py-4">
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="firstName" className="text-right">
+                      <div className="grid grid-cols-1 items-center gap-4">
+                        <Label htmlFor="firstName">
                           First Name
                         </Label>
                         <Input
@@ -214,8 +214,8 @@ export default function Header() {
                           className="col-span-3"
                         />
                       </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="lastName" className="text-right">
+                      <div className="grid grid-cols-1 items-center gap-4">
+                        <Label htmlFor="lastName">
                           Last Name
                         </Label>
                         <Input
@@ -225,8 +225,8 @@ export default function Header() {
                           className="col-span-3"
                         />
                       </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="userRole" className="text-right">
+                      <div className="grid grid-cols-1 items-center gap-4">
+                        <Label htmlFor="userRole">
                           I am a
                         </Label>
                         <select
@@ -244,8 +244,8 @@ export default function Header() {
                           <option value="other">Other</option>
                         </select>
                       </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="referralSource" className="text-right">
+                      <div className="grid grid-cols-1 items-center gap-4">
+                        <Label htmlFor="referralSource">
                           How did you hear about us?
                         </Label>
                         <select
@@ -261,8 +261,8 @@ export default function Header() {
                           <option value="other">Other</option>
                         </select>
                       </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="signUpEmail" className="text-right">
+                      <div className="grid grid-cols-1 items-center gap-4">
+                        <Label htmlFor="signUpEmail">
                           Email
                         </Label>
                         <Input
@@ -273,8 +273,8 @@ export default function Header() {
                           className="col-span-3"
                         />
                       </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="signUpPassword" className="text-right">
+                      <div className="grid grid-cols-1 items-center gap-4">
+                        <Label htmlFor="signUpPassword">
                           Password
                         </Label>
                         <Input
@@ -285,8 +285,8 @@ export default function Header() {
                           className="col-span-3"
                         />
                       </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="confirmPassword" className="text-right">
+                      <div className="grid grid-cols-1 items-center gap-4">
+                        <Label htmlFor="confirmPassword">
                           Confirm Password
                         </Label>
                         <Input
