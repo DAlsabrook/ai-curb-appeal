@@ -14,8 +14,6 @@ export async function POST(req) {
   // Handle user signup function
   try {
     const { email, password, firstName, lastName, userRole, referralSource } = await req.json();
-    console.log("user signing up");
-    console.log(email, password, firstName, lastName, userRole, referralSource)
     const user = await registerUser(email, password);
 
     // Update this with data from the form

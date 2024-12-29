@@ -20,18 +20,20 @@ export async function db_AddUser(user) {
   }
 }
 
-export async function db_DeleteUser(userId) {
+export async function db_DeleteUser(uid) {
   try {
     // Delete user from Firebase Authentication
     const user = auth.currentUser;
-    if (user) {
-      await deleteUser(user);
-    }
 
-    // Delete user data from Firestore
-    const userRef = doc(db, 'users', userId);
+    if (user.uid !== uid) {
+      throw new Error("Must be logged in to delete");
+    }
+    // Need to delete from firebase Auth also
+    
+    // Delete user data from Firestore db
+    const userRef = doc(db, 'users', uid);
     await deleteDoc(userRef);
-    Logger.info('User deleted successfully:', userId);
+    Logger.info('User deleted successfully:', uid);
   } catch (error) {
     Logger.error('Database.js - Error deleting user:', error);
     throw error; // Re-throw the error to handle it in the calling code

@@ -1,5 +1,5 @@
 import { auth } from './firebaseConfig';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification } from 'firebase/auth';
 import { db_AddUser, db_UpdateUser, db_GetUser } from './database';
 import { getImageFromStorage } from './storage';
 import Logger from '../../lib/logger.js';
@@ -7,6 +7,19 @@ import Logger from '../../lib/logger.js';
 export const registerUser = async (email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+    // Send verification email
+    const actionCodeSettings = {
+      url: `https://ai-curb-appeal.vercel.app/api/verification?uid=${userCredential.user.uid}`,
+      handleCodeInApp: true
+    };
+    try {
+      await sendEmailVerification(userCredential.user, actionCodeSettings);
+      console.log('Verification email sent.');
+    } catch (error) {
+      console.error('Error sending verification email:', error);
+    }
+
     await db_AddUser(userCredential.user); // Add user to db
     return userCredential.user;
   } catch (error) {
