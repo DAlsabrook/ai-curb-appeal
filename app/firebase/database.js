@@ -1,6 +1,6 @@
 // services/database.js
 import { db, auth } from './firebaseConfig';
-import { collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs,setDoc, doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import Logger from '../../lib/logger.js'
 
 export async function db_AddUser(user) {

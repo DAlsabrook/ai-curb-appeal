@@ -33,6 +33,8 @@ export default function Header() {
   const [signUpError, setSignUpError] = useState('')
   const [userRole, setUserRole] = useState('')
   const [referralSource, setReferralSource] = useState('')
+  const [isSigningUp, setIsSigningUp] = useState(false)
+  const [isSignedUp, setIsSignedUp] = useState(false)
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -70,38 +72,74 @@ export default function Header() {
     e.preventDefault();
     setSignUpError('');
 
+    // Check if required fields are filled out
+    if (!firstName || !lastName || !signUpEmail || !signUpPassword || !confirmPassword) {
+      setSignUpError('Please fill out all required fields.');
+      return;
+    }
+
+    // Check if a valid user role is selected
+    if (!userRole) {
+      setSignUpError('Please select your role.');
+      return;
+    }
+
+    // Check if a valid referral source is selected
+    if (!referralSource) {
+      setSignUpError('Please select how you heard about us.');
+      return;
+    }
+
+    // Check if email is in valid format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(signUpEmail)) {
+      setSignUpError('Please enter a valid email address.');
+      return;
+    }
+
     if (signUpPassword !== confirmPassword) {
       setSignUpError('Passwords do not match');
       return;
     }
 
-    // try {
-    //   const response = await fetch('/api/firebase/auth/signup', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //       firstName,
-    //       lastName,
-    //       email: signUpEmail,
-    //       password: signUpPassword,
-    //       userRole,
-    //       referralSource,
-    //     }),
-    //   });
+    if (signUpPassword.length < 8 || signUpPassword.length > 20 || !/^[a-zA-Z0-9]+$/.test(signUpPassword)) {
+      setSignUpError('Password must be 8-20 characters long and contain only numbers and/or letters.');
+      return;
+    }
 
-    //   const data = await response.json();
+    try {
+      setIsSigningUp(true);
+      const response = await fetch('/api/firebase/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email: signUpEmail,
+          password: signUpPassword,
+          userRole,
+          referralSource,
+        }),
+      });
 
-    //   if (response.ok) {
-    //     setUser(data.user);
-    //     setIsSignUpModalOpen(false);
-    //   } else {
-    //     setSignUpError(data.error);
-    //   }
-    // } catch (error) {
-    //   setSignUpError('An unexpected error occurred');
-    // }
+      const data = await response.json();
+
+      if (response.ok) {
+        setUser(data.user);
+        setTimeout(() => {
+          setIsSigningUp(false);
+          setIsSignedUp(true);
+        }, 2000);
+      } else {
+        setIsSigningUp(false);
+        setSignUpError(data.error);
+      }
+    } catch (error) {
+      setIsSigningUp(false);
+      setSignUpError('An unexpected error occurred');
+    }
   };
 
   const handleLogout = async (e) => {
@@ -198,113 +236,134 @@ export default function Header() {
                 <DialogHeader>
                   <DialogTitle>Sign Up</DialogTitle>
                   <DialogDescription>
-                    Join the waitlist! An email will be sent when the site goes live!
+                    Get free credits when the site goes live just for joining the wait list!
                   </DialogDescription>
                 </DialogHeader>
                   <form onSubmit={handleSignUp}>
-                    <div className="grid grid-cols-2 gap-4 py-4">
-                      <div className="grid grid-cols-1 gap-4" style={{ minWidth: '200px', maxWidth: '300px' }}>
-                        <div className="grid grid-cols-1 items-center gap-4">
-                          <Label htmlFor="firstName" className="text-lg">
-                            First Name
-                          </Label>
-                          <Input
-                            id="firstName"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            className="col-span-3"
-                          />
-                        </div>
-                        <div className="grid grid-cols-1 items-center gap-4">
-                          <Label htmlFor="lastName" className="text-lg">
-                            Last Name
-                          </Label>
-                          <Input
-                            id="lastName"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            className="col-span-3"
-                          />
-                        </div>
-                        <div className="grid grid-cols-1 items-center gap-4">
-                          <Label htmlFor="userRole" className="text-lg">
-                            I am a
-                          </Label>
-                          <select
-                            id="userRole"
-                            value={userRole}
-                            onChange={(e) => setUserRole(e.target.value)}
-                            className="col-span-3 border"
-                          >
-                            <option value="">Select your role</option>
-                            <option value="homeowner">Homeowner (Personal home)</option>
-                            <option value="landlord">Property Owner (Landlord)</option>
-                            <option value="tenant">Tenant</option>
-                            <option value="designer">Designer</option>
-                            <option value="contractor">Contractor</option>
-                            <option value="other">Other</option>
-                          </select>
-                        </div>
-                        <div className="grid grid-cols-1 items-center gap-4">
-                          <Label htmlFor="referralSource" className="text-lg">
-                            How did you hear about us?
-                          </Label>
-                          <select
-                            id="referralSource"
-                            value={referralSource}
-                            onChange={(e) => setReferralSource(e.target.value)}
-                            className="col-span-3 border"
-                          >
-                            <option value="">Select an option</option>
-                            <option value="search_engine">Search Engine</option>
-                            <option value="advertisement">Advertisement</option>
-                            <option value="friend">Friend</option>
-                            <option value="other">Other</option>
-                          </select>
-                        </div>
+                    { isSigningUp ? (
+                      <div className="mt-10 p-20">
+                        <Loader />
                       </div>
-                      <div className="grid grid-cols-1 gap-4" style={{ minWidth: '200px', maxWidth: '300px' }}>
-                        <div className="grid grid-cols-1 items-center gap-4">
-                          <Label htmlFor="signUpEmail" className="text-lg">
-                            Email
-                          </Label>
-                          <Input
-                            id="signUpEmail"
-                            type="email"
-                            value={signUpEmail}
-                            onChange={(e) => setSignUpEmail(e.target.value)}
-                            className="col-span-3"
-                          />
+                    ) : (
+                      isSignedUp ? (
+                        <div>
+                            <p className='text-center'>Thank you, {firstName}, for signing up!</p>
+                            <p className='text-center'>An email has been sent to {signUpEmail} for verification.</p>
+                            <p className='text-center'>After verification we will notify you as soon as the site goes live!</p>
                         </div>
-                        <div className="grid grid-cols-1 items-center gap-4">
-                          <Label htmlFor="signUpPassword" className="text-lg">
-                            Password
-                          </Label>
-                          <Input
-                            id="signUpPassword"
-                            type="password"
-                            value={signUpPassword}
-                            onChange={(e) => setSignUpPassword(e.target.value)}
-                            className="col-span-3"
-                          />
+                        ):(
+                        <div className="grid grid-cols-2 gap-4 py-4">
+                          <div className="grid grid-cols-1 gap-4" style={{ minWidth: '200px', maxWidth: '300px' }}>
+                            <div className="grid grid-cols-1 items-center gap-1">
+                              <Label htmlFor="firstName" className="text-lg">
+                                First Name
+                              </Label>
+                              <Input
+                                id="firstName"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                className="col-span-3"
+                                required
+                              />
+                            </div>
+                            <div className="grid grid-cols-1 items-center gap-1">
+                              <Label htmlFor="lastName" className="text-lg">
+                                Last Name
+                              </Label>
+                              <Input
+                                id="lastName"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                                className="col-span-3"
+                                required
+                              />
+                            </div>
+                            <div className="grid grid-cols-1 items-center gap-1">
+                              <Label htmlFor="userRole" className="text-lg">
+                                I am a
+                              </Label>
+                              <select
+                                id="userRole"
+                                value={userRole}
+                                onChange={(e) => setUserRole(e.target.value)}
+                                className="col-span-3 border h-10 rounded-md"
+                                required
+                              >
+                                <option value="">Select your role</option>
+                                <option value="homeowner">Homeowner (Personal home)</option>
+                                <option value="landlord">Property Owner (Landlord)</option>
+                                <option value="tenant">Tenant</option>
+                                <option value="designer">Designer</option>
+                                <option value="contractor">Contractor</option>
+                                <option value="other">Other</option>
+                              </select>
+                            </div>
+                            <div className="grid grid-cols-1 items-center gap-1">
+                              <Label htmlFor="referralSource" className="text-lg">
+                                How did you hear about us?
+                              </Label>
+                              <select
+                                id="referralSource"
+                                value={referralSource}
+                                onChange={(e) => setReferralSource(e.target.value)}
+                                className="col-span-3 border h-10 rounded-md"
+                                required
+                              >
+                                <option value="">Select an option</option>
+                                <option value="search_engine">Search Engine</option>
+                                <option value="advertisement">Advertisement</option>
+                                <option value="friend">Friend</option>
+                                <option value="other">Other</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-1 gap-4" style={{ minWidth: '200px', maxWidth: '300px' }}>
+                            <div className="grid grid-cols-1 items-center gap-1">
+                              <Label htmlFor="signUpEmail" className="text-lg">
+                                Email
+                              </Label>
+                              <Input
+                                id="signUpEmail"
+                                type="email"
+                                value={signUpEmail}
+                                onChange={(e) => setSignUpEmail(e.target.value)}
+                                className="col-span-3"
+                                required
+                              />
+                            </div>
+                            <div className="grid grid-cols-1 items-center gap-1">
+                              <Label htmlFor="signUpPassword" className="text-lg">
+                                Password
+                              </Label>
+                              <Input
+                                id="signUpPassword"
+                                type="password"
+                                value={signUpPassword}
+                                onChange={(e) => setSignUpPassword(e.target.value)}
+                                className="col-span-3"
+                                required
+                              />
+                            </div>
+                            <div className="grid grid-cols-1 items-center gap-1">
+                              <Label htmlFor="confirmPassword" className="text-lg">
+                                Confirm Password
+                              </Label>
+                              <Input
+                                id="confirmPassword"
+                                type="password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className="col-span-3"
+                                required
+                              />
+                            </div>
+                          </div>
                         </div>
-                        <div className="grid grid-cols-1 items-center gap-4">
-                          <Label htmlFor="confirmPassword" className="text-lg">
-                            Confirm Password
-                          </Label>
-                          <Input
-                            id="confirmPassword"
-                            type="password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="col-span-3"
-                          />
-                        </div>
-                      </div>
-                    </div>
+                        )
+                    )}
                     {signUpError && <p className="text-red-500 text-sm mt-2">{signUpError}</p>}
                     <DialogFooter>
-                      <Button type="submit">Sign Up</Button>
+                      {!isSignedUp && <Button type="submit">Sign Up</Button>}
                     </DialogFooter>
                   </form>
               </DialogContent>
