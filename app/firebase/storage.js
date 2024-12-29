@@ -17,23 +17,31 @@ const uploadImages = async (files, userUID, modelName) => {
   }
 };
 
-const uploadZip = async (zipFile, userUID, modelName) => {
+const uploadZip = async (firstImage, zipFile, userUID, modelName) => {
   const storageRef = ref(storage, `${userUID}/User_Model_Uploads/${modelName}`);
-  // Create a reference to the file in Cloud Storage
-  const fileRef = ref(storageRef, `${modelName}-Images.zip`);
+  // Create a reference to the zip file in Cloud Storage
+  const zipFileRef = ref(storageRef, `${modelName}-Images.zip`);
+  // Create a reference to the first image in Cloud Storage
+  const firstImageRef = ref(storageRef, `${modelName}-FirstImage.jpg`);
 
-  // Upload the file
+  // Upload the zip file
   try {
-    const snapshot = await uploadBytes(fileRef, zipFile);
-    // File uploaded successfully
-    const downloadURL = await getDownloadURL(snapshot.ref); // Get the download URL
-    return downloadURL; // Return the download URL
+    const zipSnapshot = await uploadBytes(zipFileRef, zipFile);
+    // Zip file uploaded successfully
+    const zipDownloadURL = await getDownloadURL(zipSnapshot.ref); // Get the download URL for the zip file
+
+    // Upload the first image
+    const imageSnapshot = await uploadBytes(firstImageRef, firstImage);
+    // First image uploaded successfully
+    const imageDownloadURL = await getDownloadURL(imageSnapshot.ref); // Get the download URL for the first image
+
+    return { zipDownloadURL, imageDownloadURL }; // Return the download URLs
   } catch (error) {
     // Handle upload errors
     Logger.error('Storage.js - Upload error:', error);
     throw error; // throw the error to handle it in the calling function
   }
-}
+};
 
 // Function to get all images in a specific folder
 async function getGeneratedImages(folderPath) {

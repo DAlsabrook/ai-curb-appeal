@@ -3,6 +3,7 @@ import Replicate from "replicate";
 import sharp from 'sharp'; // Resizing images
 import JSZip from 'jszip'; // Create zip files
 import { uploadZip } from '../../firebase/storage'; // Import the uploadZip function
+import { db_UpdateUser } from '../../firebase/database';
 import Logger from '../../../lib/logger.js'
 
 // Initialize Rep client with the API token
@@ -134,10 +135,8 @@ export async function POST(req) {
   const combinedFiles = [...resizedImages, ...captionFiles];
   const combinedZipContent = await createZip(combinedFiles);
   // Upload the combined zip file to Firebase Storage
-  const combinedDownloadURL = await uploadZip(combinedZipContent, userUID, userGivenName);
+  const combinedDownloadURL = await uploadZip(images[0], combinedZipContent, userUID, userGivenName);
 
-  // return NextResponse.json({ detail: 'Model training has started!' }, { status: 200 });
-  // end of caption
   try { // Create the model
     const owner = 'dalsabrook';
     const visibility = 'private';
@@ -168,7 +167,7 @@ export async function POST(req) {
           batch_size: 1,
           resolution: "512,768,1024",
           autocaption: false,
-          input_images: combinedDownloadURL,
+          input_images: combinedDownloadURL.zipDownloadURL,
           trigger_word: "TOK", // Possibly Set to House?
           learning_rate: 0.0004,
           wandb_project: "flux_train_replicate",
@@ -176,7 +175,7 @@ export async function POST(req) {
           caption_dropout_rate: 0.05,
           wandb_sample_interval: 100
         },
-        webhook: `https://ai-curb-appeal.vercel.app/api/training-webhook?uid=${userUID}&modelName=${userGivenName}`
+        webhook: `https://ai-curb-appeal.vercel.app/api/training-webhook?uid=${userUID}&modelName=${userGivenName}&trainedImg=${combinedDownloadURL.imageDownloadURL}`
         // Add query params like user.uid, model name? to then save in db from webhook?
       };
 

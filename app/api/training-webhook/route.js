@@ -74,6 +74,7 @@ export async function POST(req) {
     const searchParams = url.searchParams;
     const userUID = searchParams.get('uid');
     const userGivenName = searchParams.get('modelName');
+    const trainedImg = searchParams.get('trainedImg');
 
     // Check if the model training is completed
     if (status === 'succeeded') {
@@ -90,7 +91,8 @@ export async function POST(req) {
         [`models.${userGivenName}`]: {
           "inputImagesZip": inputImages,
           "version": versionId,
-          "modelID": modelId
+          "modelID": modelId,
+          "trainedImg": trainedImg,
         },
         credits: newCredits
       };

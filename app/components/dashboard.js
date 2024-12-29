@@ -62,14 +62,15 @@ export default function Dashboard() {
     if (user && user.data && user.data.models) {
       const userModels = user.data.models;
       setModels(userModels);
+      console.log(userModels)
 
       const newGeneratedImages = [];
       const newSavedImages = [];
       userModels.forEach((model) => {
-        if (model.generatedURLs) {
-          for (let i = 0; i < model.generatedURLs.length; i += 2) {
-            const url = model.generatedURLs[i];
-            const isSaved = model.generatedURLs[i + 1];
+        if (model.generated) {
+          for (let i = 0; i < model.generated.length; i += 2) {
+            const url = model.generated[i];
+            const isSaved = model.generated[i + 1];
             const image = {
               id: `${model.name}-${Date.now()}-${Math.random()}`,
               url: url,
@@ -81,6 +82,8 @@ export default function Dashboard() {
               newSavedImages.push(image);
             }
           }
+        } else {
+          console.log('No Generated images')
         }
       });
       setGeneratedImages(newGeneratedImages);
@@ -134,7 +137,7 @@ export default function Dashboard() {
   const handleModelRemove = (modelId) => {
     setModels(prev => prev.filter(model => model.id !== modelId))
     if (selectedModel === models.find(model => model.id === modelId)?.name) {
-      setSelectedModel('Default Model')
+      setSelectedModel('Select Model')
     }
   }
 
@@ -237,7 +240,7 @@ export default function Dashboard() {
                     {models.map((model) => (
                       <div key={model.id} className="model-item">
                         <Image
-                          src={model.image}
+                          src={model.trainedImg}
                           alt={model.name}
                           className={"model-image"}
                           width={150}

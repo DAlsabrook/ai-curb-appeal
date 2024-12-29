@@ -3,6 +3,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, se
 import { db_AddUser, db_UpdateUser, db_GetUser } from './database';
 import { getImageFromStorage } from './storage';
 import Logger from '../../lib/logger.js';
+import JSZip from 'jszip';
 
 export const registerUser = async (email, password) => {
   try {
@@ -32,13 +33,13 @@ export const loginUser = async (email, password) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     const updates = {
-        isValid: user.emailVerified,
-        lastLogin: new Date().toISOString()
+      isValid: user.emailVerified,
+      lastLogin: new Date().toISOString()
     };
 
     // Update the user in the database
     await db_UpdateUser(user.uid, updates);
-    
+
     // Fetch additional user data from the database
     const userData = await db_GetUser(user.uid);
     if (!userData) {
@@ -60,8 +61,8 @@ export const loginUser = async (email, password) => {
           const [modelName, modelData] = model;
           const newModel = {
             name: modelName,
-            generatedURLs: [],
-            trained: null,
+            generated: [],
+            trainedImg: modelData.trainedImg || '',
           };
 
           // Process all generated paths and get URLs
@@ -73,8 +74,7 @@ export const loginUser = async (email, password) => {
                 try {
                   const url = await getImageFromStorage(filePath);
                   if (url && Array.isArray(imgData)) {
-                    newModel.generatedURLs.push(url);
-                    newModel.generatedURLs.push(imgData[1]); // bool: If saved or not
+                    newModel.generated.push({ url, saved: imgData[1] }); // Assuming imgData[1] is a boolean indicating if saved
                   } else {
                     // delete whatever img path didn't work from the database
                     Logger.error('Firebase Auth File: Failed to get image URL or imgData is not an array');
