@@ -10,7 +10,7 @@ export const registerUser = async (email, password) => {
 
     // Send verification email
     const actionCodeSettings = {
-      url: `https://ai-curb-appeal.vercel.app/api/verification?uid=${userCredential.user.uid}`,
+      url: `https://ai-curb-appeal.vercel.app/api/firebase/auth/verification?uid=${userCredential.user.uid}`,
       handleCodeInApp: true
     };
     try {
