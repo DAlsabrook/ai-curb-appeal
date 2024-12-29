@@ -1,12 +1,15 @@
-import { getFirestore, doc, updateDoc } from "firebase/firestore";
-import { getAuth, applyActionCode } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
+import { applyActionCode } from "firebase/auth";
 import { db, auth } from '@/app/firebase/firebaseConfig';
+import { NextResponse } from 'next/server';
 
-export default async function handler(req, res) {
-    const { uid, oobCode } = req.query;
+export async function GET(req) {
+    const { searchParams } = new URL(req.url);
+    const uid = searchParams.get('uid');
+    const oobCode = searchParams.get('oobCode');
 
     if (!uid || !oobCode) {
-        return res.status(400).json({ error: 'Invalid request' });
+        return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
     }
 
     try {
@@ -18,10 +21,9 @@ export default async function handler(req, res) {
         await updateDoc(userDocRef, { isValid: true });
 
         // Redirect to the home page after successful verification
-        res.writeHead(302, { Location: '/' });
-        res.end();
+        return NextResponse.redirect('/');
     } catch (error) {
         console.error('Error verifying email:', error);
-        res.status(500).json({ error: 'Error verifying email' });
+        return NextResponse.json({ error: 'Error verifying email' }, { status: 500 });
     }
 }
