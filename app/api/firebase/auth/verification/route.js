@@ -1,8 +1,6 @@
 import { getFirestore, doc, updateDoc } from "firebase/firestore";
 import { getAuth, applyActionCode } from "firebase/auth";
-
-const db = getFirestore();
-const auth = getAuth();
+import { db, auth } from '@/app/firebase/firebaseConfig';
 
 export default async function handler(req, res) {
     const { uid, oobCode } = req.query;
