@@ -10,12 +10,11 @@ export const registerUser = async (email, password) => {
 
     // Send verification email
     const actionCodeSettings = {
-      url: `https://ai-curb-appeal.vercel.app/api/firebase/auth/verification?uid=${userCredential.user.uid}`,
+      url: 'https://ai-curb-appeal.vercel.app',
       handleCodeInApp: true
     };
     try {
       await sendEmailVerification(userCredential.user, actionCodeSettings);
-      console.log('Verification email sent.');
     } catch (error) {
       console.error('Error sending verification email:', error);
     }

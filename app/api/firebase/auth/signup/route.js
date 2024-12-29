@@ -21,7 +21,8 @@ export async function POST(req) {
         firstName: firstName,
         lastname: lastName,
         userRole: userRole,
-        referralSource: referralSource
+        referralSource: referralSource,
+        isValid: user.emailVerified
     };
 
     // Update the user in the database
