@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { loginUser } from '@/app/firebase/auth';
+import { db_UpdateUser } from '@/app/firebase/database'
 
 export async function GET(req) {
   try {

@@ -41,11 +41,11 @@ export default function Header() {
     setLoginError('')
     setIsLoggingIn(true);
     try {
-      if (email.toLowerCase() != "dfalsabrook@gmail.com") {
-        setLoginError('This site is still under construction. Check back soon!')
-        setIsLoggingIn(false)
-        return;
-      }
+      // if (email.toLowerCase() != "dfalsabrook@gmail.com") {
+      //   setLoginError('This site is still under construction. Check back soon!')
+      //   setIsLoggingIn(false)
+      //   return;
+      // }
       const response = await fetch('/api/firebase/auth/login', {
         method: 'POST',
         headers: {

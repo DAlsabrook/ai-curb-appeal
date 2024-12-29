@@ -31,9 +31,14 @@ export const loginUser = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
+    const updates = {
+        isValid: user.emailVerified,
+        lastLogin: new Date().toISOString()
+    };
 
-    await db_UpdateUser(user.uid, { lastLogin: new Date().toISOString() }); // Update user last login in db
-
+    // Update the user in the database
+    await db_UpdateUser(user.uid, updates);
+    
     // Fetch additional user data from the database
     const userData = await db_GetUser(user.uid);
     if (!userData) {
