@@ -74,7 +74,7 @@ export async function POST(req) {
     const searchParams = url.searchParams;
     const userUID = searchParams.get('uid');
     const userGivenName = searchParams.get('modelName');
-    const trainedImg = searchParams.get('trainedImg');
+    const trainedImg = decodeURIComponent(searchParams.get('trainedImg'));
 
     // Check if the model training is completed
     if (status === 'succeeded') {
@@ -102,6 +102,9 @@ export async function POST(req) {
 
       // Respond with a success message
       return NextResponse.json({ message: 'Webhook received and processed successfully' }, { status: 200 });
+    } else if (status === 'failed' || status === 'canceled') {
+      // Remove images from db
+      console.log('Training failed or was cancelled')
     }
 
     // If the model training is not yet completed

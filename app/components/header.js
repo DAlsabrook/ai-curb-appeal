@@ -202,7 +202,7 @@ export default function Header() {
                 </div>
                 <button className="avatar-button">
                   <Image
-                    src={user.data.avatarUrl}
+                    src='/avatar.jpg'
                     alt={user.data.first}
                     className={'avatar-image'}
                     width={40}

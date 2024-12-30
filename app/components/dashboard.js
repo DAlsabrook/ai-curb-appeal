@@ -38,6 +38,7 @@ export default function Dashboard() {
   const [negativePrompt, setNegativePrompt] = useState('')
   const [styleStrength, setStyleStrength] = useState(50)
   const [selectedModel, setSelectedModel] = useState('Select Model')
+  const [selectedModelVersion, setSelectedModelVersion] = useState('')
 
   // Create Model Modal
   const [modelName, setModelName] = useState(''); // State for model name
@@ -100,7 +101,7 @@ export default function Dashboard() {
 
     setTimeout(() => {
       const newImages = Array(numImages).fill(null).map((_, index) => ({
-        id: `${selectedModel}-${Date.now()}-${index}`,
+        id: `${selectedModel}/${selectedModelVersion}-${Date.now()}-${index}`,
         url: `/placeholder.svg?height=200&width=200&text=${encodeURIComponent(prompt)}`,
         isSaved: false,
         model: selectedModel
@@ -124,9 +125,12 @@ export default function Dashboard() {
     setGeneratedImages(prev => prev.map(img => img.id === image.id ? { ...img, isSaved: false } : img))
   }
 
-  const handleModelSelect = (modelName) => {
-    setSelectedModel(modelName)
-    setIsModelDialogOpen(false)
+  const handleModelSelect = (modelName, modelVersion) => {
+    console.log("model version: ");
+    console.log(modelVersion);
+    setSelectedModel(modelName);
+    setSelectedModelVersion(modelVersion);
+    setIsModelDialogOpen(false);
   }
 
  const handleCreateModel = (newModel) => {
@@ -238,18 +242,19 @@ export default function Dashboard() {
                   </DialogHeader>
                   <div className="model-list">
                     {models.map((model) => (
-                      <div key={model.id} className="model-item">
+                      <div key={model.modelID} className="model-item">
                         <Image
                           src={model.trainedImg}
                           alt={model.name}
                           className={"model-image"}
                           width={150}
                           height={100}
+                          unoptimized
                           />
-                        <Button onClick={() => handleModelSelect(model.name)} className="model-select-overlay">
+                        <Button onClick={() => handleModelSelect(model.name, model.version)} className="model-select-overlay">
                           {model.name}
                         </Button>
-
+                        <p>{model.trainedImg}</p>
                           {/* Alert for deleting a model */}
                           <AlertDialog>
                             <AlertDialogTrigger asChild>

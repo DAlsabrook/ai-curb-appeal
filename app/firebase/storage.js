@@ -17,25 +17,32 @@ const uploadImages = async (files, userUID, modelName) => {
   }
 };
 
-const uploadZip = async (firstImage, zipFile, userUID, modelName) => {
-  const storageRef = ref(storage, `${userUID}/User_Model_Uploads/${modelName}`);
-  // Create a reference to the zip file in Cloud Storage
-  const zipFileRef = ref(storageRef, `${modelName}-Images.zip`);
-  // Create a reference to the first image in Cloud Storage
-  const firstImageRef = ref(storageRef, `${modelName}-FirstImage.jpg`);
-
-  // Upload the zip file
+const uploadInputImage = async (image, userUID, modelName) => {
   try {
+    // Create a reference to the first image in Cloud Storage
+    const imageRef = ref(storage, `${userUID}/${modelName}/inputImage/${modelName}-DisplayImage.jpg`);
+    // Upload the first image
+    const imageSnapshot = await uploadBytes(imageRef, image);
+    // First image uploaded successfully
+    const imageDownloadURL = await getDownloadURL(imageSnapshot.ref); // Get the download URL for the first image
+    Logger.info(imageDownloadURL)
+    return imageDownloadURL;
+  } catch (error) {
+    // Handle upload errors
+    Logger.error('Storage.js - Image Upload error:', error);
+    throw error; // throw the error to handle it in the calling function
+  }
+}
+
+const uploadInputZip = async (zipFile, userUID, modelName) => {
+  try {
+    // Create a reference to the zip file in Cloud Storage
+    const zipFileRef = ref(storage, `${userUID}/${modelName}/inputZip/${modelName}inputImages.zip`);
+    // Upload the zip file
     const zipSnapshot = await uploadBytes(zipFileRef, zipFile);
     // Zip file uploaded successfully
     const zipDownloadURL = await getDownloadURL(zipSnapshot.ref); // Get the download URL for the zip file
-
-    // Upload the first image
-    const imageSnapshot = await uploadBytes(firstImageRef, firstImage);
-    // First image uploaded successfully
-    const imageDownloadURL = await getDownloadURL(imageSnapshot.ref); // Get the download URL for the first image
-
-    return { zipDownloadURL, imageDownloadURL }; // Return the download URLs
+    return zipDownloadURL; // Return the download URLs
   } catch (error) {
     // Handle upload errors
     Logger.error('Storage.js - Upload error:', error);
@@ -113,4 +120,4 @@ async function saveImageToStorage(folderPath, imageUrl) {
   }
 }
 
-export { uploadImages, uploadZip, getGeneratedImages, saveImageToStorage, getImageFromStorage }; // Export the function
+export { uploadImages, uploadInputZip, getGeneratedImages, saveImageToStorage, getImageFromStorage, uploadInputImage }; // Export the function

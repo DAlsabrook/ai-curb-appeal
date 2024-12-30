@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import Replicate from "replicate";
 import sharp from 'sharp'; // Resizing images
 import JSZip from 'jszip'; // Create zip files
-import { uploadZip } from '../../firebase/storage'; // Import the uploadZip function
-import { db_UpdateUser } from '../../firebase/database';
+import { uploadInputZip, uploadInputImage } from '../../firebase/storage'; // Import the uploadZip function
 import Logger from '../../../lib/logger.js'
 
 // Initialize Rep client with the API token
@@ -129,7 +128,7 @@ export async function POST(req) {
             Logger.error('OpenAI api key not set')
           }
           const input = {
-            system_prompt: "Write a six-sentence caption for this image. In the first sentence, describe the style and type of the image, emphasizing its photorealistic, high-definition quality. In the remaining sentences, provide a precise and detailed description of the home and its surroundings, focusing on architectural features, textures, and landscaping elements. Use clear, descriptive language suitable for prompting a text-to-image model, highlighting the realism and intricacy of the details. Avoid subjective phrases like 'evokes a sense of' and instead describe the exact composition and features. Comma-separate keywords rather than using 'or'. Precision and attention to architectural and environmental detail are essential.\n\nGood examples are:\n\n'Photorealistic HD photo of a modern suburban home with a white facade, large glass windows, and a dark gray roof, surrounded by a manicured lawn and a cobblestone pathway, detailed textures on the siding, realistic reflections in the windows, vibrant lighting, and a clear blue sky.'\n\n'Photorealistic high-definition image of a classic Victorian-style home with red brick walls, a steeply pitched roof, and ornate wooden trim, lush green landscaping with blooming flowers, a wraparound porch with wooden railings, and dramatic shadows cast by afternoon sunlight.'\n\n'Photorealistic HD photo of a Mediterranean-style villa with stucco walls, a terracotta roof, and arched windows, surrounded by palm trees and a gravel driveway, intricate detailing in the balcony railings, warm evening light, and a vivid orange and pink sunset sky in the background.'\n",
+            system_prompt: "Write a six-sentence caption for the provided image, with a focus on precision, photorealism, and structural details. In the first sentence, describe the overall style and type of the image, emphasizing its photorealistic, high-definition quality and how vivid and realistic the details appear. In the next four sentences, provide a precise and detailed description of the homes architectural structure and features, focusing on elements such as the roofline, overall shape and form, window styles, and construction materials, as well as notable structural features like chimneys, dormers, and unique design elements that define the homes character. Describe the textures and intricate details of the homes surfaces, such as the grain of wood, the patterns in brick or stone, and the visual depth of other materials, while avoiding emphasis on colors or design elements that are easy to modify, such as paint, doors, or other superficial features. In the final sentence, describe the immediate surroundings of the home with attention to context, such as the driveway's material, the layout of pathways, or the relationship between the home and its environment, focusing on structural and permanent features. Use clear, descriptive language suitable for prompting a text-to-image model, avoiding subjective phrases like 'evokes a sense of,' and ensure all descriptions are based on observable, specific details with comma-separated keywords for enhanced clarity.",
             openai_api_key: OPENAI_API_KEY,
             image_zip_archive: zipContent,
             model: "gpt-4o-mini"
@@ -152,8 +151,10 @@ export async function POST(req) {
               try {
                 // Upload the combined zip file to Firebase Storage
                 Logger.info('Training Route - Uploading combined zip file to Firebase Storage.');
-                const combinedDownloadURL = await uploadZip(images[0], combinedZipContent, userUID, userGivenName);
-
+                const zipURL = await uploadInputZip(combinedZipContent, userUID, userGivenName);
+                const imageURL = await uploadInputImage(images[0], userUID, userGivenName);
+                Logger.info(imageURL)
+                // return NextResponse.json({ detail: 'Done' }, { status: 200 });
                 try { // Create the model
                   Logger.info('Training Route - Creating the model.');
                   const owner = 'dalsabrook';
@@ -186,7 +187,7 @@ export async function POST(req) {
                         batch_size: 1,
                         resolution: "512,768,1024",
                         autocaption: false,
-                        input_images: combinedDownloadURL.zipDownloadURL,
+                        input_images: zipURL,
                         trigger_word: "TOK", // Possibly Set to House?
                         learning_rate: 0.0004,
                         wandb_project: "flux_train_replicate",
@@ -194,7 +195,7 @@ export async function POST(req) {
                         caption_dropout_rate: 0.05,
                         wandb_sample_interval: 100
                       },
-                      webhook: `https://ai-curb-appeal.vercel.app/api/training-webhook?uid=${userUID}&modelName=${userGivenName}&trainedImg=${combinedDownloadURL.imageDownloadURL}`
+                      webhook: `https://ai-curb-appeal.vercel.app/api/training-webhook?uid=${userUID}&modelName=${userGivenName}&trainedImg=${encodeURIComponent(imageURL)}`
                       // Add query params like user.uid, model name? to then save in db from webhook?
                     };
 
@@ -202,7 +203,6 @@ export async function POST(req) {
 
                     // Possibly delete the .zip from firebase after use.
                     // Not sure if it is cheaper to keep the files or use operations to delete them
-
                     Logger.info(`Training Route - Training URL: https://replicate.com/p/${training.id}`);
                     return NextResponse.json({ detail: 'Model training has started!', trainedModel: training }, { status: 200 });
                   } catch (error) {
