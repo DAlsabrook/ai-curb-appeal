@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import Replicate from "replicate";
 import sharp from 'sharp'; // Resizing images
 import JSZip from 'jszip'; // Create zip files
-import { uploadInputZip, uploadInputImage } from '../../firebase/storage'; // Import the uploadZip function
-import Logger from '../../../lib/logger.js'
+import { uploadInputZip, uploadInputImage } from '../../../firebase/storage'; // Import the uploadZip function
+import Logger from '../../../../lib/logger.js'
 
 // Initialize Rep client with the API token
 const replicate = new Replicate({
@@ -195,7 +195,7 @@ export async function POST(req) {
                         caption_dropout_rate: 0.05,
                         wandb_sample_interval: 100
                       },
-                      webhook: `https://ai-curb-appeal.vercel.app/api/training-webhook?uid=${userUID}&modelName=${userGivenName}&trainedImg=${encodeURIComponent(imageURL)}`
+                      webhook: `https://ai-curb-appeal.vercel.app/api/ai/training-webhook?uid=${userUID}&modelName=${userGivenName}&trainedImg=${encodeURIComponent(imageURL)}`
                       // Add query params like user.uid, model name? to then save in db from webhook?
                     };
 

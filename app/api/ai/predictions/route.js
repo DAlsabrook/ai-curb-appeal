@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import Replicate from "replicate";
-import Logger from '../../../lib/logger'
+import Logger from '../../../../lib/logger'
 
 // Initialize the Replicate client with the API token
 const replicateClient = new Replicate({

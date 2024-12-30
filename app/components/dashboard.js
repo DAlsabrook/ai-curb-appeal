@@ -63,6 +63,7 @@ export default function Dashboard() {
     if (user && user.data && user.data.models) {
       const userModels = user.data.models;
       setModels(userModels);
+      console.log('userModels: ')
       console.log(userModels)
 
       const newGeneratedImages = [];
@@ -198,7 +199,7 @@ export default function Dashboard() {
     });
 
     try {
-      const response = await fetch('/api/training', {
+      const response = await fetch('/api/ai/training', {
         method: 'POST',
         body: formData,
       });
@@ -465,7 +466,7 @@ export default function Dashboard() {
                                 height={500}
                                 />
                               <div className="loading-overlay">
-                                <Loader2 className="loading-icon" />
+                                <Loader className="loading-icon" />
                               </div>
                             </div>
                           </CardContent>

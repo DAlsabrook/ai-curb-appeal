@@ -61,6 +61,7 @@ export const loginUser = async (email, password) => {
           const [modelName, modelData] = model;
           const newModel = {
             name: modelName,
+            version: modelData.version,
             generated: [],
             trainedImg: modelData.trainedImg || '',
           };
