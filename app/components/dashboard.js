@@ -36,6 +36,7 @@ export default function Dashboard() {
   // Control Panel
   const [prompt, setPrompt] = useState('')
   const [negativePrompt, setNegativePrompt] = useState('')
+  const [numImages, setNumImages] = useState(1)
   const [styleStrength, setStyleStrength] = useState(50)
   const [selectedModel, setSelectedModel] = useState('Select Model')
   const [selectedModelVersion, setSelectedModelVersion] = useState('')
@@ -50,25 +51,25 @@ export default function Dashboard() {
   const [generatedImages, setGeneratedImages] = useState([])
   const [savedImages, setSavedImages] = useState([])
   const [isGenerating, setIsGenerating] = useState(false)
-  const [numImages, setNumImages] = useState(1)
+
   const [loadingImages, setLoadingImages] = useState([])
   const generateButtonRef = useRef(null)
   const [isModelDialogOpen, setIsModelDialogOpen] = useState(false)
-  const { user } = useUser(); // Use the useUser hook to get user and setUser
   const [isCreateModelModalOpen, setIsCreateModelModalOpen] = useState(false)
+  const { user } = useUser(); // From user context
   const [models, setModels] = useState([])
 
-  // Load models and generated images from user data
+  // Loads models and generated images from userContext.js
   useEffect(() => {
     if (user && user.data && user.data.models) {
-      const userModels = user.data.models;
-      setModels(userModels);
-      console.log('userModels: ')
-      console.log(userModels)
+      const modelsFromUserContext = user.data.models;
+      setModels(modelsFromUserContext);
+      console.log('modelsFromUserContext: ')
+      console.log(modelsFromUserContext)
 
       const newGeneratedImages = [];
       const newSavedImages = [];
-      userModels.forEach((model) => {
+      modelsFromUserContext.forEach((model) => {
         if (model.generated) {
           for (let i = 0; i < model.generated.length; i += 2) {
             const url = model.generated[i];
@@ -93,17 +94,29 @@ export default function Dashboard() {
     }
   }, [user]);
 
-  const handleGenerate = () => {
+  // What happens when "Generate" button is clicked
+  const handleGenerate = async () => {
+    // prompt
+    // negativePrompt
+    // numImages
+    // styleStrength
+    // selectedModel
+    // selectedModelVersion
     setIsGenerating(true)
-    const placeholders = Array(numImages).fill(null).map((_, index) =>
-      `/placeholder.svg?height=200&width=200&text=Generating ${index + 1}`
-    )
-    setLoadingImages(placeholders)
+
+    // Create placeholder cards with <Loader /> for each image being generated
+    const placeholders = Array(numImages).fill(null).map((_, index) => ({
+      id: `loading-${index}`,
+      isLoading: true,
+    }));
+    setLoadingImages(placeholders);
+    console.log(placeholders)
+
 
     setTimeout(() => {
       const newImages = Array(numImages).fill(null).map((_, index) => ({
         id: `${selectedModel}/${selectedModelVersion}-${Date.now()}-${index}`,
-        url: `/placeholder.svg?height=200&width=200&text=${encodeURIComponent(prompt)}`,
+        url: `/results/earhart-house-1.jpg?height=200&width=200&text=${encodeURIComponent(prompt)}`,
         isSaved: false,
         model: selectedModel
       }))
@@ -111,8 +124,32 @@ export default function Dashboard() {
       setLoadingImages([])
       setIsGenerating(false)
     }, 3000)
+
+    // try {
+    //   const response = await fetch('/api/ai/predictions', {
+    //     method: 'POST',
+    //     body: formData,
+    //   });
+    //   if (response.ok) {
+    //     // Handle successful response
+    //     setGeneratedImages(prev => [...response, ...prev])
+    //     setIsGenerating(false)
+    //     setLoadingImages([])
+    //   } else {
+    //     // Handle error response
+    //     setIsGenerating(false)
+    //     setLoadingImages([])
+    //     console.error(`Error from prediction route`);
+    //   }
+    // } catch (error) {
+    //   setIsGenerating(false)
+    //   setLoadingImages([])
+    //   console.error('An unexpected error occurred in prediction:', error);
+    // }
+
   }
 
+  // For when a user saves an image
   const handleSave = (image) => {
     if (!image.isSaved) {
       const updatedImage = { ...image, isSaved: true }
@@ -121,24 +158,20 @@ export default function Dashboard() {
     }
   }
 
+  // User removes image from saved images
   const handleRemove = (image) => {
     setSavedImages(prev => prev.filter(img => img.id !== image.id))
     setGeneratedImages(prev => prev.map(img => img.id === image.id ? { ...img, isSaved: false } : img))
   }
 
+  // User selects a model from model modal
   const handleModelSelect = (modelName, modelVersion) => {
-    console.log("model version: ");
-    console.log(modelVersion);
     setSelectedModel(modelName);
     setSelectedModelVersion(modelVersion);
     setIsModelDialogOpen(false);
   }
 
- const handleCreateModel = (newModel) => {
-    setModels(prev => [...prev, newModel])
-    setSelectedModel(newModel.name)
-  }
-
+  // User wants to delete a model from their list
   const handleModelRemove = (modelId) => {
     setModels(prev => prev.filter(model => model.id !== modelId))
     if (selectedModel === models.find(model => model.id === modelId)?.name) {
@@ -146,6 +179,7 @@ export default function Dashboard() {
     }
   }
 
+  // Used to group generated and saved images by model
   const groupImagesByModel = (images) => {
     const groups = {}
     images.forEach(image => {
@@ -176,6 +210,7 @@ export default function Dashboard() {
     return true;
   };
 
+  // When the user trains a new model
   const handleStartTraining = async () => {
     setIsSubmitting(true);
     if (!validateModelName(modelName)) {
@@ -225,11 +260,14 @@ export default function Dashboard() {
   return (
     <div className="dashboard">
       <div className="main-content">
+
+        {/* Control panel */}
         <aside className="sidebar">
           <Card className="sidebar-card">
             <CardContent className="sidebar-content">
                <h2 className='sidebar-title'>Choose Your Model</h2>
 
+              {/* Model select modal */}
               <Dialog open={isModelDialogOpen} onOpenChange={setIsModelDialogOpen}>
                 <DialogTrigger asChild>
                   <Button className="model-select-button">
@@ -345,6 +383,7 @@ export default function Dashboard() {
                 </div>
               )}
 
+              {/* Control panel form */}
               <div className="form-group">
                 <h2 className='sidebar-title'>Craft Your Prompt</h2>
                 <label htmlFor="prompt" className="input-label">
@@ -452,25 +491,17 @@ export default function Dashboard() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="loading-images"
+                      className="flex flex-row flex-wrap gap-4 justify-start items-start"
                     >
-                      {loadingImages.map((image, index) => (
-                        <Card key={`loading-${index}`} className="image-card loading">
-                          <CardContent className="image-content">
-                            <div className="image-wrapper">
-                              <Image
-                                src={image}
-                                alt={`Generating ${index + 1}`}
-                                className={"generating-image"}
-                                width={200}
-                                height={500}
-                                />
-                              <div className="loading-overlay">
-                                <Loader className="loading-icon" />
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
+                      {loadingImages.map((placeholder) => (
+                        <motion.div
+                          key={placeholder.id}
+                          className="relative w-[200px] h-[200px] bg-gray-100 rounded-lg overflow-hidden"
+                        >
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Loader />
+                          </div>
+                        </motion.div>
                       ))}
                     </motion.div>
                   )}
