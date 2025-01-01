@@ -37,9 +37,10 @@ export default function Dashboard() {
   const [prompt, setPrompt] = useState('')
   const [negativePrompt, setNegativePrompt] = useState('')
   const [numImages, setNumImages] = useState(1)
-  const [styleStrength, setStyleStrength] = useState(50)
+  const [styleStrength, setStyleStrength] = useState(2.5)
   const [selectedModel, setSelectedModel] = useState('Select Model')
   const [selectedModelVersion, setSelectedModelVersion] = useState('')
+  const [predictionError, setPredictionError] = useState('')
 
   // Create Model Modal
   const [modelName, setModelName] = useState(''); // State for model name
@@ -64,8 +65,6 @@ export default function Dashboard() {
     if (user && user.data && user.data.models) {
       const modelsFromUserContext = user.data.models;
       setModels(modelsFromUserContext);
-      console.log('modelsFromUserContext: ')
-      console.log(modelsFromUserContext)
 
       const newGeneratedImages = [];
       const newSavedImages = [];
@@ -93,61 +92,6 @@ export default function Dashboard() {
       setSavedImages(newSavedImages);
     }
   }, [user]);
-
-  // What happens when "Generate" button is clicked
-  const handleGenerate = async () => {
-    // prompt
-    // negativePrompt
-    // numImages
-    // styleStrength
-    // selectedModel
-    // selectedModelVersion
-    setIsGenerating(true)
-
-    // Create placeholder cards with <Loader /> for each image being generated
-    const placeholders = Array(numImages).fill(null).map((_, index) => ({
-      id: `loading-${index}`,
-      isLoading: true,
-    }));
-    setLoadingImages(placeholders);
-    console.log(placeholders)
-
-
-    setTimeout(() => {
-      const newImages = Array(numImages).fill(null).map((_, index) => ({
-        id: `${selectedModel}/${selectedModelVersion}-${Date.now()}-${index}`,
-        url: `/results/earhart-house-1.jpg?height=200&width=200&text=${encodeURIComponent(prompt)}`,
-        isSaved: false,
-        model: selectedModel
-      }))
-      setGeneratedImages(prev => [...newImages, ...prev])
-      setLoadingImages([])
-      setIsGenerating(false)
-    }, 3000)
-
-    // try {
-    //   const response = await fetch('/api/ai/predictions', {
-    //     method: 'POST',
-    //     body: formData,
-    //   });
-    //   if (response.ok) {
-    //     // Handle successful response
-    //     setGeneratedImages(prev => [...response, ...prev])
-    //     setIsGenerating(false)
-    //     setLoadingImages([])
-    //   } else {
-    //     // Handle error response
-    //     setIsGenerating(false)
-    //     setLoadingImages([])
-    //     console.error(`Error from prediction route`);
-    //   }
-    // } catch (error) {
-    //   setIsGenerating(false)
-    //   setLoadingImages([])
-    //   console.error('An unexpected error occurred in prediction:', error);
-    // }
-
-  }
 
   // For when a user saves an image
   const handleSave = (image) => {
@@ -257,6 +201,66 @@ export default function Dashboard() {
     }
   };
 
+  // What happens when "Generate" button is clicked
+  const handleGenerate = async () => {
+    setPredictionError('');
+    if (selectedModel === 'Select Model') {
+      setPredictionError('You must select a model');
+      return;
+    };
+    setIsGenerating(true);
+
+    // Create placeholder cards with <Loader /> for each image being generated
+    const placeholders = Array(numImages).fill(null).map((_, index) => ({
+      id: `loading-${index}`,
+      isLoading: true,
+    }));
+    setLoadingImages(placeholders);
+    const formData = new FormData();
+    formData.append('prompt', prompt);
+    formData.append('uid', user.uid);
+    formData.append('negative_prompt', negativePrompt);
+    formData.append('num_images', numImages);
+    formData.append('prompt_strength', styleStrength);
+    formData.append('selected_model', selectedModel);
+    formData.append('selected_model_version', selectedModelVersion);
+
+    try {
+      console.log("Making prediction api call");
+      const currentModelName = selectedModel;
+      const response = await fetch('/api/ai/predictions', {
+        method: 'POST',
+        body: formData,
+      });
+      if (response.ok) {
+        // Handle successful response
+        const responseData = await response.json();
+        let newImages = [];
+        responseData.forEach((predictionUrl) => {
+          const image = {
+            id: `${currentModelName}-${Date.now()}-${Math.random()}`,
+            url: predictionUrl,
+            isSaved: false,
+            model: currentModelName
+          };
+          newImages.push(image);
+        });
+        setGeneratedImages(prev => [...newImages, ...prev]);
+        setIsGenerating(false);
+        setLoadingImages([]); // Remove the loaders
+      } else {
+        // Handle error response
+        setIsGenerating(false);
+        setLoadingImages([]);
+        setPredictionError('An unexpected error occurred!');
+      }
+    } catch (error) {
+      setIsGenerating(false);
+      setLoadingImages([]);
+      setPredictionError('An unexpected error occurred!', error);
+    }
+  };
+
   return (
     <div className="dashboard">
       <div className="main-content">
@@ -293,7 +297,6 @@ export default function Dashboard() {
                         <Button onClick={() => handleModelSelect(model.name, model.version)} className="model-select-overlay">
                           {model.name}
                         </Button>
-                        <p>{model.trainedImg}</p>
                           {/* Alert for deleting a model */}
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
@@ -428,19 +431,19 @@ export default function Dashboard() {
 
               <div className="form-group">
                 <label htmlFor="style-strength" className="input-label">
-                  Style Strength: {styleStrength}%
+                  Style Strength: {styleStrength}
                   <InfoTooltip content="Adjust how strongly the AI applies the style to the image." />
                 </label>
                 <Slider
                   id="style-strength"
-                  min={0}
-                  max={100}
-                  step={1}
+                  min={2}
+                  max={3.5}
+                  step={.5}
                   value={[styleStrength]}
                   onValueChange={(value) => setStyleStrength(value[0])}
                 />
               </div>
-
+              {predictionError && <p className="error">{predictionError}</p>}
               <div className="generate-button-container">
                 <Button
                   onClick={handleGenerate}

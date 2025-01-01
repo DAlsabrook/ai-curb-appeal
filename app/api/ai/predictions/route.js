@@ -1,66 +1,58 @@
 import { NextResponse } from "next/server";
 import Replicate from "replicate";
-import Logger from '../../../../lib/logger'
+import Logger from '@/lib/logger'
 
 // Initialize the Replicate client with the API token
 const replicateClient = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
 
-export async function POST(req) {
+export async function POST(request) {
   try {
+    const formData = await request.formData();
     const prePrompt = 'Ensure the scene is rendered with 100% photorealistic detail, including lifelike lighting, textures, and natural imperfections. Create the house from the prompt img in the style of TOK.';
-    const formData = await req.formData();
-    const prompt = prePrompt + formData.get('prompt'); // user prompt
+    const prompt = prePrompt + ' ' +formData.get('prompt'); // user prompt
     const userUID = formData.get('uid'); // user.uid is sent from the client side
     const formPromptStrength = Number(formData.get('prompt_strength'));
-
-    // NEEDED to run the prediction
-    const owner = 'dalsabrook';
-    const userGivenModelName = 'whitehousecaptiontest'; // hardcoded for now
-    const version = '1234'; // get from db
-
+    const negativePrompt = formData.get("negative_prompt");
+    const numImages = formData.get("num_images");
+    const model = formData.get("selected_model");
+    const modelVersion = formData.get("selected_model_version");
 
     if (!prompt || !userUID) {
-      return NextResponse.json({ detail: "Prompt, file, and user UID are required" }, { status: 400 });
+      return NextResponse.json({ detail: "Prompt and user UID are required" }, { status: 400 });
     }
 
-    // REPLICATE API CALL
+    const modelToUse = `dalsabrook/${model}:${modelVersion}`;
     let apiResponse;
-
-    // example on what to use for a user created model
-    // accountname/UserGivenModelName:Version
-    // "dalsabrook/testingr2:4ac1394f3b9276d033cc17d8e1672d92b1f094c566c3caf79610ad1f6901aea1"
-    const modelToUse = `${owner}/${userGivenModelName}:19ac825df65a4f3ed5a7395c28ce023979a2085c8940b01a2a9de955dffe51bb`;
+    Logger.info(formPromptStrength)
     try {
+      Logger.info('Sending prediction');
       // Send the file URI and prompt to the external API
       apiResponse = await replicateClient.run(modelToUse, {
         input: {
           prompt: prompt, // String
-          image: imageUrl, // User Image hosted on Firebase Storage
+          // image: imageUrl, // User Image hosted on Firebase Storage - commented out as it's not defined
           guidance: 10, // 0-10 : Higher values means strict prompt following but may reduce overall image quality. Lower values allow for more creative freedom
           aspect_ratio: "1:1",
           output_format: "webp",
           output_quality: 80, // 0-100 : Higher means better image quality
-          num_outputs: 4, // 1-4
-          prompt_strength: .5 + (.01 * formPromptStrength), // value from .5 - .7
+          num_outputs: Number(numImages) || 4, // 1-4
+          guidance_scale: formPromptStrength, // value from .5 - .7
           num_inference_steps: 30, // 1-50 : Number of denoising steps.
           disable_safety_checker: false, // Offensive or inappropriate content
         },
       });
-      Logger.info(apiResponse);
+      if (apiResponse.error) {
+        Logger.error(`Prediction route - Error from API response: ${apiResponse.error}`);
+        return NextResponse.json({ detail: apiResponse.error }, { status: 500 });
+      }
 
+      return NextResponse.json(apiResponse, { status: 200 });
     } catch (error) {
       Logger.error(`Prediction route - Error calling replicate API ${error}`);
       return NextResponse.json({ detail: "Error calling replicate API" }, { status: 500 });
     }
-
-    if (apiResponse.error) {
-      Logger.error(`Prediction route - Error from API response: ${error}`);
-      return NextResponse.json({ detail: apiResponse.error }, { status: 500 });
-    }
-
-    return NextResponse.json(apiResponse, { status: 201 });
   } catch (error) {
     Logger.error(`Prediction route - Error during API call: ${error}`);
     return NextResponse.json({ detail: "Error during API call" }, { status: 500 });

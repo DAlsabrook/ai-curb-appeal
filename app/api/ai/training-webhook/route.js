@@ -104,7 +104,7 @@ export async function POST(req) {
       return NextResponse.json({ message: 'Webhook received and processed successfully' }, { status: 200 });
     } else if (status === 'failed' || status === 'canceled') {
       // Remove images from db
-      console.log('Training failed or was cancelled')
+      logger.error('Training failed or was cancelled')
     }
 
     // If the model training is not yet completed
