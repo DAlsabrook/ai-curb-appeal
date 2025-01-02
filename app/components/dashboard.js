@@ -37,7 +37,7 @@ export default function Dashboard() {
   const [prompt, setPrompt] = useState('')
   const [negativePrompt, setNegativePrompt] = useState('')
   const [numImages, setNumImages] = useState(1)
-  const [styleStrength, setStyleStrength] = useState(2.5)
+  const [styleStrength, setStyleStrength] = useState(5)
   const [selectedModel, setSelectedModel] = useState('Select Model')
   const [selectedModelVersion, setSelectedModelVersion] = useState('')
   const [predictionError, setPredictionError] = useState('')
@@ -224,7 +224,7 @@ export default function Dashboard() {
     formData.append('prompt_strength', styleStrength);
     formData.append('selected_model', selectedModel);
     formData.append('selected_model_version', selectedModelVersion);
-
+    console.log(selectedModelVersion)
     try {
       console.log("Making prediction api call");
       const currentModelName = selectedModel;
@@ -245,6 +245,7 @@ export default function Dashboard() {
           };
           newImages.push(image);
         });
+        console.log(newImages)
         setGeneratedImages(prev => [...newImages, ...prev]);
         setIsGenerating(false);
         setLoadingImages([]); // Remove the loaders
@@ -436,9 +437,9 @@ export default function Dashboard() {
                 </label>
                 <Slider
                   id="style-strength"
-                  min={2}
-                  max={3.5}
-                  step={.5}
+                  min={0}
+                  max={10}
+                  step={1}
                   value={[styleStrength]}
                   onValueChange={(value) => setStyleStrength(value[0])}
                 />

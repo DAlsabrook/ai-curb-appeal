@@ -55,7 +55,7 @@ async function verifyWebhook(headers, body) {
 export async function POST(req) {
   try {
     const body = await req.text(); // Get the raw body
-
+    console.log(body)
     // Verify the webhook
     const isValid = await verifyWebhook(req.headers, body);
     if (!isValid) {
@@ -65,6 +65,7 @@ export async function POST(req) {
 
     // Extract relevant data from the request body
     const parsedBody = JSON.parse(body);
+    console.log(parsedBody);
     const modelId = parsedBody.id;
     const status = parsedBody.status; // possible "starting", "processing", "succeeded", "failed", "canceled"
     const versionId = parsedBody.version;

@@ -150,13 +150,11 @@ export async function POST(req) {
 
               try {
                 // Upload the combined zip file to Firebase Storage
-                Logger.info('Training Route - Uploading combined zip file to Firebase Storage.');
                 const zipURL = await uploadInputZip(combinedZipContent, userUID, userGivenName);
                 const imageURL = await uploadInputImage(images[0], userUID, userGivenName);
                 Logger.info(imageURL)
                 // return NextResponse.json({ detail: 'Done' }, { status: 200 });
                 try { // Create the model
-                  Logger.info('Training Route - Creating the model.');
                   const owner = 'dalsabrook';
                   const visibility = 'private';
                   const hardware = 'gpu-t4';
@@ -173,10 +171,9 @@ export async function POST(req) {
                   );
 
                   try { // Training the model that was just created
-                    Logger.info('Training Route - Training the model.');
                     const modelOwner = 'ostris';
                     const modelName = 'flux-dev-lora-trainer';
-                    const versionId = '3f39d8b7d50801daf27c7adc4e6b3de138cce9c5daa22e062c5ca30f0a558918';
+                    const versionId = 'e440909d3512c31646ee2e0c7d6f6f4923224863a6a10c494606e79fb5844497';
 
                     const options = {
                       destination: `${owner}/${userGivenName}`,

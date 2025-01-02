@@ -22,10 +22,8 @@ export async function POST(request) {
     if (!prompt || !userUID) {
       return NextResponse.json({ detail: "Prompt and user UID are required" }, { status: 400 });
     }
-
     const modelToUse = `dalsabrook/${model}:${modelVersion}`;
     let apiResponse;
-    Logger.info(formPromptStrength)
     try {
       Logger.info('Sending prediction');
       // Send the file URI and prompt to the external API
@@ -33,16 +31,17 @@ export async function POST(request) {
         input: {
           prompt: prompt, // String
           // image: imageUrl, // User Image hosted on Firebase Storage - commented out as it's not defined
-          guidance: 10, // 0-10 : Higher values means strict prompt following but may reduce overall image quality. Lower values allow for more creative freedom
+          guidance: formPromptStrength, // 0-10 : Higher values means strict prompt following but may reduce overall image quality. Lower values allow for more creative freedom
           aspect_ratio: "1:1",
+          go_fast: true,
           output_format: "webp",
           output_quality: 80, // 0-100 : Higher means better image quality
           num_outputs: Number(numImages) || 4, // 1-4
-          guidance_scale: formPromptStrength, // value from .5 - .7
           num_inference_steps: 30, // 1-50 : Number of denoising steps.
           disable_safety_checker: false, // Offensive or inappropriate content
         },
       });
+      Logger.info(apiResponse)
       if (apiResponse.error) {
         Logger.error(`Prediction route - Error from API response: ${apiResponse.error}`);
         return NextResponse.json({ detail: apiResponse.error }, { status: 500 });
