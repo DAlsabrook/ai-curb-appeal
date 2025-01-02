@@ -65,7 +65,8 @@ export async function POST(req) {
 
     // Extract relevant data from the request body
     const parsedBody = JSON.parse(body);
-    console.log(parsedBody);
+    logJson(parsedBody);
+
     const modelId = parsedBody.id;
     const status = parsedBody.status; // possible "starting", "processing", "succeeded", "failed", "canceled"
     const versionId = parsedBody.version;
@@ -123,4 +124,16 @@ export function GET() {
 
 export function PUT() {
   return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 });
+}
+
+// Recursive function to log all elements in a JSON object
+function logJson(obj, indent = '') {
+  for (const key in obj) {
+    if (typeof obj[key] === 'object' && obj[key] !== null) {
+      console.log(`${indent}${key}:`);
+      logJson(obj[key], indent + '  ');
+    } else {
+      console.log(`${indent}${key}: ${obj[key]}`);
+    }
+  }
 }

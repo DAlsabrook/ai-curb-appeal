@@ -128,7 +128,7 @@ export async function POST(req) {
             Logger.error('OpenAI api key not set')
           }
           const input = {
-            system_prompt: "Write a six-sentence caption for the provided image, with a focus on precision, photorealism, and structural details. In the first sentence, describe the overall style and type of the image, emphasizing its photorealistic, high-definition quality and how vivid and realistic the details appear. In the next four sentences, provide a precise and detailed description of the homes architectural structure and features, focusing on elements such as the roofline, overall shape and form, window styles, and construction materials, as well as notable structural features like chimneys, dormers, and unique design elements that define the homes character. Describe the textures and intricate details of the homes surfaces, such as the grain of wood, the patterns in brick or stone, and the visual depth of other materials, while avoiding emphasis on colors or design elements that are easy to modify, such as paint, doors, or other superficial features. In the final sentence, describe the immediate surroundings of the home with attention to context, such as the driveway's material, the layout of pathways, or the relationship between the home and its environment, focusing on structural and permanent features. Use clear, descriptive language suitable for prompting a text-to-image model, avoiding subjective phrases like 'evokes a sense of,' and ensure all descriptions are based on observable, specific details with comma-separated keywords for enhanced clarity.",
+            system_prompt: "Write a six-sentence caption for the provided image, with a focus on precision, photorealism, and structural details including the number of windows, doors, pillars, chimeny, or any other features that come in multiples along with their position on the house. In the first sentence, describe the overall style and type of the image, emphasizing its photorealistic, high-definition quality and how vivid and realistic the details appear. In the next four sentences, provide a precise and detailed description of the homes architectural structure and features, focusing on elements such as the roofline, overall shape and form, window styles, and construction materials, as well as notable structural features like chimneys, dormers, and unique design elements that define the homes character. Describe the textures and intricate details of the homes surfaces, such as the grain of wood, the patterns in brick or stone, and the visual depth of other materials, while avoiding emphasis on colors or design elements that are easy to modify, such as paint, doors, or other superficial features. In the final sentence, describe the immediate surroundings of the home with attention to context, such as the driveway's material, the layout of pathways, or the relationship between the home and its environment, focusing on structural and permanent features. Use clear, descriptive language suitable for prompting a text-to-image model, avoiding subjective phrases like 'evokes a sense of,' and ensure all descriptions are based on observable, specific details with comma-separated keywords for enhanced clarity.",
             openai_api_key: OPENAI_API_KEY,
             image_zip_archive: zipContent,
             model: "gpt-4o-mini"
@@ -152,8 +152,7 @@ export async function POST(req) {
                 // Upload the combined zip file to Firebase Storage
                 const zipURL = await uploadInputZip(combinedZipContent, userUID, userGivenName);
                 const imageURL = await uploadInputImage(images[0], userUID, userGivenName);
-                Logger.info(imageURL)
-                // return NextResponse.json({ detail: 'Done' }, { status: 200 });
+                
                 try { // Create the model
                   const owner = 'dalsabrook';
                   const visibility = 'private';
@@ -171,10 +170,6 @@ export async function POST(req) {
                   );
 
                   try { // Training the model that was just created
-                    const modelOwner = 'ostris';
-                    const modelName = 'flux-dev-lora-trainer';
-                    const versionId = 'e440909d3512c31646ee2e0c7d6f6f4923224863a6a10c494606e79fb5844497';
-
                     const options = {
                       destination: `${owner}/${userGivenName}`,
                       input: {
@@ -196,7 +191,10 @@ export async function POST(req) {
                       // Add query params like user.uid, model name? to then save in db from webhook?
                     };
 
-                    const training = await replicate.trainings.create(modelOwner, modelName, versionId, options);
+                    const modelOwner = 'ostris';
+                    const modelName = 'flux-dev-lora-trainer';
+                    const myModelVersionId = 'e440909d3512c31646ee2e0c7d6f6f4923224863a6a10c494606e79fb5844497';
+                    const training = await replicate.trainings.create(modelOwner, modelName, myModelVersionId, options);
 
                     // Possibly delete the .zip from firebase after use.
                     // Not sure if it is cheaper to keep the files or use operations to delete them

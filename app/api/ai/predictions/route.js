@@ -22,6 +22,7 @@ export async function POST(request) {
     if (!prompt || !userUID) {
       return NextResponse.json({ detail: "Prompt and user UID are required" }, { status: 400 });
     }
+
     const modelToUse = `dalsabrook/${model}:${modelVersion}`;
     let apiResponse;
     try {
