@@ -64,7 +64,7 @@ export async function POST(req) {
 
     // Extract relevant data from the request body
     const parsedBody = JSON.parse(body);
-
+    logJson(parsedBody)
     const modelId = parsedBody.id;
     const status = parsedBody.status; // possible "starting", "processing", "succeeded", "failed", "canceled"
     const versionId = parsedBody.version;
