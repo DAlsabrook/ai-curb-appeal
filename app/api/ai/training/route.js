@@ -152,7 +152,7 @@ export async function POST(req) {
                 // Upload the combined zip file to Firebase Storage
                 const zipURL = await uploadInputZip(combinedZipContent, userUID, userGivenName);
                 const imageURL = await uploadInputImage(images[0], userUID, userGivenName);
-                
+
                 try { // Create the model
                   const owner = 'dalsabrook';
                   const visibility = 'private';
@@ -191,10 +191,10 @@ export async function POST(req) {
                       // Add query params like user.uid, model name? to then save in db from webhook?
                     };
 
-                    const modelOwner = 'ostris';
-                    const modelName = 'flux-dev-lora-trainer';
-                    const myModelVersionId = 'e440909d3512c31646ee2e0c7d6f6f4923224863a6a10c494606e79fb5844497';
-                    const training = await replicate.trainings.create(modelOwner, modelName, myModelVersionId, options);
+                    const trainingModelOwner = 'ostris';
+                    const trainingModelName = 'flux-dev-lora-trainer';
+                    const trainingVersionId = 'e440909d3512c31646ee2e0c7d6f6f4923224863a6a10c494606e79fb5844497';
+                    const training = await replicate.trainings.create(trainingModelOwner, trainingModelName, trainingVersionId, options);
 
                     // Possibly delete the .zip from firebase after use.
                     // Not sure if it is cheaper to keep the files or use operations to delete them

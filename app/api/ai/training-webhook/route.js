@@ -64,13 +64,13 @@ export async function POST(req) {
 
     // Extract relevant data from the request body
     const parsedBody = JSON.parse(body);
-    logJson(parsedBody)
     const modelId = parsedBody.id;
     const status = parsedBody.status; // possible "starting", "processing", "succeeded", "failed", "canceled"
-    const versionId = parsedBody.version;
-    const newVersionId = parsedBody.output.version;
-    console.log('newVersionID')
-    console.log(newVersionId);
+    const versionId = parsedBody.output.version.split(':')[1];
+
+
+    console.log('versionID')
+    console.log(versionId);
 
     // Extract query parameters
     const url = new URL(req.url);
@@ -125,16 +125,4 @@ export function GET() {
 
 export function PUT() {
   return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 });
-}
-
-// Recursive function to log all elements in a JSON object
-function logJson(obj, indent = '') {
-  for (const key in obj) {
-    if (typeof obj[key] === 'object' && obj[key] !== null) {
-      console.log(`${indent}${key}:`);
-      logJson(obj[key], indent + '  ');
-    } else {
-      console.log(`${indent}${key}: ${obj[key]}`);
-    }
-  }
 }
