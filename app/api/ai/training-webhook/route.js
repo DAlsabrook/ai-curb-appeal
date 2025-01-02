@@ -55,7 +55,6 @@ async function verifyWebhook(headers, body) {
 export async function POST(req) {
   try {
     const body = await req.text(); // Get the raw body
-    console.log(body)
     // Verify the webhook
     const isValid = await verifyWebhook(req.headers, body);
     if (!isValid) {
@@ -65,12 +64,12 @@ export async function POST(req) {
 
     // Extract relevant data from the request body
     const parsedBody = JSON.parse(body);
-    logJson(parsedBody);
 
     const modelId = parsedBody.id;
     const status = parsedBody.status; // possible "starting", "processing", "succeeded", "failed", "canceled"
     const versionId = parsedBody.version;
-    const newVersionId = parsedBody.new_version || parsedBody.output_version || parsedBody.result?.version;
+    const newVersionId = parsedBody.output.version;
+    console.log('newVersionID')
     console.log(newVersionId);
 
     // Extract query parameters
@@ -78,8 +77,7 @@ export async function POST(req) {
     const searchParams = url.searchParams;
     const userUID = searchParams.get('uid');
     const userGivenName = searchParams.get('modelName');
-    const trainedImg = decodeURIComponent(new URL(req.url).searchParams.get('trainedImg'));
-    //    const trainedImg = decodeURIComponent(searchParams.get('trainedImg'));
+    const trainedImg = decodeURIComponent(searchParams.get('trainedImg'));
 
     // Check if the model training is completed
     if (status === 'succeeded') {
