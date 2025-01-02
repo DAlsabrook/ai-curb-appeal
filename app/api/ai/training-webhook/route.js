@@ -70,13 +70,16 @@ export async function POST(req) {
     const modelId = parsedBody.id;
     const status = parsedBody.status; // possible "starting", "processing", "succeeded", "failed", "canceled"
     const versionId = parsedBody.version;
+    const newVersionId = parsedBody.new_version || parsedBody.output_version || parsedBody.result?.version;
+    console.log(newVersionId);
 
     // Extract query parameters
     const url = new URL(req.url);
     const searchParams = url.searchParams;
     const userUID = searchParams.get('uid');
     const userGivenName = searchParams.get('modelName');
-    const trainedImg = decodeURIComponent(searchParams.get('trainedImg'));
+    const trainedImg = decodeURIComponent(new URL(req.url).searchParams.get('trainedImg'));
+    //    const trainedImg = decodeURIComponent(searchParams.get('trainedImg'));
 
     // Check if the model training is completed
     if (status === 'succeeded') {
