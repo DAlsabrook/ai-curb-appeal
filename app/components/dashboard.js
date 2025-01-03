@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Slider } from "@/components/ui/slider"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Upload, Home, Loader2, Save, Check, Trash2, X, Info } from 'lucide-react'
+import { Upload, Home, Loader2, Save, Check, Trash2, X, Info, Download, Maximize } from 'lucide-react'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import '../styles/dashboard.css'
@@ -36,8 +36,8 @@ export default function Dashboard() {
   // Control Panel
   const [prompt, setPrompt] = useState('')
   const [negativePrompt, setNegativePrompt] = useState('')
-  const [numImages, setNumImages] = useState(1)
-  const [styleStrength, setStyleStrength] = useState(5)
+  const [numImages, setNumImages] = useState(4)
+  const [designFlexibility, setDesignFlexibility] = useState(4)
   const [selectedModel, setSelectedModel] = useState('Select Model')
   const [selectedModelVersion, setSelectedModelVersion] = useState('')
   const [predictionError, setPredictionError] = useState('')
@@ -52,6 +52,9 @@ export default function Dashboard() {
   const [generatedImages, setGeneratedImages] = useState([])
   const [savedImages, setSavedImages] = useState([])
   const [isGenerating, setIsGenerating] = useState(false)
+  const [expandedImage, setExpandedImage] = useState(null);
+  const [isExpandImageModalOpen, setIsExpandImageModalOpen] = useState(false);
+
 
   const [loadingImages, setLoadingImages] = useState([])
   const generateButtonRef = useRef(null)
@@ -93,7 +96,7 @@ export default function Dashboard() {
     }
   }, [user]);
 
-  // For when a user saves an image
+  // Generated image overlay save button
   const handleSave = (image) => {
     if (!image.isSaved) {
       const updatedImage = { ...image, isSaved: true }
@@ -101,6 +104,22 @@ export default function Dashboard() {
       setSavedImages(prev => [updatedImage, ...prev])
     }
   }
+
+  const handleExpandImage = (image) => {
+    setExpandedImage(null);
+    setExpandedImage(image);
+    setIsExpandImageModalOpen(true);
+  };
+
+  // Generated image overlay download button
+  const handleDownloadImage = (image) => {
+    const link = document.createElement('a');
+    link.href = image.url;
+    link.download = `generated_image_${image.model}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   // User removes image from saved images
   const handleRemove = (image) => {
@@ -221,12 +240,10 @@ export default function Dashboard() {
     formData.append('uid', user.uid);
     formData.append('negative_prompt', negativePrompt);
     formData.append('num_images', numImages);
-    formData.append('prompt_strength', styleStrength);
+    formData.append('designFlexibility', designFlexibility);
     formData.append('selected_model', selectedModel);
     formData.append('selected_model_version', selectedModelVersion);
-    console.log(selectedModelVersion)
     try {
-      console.log("Making prediction api call");
       const currentModelName = selectedModel;
       const response = await fetch('/api/ai/predictions', {
         method: 'POST',
@@ -245,7 +262,6 @@ export default function Dashboard() {
           };
           newImages.push(image);
         });
-        console.log(newImages)
         setGeneratedImages(prev => [...newImages, ...prev]);
         setIsGenerating(false);
         setLoadingImages([]); // Remove the loaders
@@ -423,7 +439,7 @@ export default function Dashboard() {
                 <Slider
                   id="num-images"
                   min={1}
-                  max={10}
+                  max={4}
                   step={1}
                   value={[numImages]}
                   onValueChange={(value) => setNumImages(value[0])}
@@ -432,16 +448,16 @@ export default function Dashboard() {
 
               <div className="form-group">
                 <label htmlFor="style-strength" className="input-label">
-                  Style Strength: {styleStrength}
+                  Design Flexibility: {designFlexibility}
                   <InfoTooltip content="Adjust how strongly the AI applies the style to the image." />
                 </label>
                 <Slider
                   id="style-strength"
                   min={0}
                   max={10}
-                  step={1}
-                  value={[styleStrength]}
-                  onValueChange={(value) => setStyleStrength(value[0])}
+                  step={.5}
+                  value={[designFlexibility]}
+                  onValueChange={(value) => setDesignFlexibility(value[0])}
                 />
               </div>
               {predictionError && <p className="error">{predictionError}</p>}
@@ -500,7 +516,7 @@ export default function Dashboard() {
                       {loadingImages.map((placeholder) => (
                         <motion.div
                           key={placeholder.id}
-                          className="relative w-[200px] h-[200px] bg-gray-100 rounded-lg overflow-hidden"
+                          className="relative w-[24%] h-[200px] rounded-lg overflow-hidden"
                         >
                           <div className="absolute inset-0 flex items-center justify-center">
                             <Loader />
@@ -529,7 +545,7 @@ export default function Dashboard() {
                                 src={image.url}
                                 alt={`Generated ${image.id}`}
                                 className="generated-image"
-                                whileHover={{ filter: "blur(2px)" }}
+                                whileHover={{ filter: "blur(20px)" }}
                               />
                               <motion.div
                                 className="image-overlay"
@@ -547,6 +563,22 @@ export default function Dashboard() {
                                   ) : (
                                     <Save className="save-icon" />
                                   )}
+                                </Button>
+                                <Button
+                                  onClick={() => handleDownloadImage(image)}
+                                  variant="secondary"
+                                  size="icon"
+                                  className="download-image-button"
+                                >
+                                  <Download className="download-icon saved" />
+                                </Button>
+                                <Button
+                                  onClick={() => handleExpandImage(image)}
+                                  variant="secondary"
+                                  size="icon"
+                                  className="expand-image-button"
+                                >
+                                  <Maximize className="expand-icon saved" />
                                 </Button>
                               </motion.div>
                             </CardContent>
@@ -594,6 +626,22 @@ export default function Dashboard() {
                                 >
                                   <Trash2 className="remove-icon" />
                                 </Button>
+                                <Button
+                                  onClick={() => handleDownloadImage(image)}
+                                  variant="secondary"
+                                  size="icon"
+                                  className="download-image-button"
+                                >
+                                  <Download className="download-icon saved" />
+                                </Button>
+                                <Button
+                                  onClick={() => handleExpandImage(image)}
+                                  variant="secondary"
+                                  size="icon"
+                                  className="expand-image-button"
+                                >
+                                  <Maximize className="expand-icon saved" />
+                                </Button>
                               </motion.div>
                             </CardContent>
                           </Card>
@@ -605,6 +653,28 @@ export default function Dashboard() {
               </div>
             </TabsContent>
           </Tabs>
+          {/* Modal for expanded image */}
+          {isExpandImageModalOpen && expandedImage && (
+            <Dialog open={isExpandImageModalOpen} onOpenChange={setIsExpandImageModalOpen}>
+              <DialogHeader style={{display: 'none'}}>
+                <DialogTitle>Expanded Image</DialogTitle>
+              </DialogHeader>
+              <DialogContent
+                className="flex justify-center items-center"
+                style={{ width: '100vw', padding: '0', overflow: 'hidden' }}
+              >
+                <Image
+                  src={expandedImage.url}
+                  alt={`Expanded ${expandedImage.id}`}
+                  width={0}
+                  height={0}
+                  sizes="120%"
+                  style={{ width: '100vw', height: '100%' }}
+                />
+
+              </DialogContent>
+            </Dialog>
+          )}
         </main>
       </div>
     </div>

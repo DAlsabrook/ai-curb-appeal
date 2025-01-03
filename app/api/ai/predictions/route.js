@@ -10,10 +10,10 @@ const replicateClient = new Replicate({
 export async function POST(request) {
   try {
     const formData = await request.formData();
-    const prePrompt = 'Ensure the scene is rendered with 100% photorealistic detail, including lifelike lighting, textures, and natural imperfections. Create the house from the prompt img in the style of TOK.';
+    const prePrompt = 'Ensure the scene is rendered with 100% photorealistic detail, including lifelike lighting, textures, and natural imperfections. The house should have the exact structure as TOK but change anything from TOK to match this prompt: ';
     const prompt = prePrompt + ' ' +formData.get('prompt'); // user prompt
     const userUID = formData.get('uid'); // user.uid is sent from the client side
-    const formPromptStrength = Number(formData.get('prompt_strength'));
+    const designFlexibility = Number(formData.get('designFlexibility'));
     const negativePrompt = formData.get("negative_prompt");
     const numImages = formData.get("num_images");
     const model = formData.get("selected_model");
@@ -22,27 +22,25 @@ export async function POST(request) {
     if (!prompt || !userUID) {
       return NextResponse.json({ detail: "Prompt and user UID are required" }, { status: 400 });
     }
-
     const modelToUse = `dalsabrook/${model}:${modelVersion}`;
     let apiResponse;
     try {
-      Logger.info('Sending prediction');
       // Send the file URI and prompt to the external API
       apiResponse = await replicateClient.run(modelToUse, {
         input: {
           prompt: prompt, // String
-          // image: imageUrl, // User Image hosted on Firebase Storage - commented out as it's not defined
-          guidance: formPromptStrength, // 0-10 : Higher values means strict prompt following but may reduce overall image quality. Lower values allow for more creative freedom
+          negative_prompt: negativePrompt,
+          // image: 'https://firebasestorage.googleapis.com/v0/b/aicurbappeal-56306.appspot.com/o/ghKALyqoHHOMOknTGMsrk86sqOW2%2Fwhite%20house%208%20-%20Copy.jpg?alt=media&token=fa05c2f1-24be-465a-a3a2-efa600fa6c6c', // User Image hosted on Firebase Storage - commented out as it's not defined
+          guidance: designFlexibility, // 0-10 : Higher values means strict prompt following but may reduce overall image quality. Lower values allow for more creative freedom
           aspect_ratio: "1:1",
-          go_fast: true,
+          go_fast: false,
           output_format: "webp",
-          output_quality: 80, // 0-100 : Higher means better image quality
+          output_quality: 100, // 0-100 : Higher means better image quality
           num_outputs: Number(numImages) || 4, // 1-4
           num_inference_steps: 30, // 1-50 : Number of denoising steps.
           disable_safety_checker: false, // Offensive or inappropriate content
         },
       });
-      Logger.info(apiResponse)
       if (apiResponse.error) {
         Logger.error(`Prediction route - Error from API response: ${apiResponse.error}`);
         return NextResponse.json({ detail: apiResponse.error }, { status: 500 });

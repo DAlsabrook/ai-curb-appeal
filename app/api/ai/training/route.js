@@ -110,131 +110,69 @@ export async function POST(req) {
       return NextResponse.json({ detail: "Error loading images" }, { status: 400 });
     }
 
-    try {
-      // Resize images to a maximum size of 1MB
-      Logger.info('Training Route - Resizing images.');
-      const resizedImages = await resizeImages(images);
+    // Resize images to a maximum size of 1MB
+    Logger.info('Training Route - Resizing images.');
+    const resizedImages = await resizeImages(images);
 
-      try {
-        // Create zip file from resized images
-        Logger.info('Training Route - Creating zip file from resized images.');
-        const zipContent = await createZip(resizedImages);
+    // Create zip file from resized images
+    Logger.info('Training Route - Creating zip file from resized images.');
+    const zipContent = await createZip(resizedImages);
 
-        try {
-          // Need to auto caption and include captions in zip
-          Logger.info('Training Route - Starting image captioning.');
-          const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-          if (!OPENAI_API_KEY) {
-            Logger.error('OpenAI api key not set')
-          }
-          const input = {
-            system_prompt: "Write a six-sentence caption for the provided image, with a focus on precision, photorealism, and structural details including the number of windows, doors, pillars, chimeny, or any other features that come in multiples along with their position on the house. In the first sentence, describe the overall style and type of the image, emphasizing its photorealistic, high-definition quality and how vivid and realistic the details appear. In the next four sentences, provide a precise and detailed description of the homes architectural structure and features, focusing on elements such as the roofline, overall shape and form, window styles, and construction materials, as well as notable structural features like chimneys, dormers, and unique design elements that define the homes character. Describe the textures and intricate details of the homes surfaces, such as the grain of wood, the patterns in brick or stone, and the visual depth of other materials, while avoiding emphasis on colors or design elements that are easy to modify, such as paint, doors, or other superficial features. In the final sentence, describe the immediate surroundings of the home with attention to context, such as the driveway's material, the layout of pathways, or the relationship between the home and its environment, focusing on structural and permanent features. Use clear, descriptive language suitable for prompting a text-to-image model, avoiding subjective phrases like 'evokes a sense of,' and ensure all descriptions are based on observable, specific details with comma-separated keywords for enhanced clarity.",
-            openai_api_key: OPENAI_API_KEY,
-            image_zip_archive: zipContent,
-            model: "gpt-4o-mini"
-          };
+    // Upload the combined zip file to Firebase Storage
+    const zipURL = await uploadInputZip(zipContent, userUID, userGivenName);
+    const imageURL = await uploadInputImage(images[0], userUID, userGivenName);
 
-          const output = await replicate.run("fofr/batch-image-captioning:d0adb15f4826881a68f1d82e0b10fe2ee1af536632dc8313f7f777ed8d264726", { input });
+    // Create the model
+    const owner = 'dalsabrook';
+    const visibility = 'private';
+    const hardware = 'gpu-t4';
+    const description = 'AICurbAppeal.com house model';
 
-          try {
-            // Fetch the caption zip file
-            Logger.info('Training Route - Fetching caption zip file.');
-            const captionZipBuffer = Buffer.from(await fetch(output).then(res => res.arrayBuffer()));
-            const captionFiles = await extractZip(captionZipBuffer);
-
-            try {
-              // Combine resized images and caption files into a new zip file
-              Logger.info('Training Route - Combining resized images and caption files into a new zip file.');
-              const combinedFiles = [...resizedImages, ...captionFiles];
-              const combinedZipContent = await createZip(combinedFiles);
-
-              try {
-                // Upload the combined zip file to Firebase Storage
-                const zipURL = await uploadInputZip(combinedZipContent, userUID, userGivenName);
-                const imageURL = await uploadInputImage(images[0], userUID, userGivenName);
-
-                try { // Create the model
-                  const owner = 'dalsabrook';
-                  const visibility = 'private';
-                  const hardware = 'gpu-t4';
-                  const description = 'AICurbAppeal.com house model'
-
-                  await replicate.models.create(
-                    owner,
-                    userGivenName,
-                    {
-                      'visibility': visibility,
-                      'hardware': hardware,
-                      'description': description
-                    }
-                  );
-
-                  try { // Training the model that was just created
-                    const options = {
-                      destination: `${owner}/${userGivenName}`,
-                      input: {
-                        steps: 1000,
-                        lora_rank: 16,
-                        optimizer: "adamw8bit",
-                        batch_size: 1,
-                        resolution: "512,768,1024",
-                        autocaption: false,
-                        input_images: zipURL,
-                        trigger_word: "TOK", // Possibly Set to House?
-                        learning_rate: 0.0004,
-                        wandb_project: "flux_train_replicate",
-                        wandb_save_interval: 100,
-                        caption_dropout_rate: 0.05,
-                        wandb_sample_interval: 100
-                      },
-                      webhook: `https://ai-curb-appeal.vercel.app/api/ai/training-webhook?uid=${userUID}&modelName=${userGivenName}&trainedImg=${encodeURIComponent(imageURL)}`
-                      // Add query params like user.uid, model name? to then save in db from webhook?
-                    };
-
-                    const trainingModelOwner = 'ostris';
-                    const trainingModelName = 'flux-dev-lora-trainer';
-                    const trainingVersionId = 'e440909d3512c31646ee2e0c7d6f6f4923224863a6a10c494606e79fb5844497';
-                    const training = await replicate.trainings.create(trainingModelOwner, trainingModelName, trainingVersionId, options);
-
-                    // Possibly delete the .zip from firebase after use.
-                    // Not sure if it is cheaper to keep the files or use operations to delete them
-                    Logger.info(`Training Route - Training URL: https://replicate.com/p/${training.id}`);
-                    return NextResponse.json({ detail: 'Model training has started!', trainedModel: training }, { status: 200 });
-                  } catch (error) {
-                    Logger.error('Training Route - Error during model training:', error);
-                    return NextResponse.json({ detail: 'Error during model training', error: error.message }, { status: 500 });
-                  }
-                } catch (error) {
-                  Logger.error('Training Route - Error creating model:', error);
-                  return NextResponse.json({ detail: 'Error creating the model', error: error.message }, { status: 500 });
-                }
-              } catch (error) {
-                Logger.error('Training Route - Error uploading combined zip file to Firebase Storage:', error);
-                return NextResponse.json({ detail: 'Error uploading combined zip file to Firebase Storage', error: error.message }, { status: 500 });
-              }
-            } catch (error) {
-              Logger.error('Training Route - Error combining resized images and caption files into a new zip file:', error);
-              return NextResponse.json({ detail: 'Error combining resized images and caption files into a new zip file', error: error.message }, { status: 500 });
-            }
-          } catch (error) {
-            Logger.error('Training Route - Error fetching caption zip file:', error);
-            return NextResponse.json({ detail: 'Error fetching caption zip file', error: error.message }, { status: 500 });
-          }
-        } catch (error) {
-          Logger.error('Training Route - Error creating zip file from resized images:', error);
-          return NextResponse.json({ detail: 'Error creating zip file from resized images', error: error.message }, { status: 500 });
-        }
-      } catch (error) {
-        Logger.error('Training Route - Error resizing images:', error);
-        return NextResponse.json({ detail: 'Error resizing images', error: error.message }, { status: 500 });
+    await replicate.models.create(
+      owner,
+      userGivenName,
+      {
+        'visibility': visibility,
+        'hardware': hardware,
+        'description': description
       }
-    } catch (error) {
-      Logger.error('Training Route - Error processing form data:', error);
-      return NextResponse.json({ detail: 'Error processing form data', error: error.message }, { status: 500 });
-    }
+    );
+
+    // Training the model that was just created
+    const options = {
+      destination: `${owner}/${userGivenName}`,
+      input: {
+        steps: 2000, // max 6000
+        lora_rank: 30, // (max 128) Higher ranks take longer to train but can capture more complex features. Caption quality is more important for higher ranks.
+        optimizer: "adamw8bit",
+        batch_size: 1,
+        resolution: "512,768,1024",
+        autocaption: true,
+        input_images: zipURL,
+        trigger_word: "TOK", // Possibly Set to House?
+        learning_rate: 0.0004,
+        wandb_project: "flux_train_replicate",
+        wandb_save_interval: 100,
+        caption_dropout_rate: 0.05,
+        wandb_sample_interval: 100
+      },
+      webhook: `https://ai-curb-appeal.vercel.app/api/ai/training-webhook?uid=${userUID}&modelName=${userGivenName}&trainedImg=${encodeURIComponent(imageURL)}`
+      // Add query params like user.uid, model name? to then save in db from webhook?
+    };
+
+    const trainingModelOwner = 'ostris';
+    const trainingModelName = 'flux-dev-lora-trainer';
+    const trainingVersionId = 'e440909d3512c31646ee2e0c7d6f6f4923224863a6a10c494606e79fb5844497';
+    const training = await replicate.trainings.create(trainingModelOwner, trainingModelName, trainingVersionId, options);
+
+    // Possibly delete the .zip from firebase after use.
+    // Not sure if it is cheaper to keep the files or use operations to delete them
+    Logger.info(`Training Route - Training URL: https://replicate.com/p/${training.id}`);
+    return NextResponse.json({ detail: 'Model training has started!', trainedModel: training }, { status: 200 });
+
   } catch (error) {
-    Logger.error('Training Route - Error handling POST request:', error);
-    return NextResponse.json({ detail: 'Error handling POST request', error: error.message }, { status: 500 });
+    Logger.error('Training Route - Error during processing:', error);
+    return NextResponse.json({ detail: 'Error during processing', error: error.message }, { status: 500 });
   }
 }
 
