@@ -185,5 +185,10 @@ export function GET(req, res) {
   return NextResponse.json('Working!', { status: 200 });
 }
 
-// https://firebasestorage.googleapis.com/v0/b/aicurbappeal-56306.appspot.com/o/ghKALyqoHHOMOknTGMsrk86sqOW2%2Furl_test1%2FinputImage%2Furl_test1-DisplayImage.jpg?alt=media&token=fd6746c5-3d9b-4057-b6d9-03eb4270f6c0
-// https://firebasestorage.googleapis.com/v0/b/aicurbappeal-56306.appspot.com/o/ghKALyqoHHOMOknTGMsrk86sqOW2/url_test1/inputImage/url_test1-DisplayImage.jpg?alt=media&token=fd6746c5-3d9b-4057-b6d9-03eb4270f6c0
+// route url sent from
+// encoded  https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Faicurbappeal-56306.appspot.com%2Fo%2FghKALyqoHHOMOknTGMsrk86sqOW2%252Furl_test3%252FinputImage%252Furl_test3-DisplayImage.jpg%3Falt%3Dmedia%26token%3D0faf2ec1-edac-496c-b625-d33f7342c557
+// Decoded  https://firebasestorage.googleapis.com/v0/b/aicurbappeal-56306.appspot.com/o/ghKALyqoHHOMOknTGMsrk86sqOW2%2Furl_test3%2FinputImage%2Furl_test3-DisplayImage.jpg?alt=media&token=0faf2ec1-edac-496c-b625-d33f7342c557
+
+// Webhook
+// Encoded  https://firebasestorage.googleapis.com/v0/b/aicurbappeal-56306.appspot.com/o/ghKALyqoHHOMOknTGMsrk86sqOW2%2Furl_test3%2FinputImage%2Furl_test3-DisplayImage.jpg?alt=media&token=0faf2ec1-edac-496c-b625-d33f7342c557
+// decoded  https://firebasestorage.googleapis.com/v0/b/aicurbappeal-56306.appspot.com/o/ghKALyqoHHOMOknTGMsrk86sqOW2/url_test3/inputImage/url_test3-DisplayImage.jpg?alt=media&token=0faf2ec1-edac-496c-b625-d33f7342c557
