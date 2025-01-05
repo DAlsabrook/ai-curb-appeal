@@ -272,8 +272,6 @@ export default function Dashboard() {
       });
       if (response.ok) {
         formData.append('prompt', response.prompt);
-        setIsGenerating(false);
-        setLoadingImages([])
       } else {
         setIsGenerating(false);
         setLoadingImages([]);

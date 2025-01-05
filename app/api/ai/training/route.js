@@ -111,21 +111,15 @@ export async function POST(req) {
     }
 
     // Resize images to a maximum size of 1MB
-    Logger.info('Training Route - Resizing images.');
     const resizedImages = await resizeImages(images);
 
     // Create zip file from resized images
-    Logger.info('Training Route - Creating zip file from resized images.');
     const zipContent = await createZip(resizedImages);
 
     // Upload the combined zip file to Firebase Storage
     const zipURL = await uploadInputZip(zipContent, userUID, userGivenName);
     const imageURL = await uploadInputImage(images[0], userUID, userGivenName);
-    Logger.info(`Training Route - Image URL: ${imageURL}`);
     const encodedImageURL = encodeURIComponent(imageURL);
-    Logger.info(`Training Route - encoded url: ${encodedImageURL}`)
-    Logger.info(`Training Route - Decoded url: ${decodeURIComponent(encodedImageURL)}`)
-    // https://firebasestorage.googleapis.com/v0/b/aicurbappeal-56306.appspot.com/o/ghKALyqoHHOMOknTGMsrk86sqOW2%2Furl_test%2FinputImage%2Furl_test-DisplayImage.jpg?alt=media&token=6f0c1e54-9828-4802-9c3c-e3ab180ddc69
 
     // Create the model
     const owner = 'dalsabrook';
@@ -147,8 +141,8 @@ export async function POST(req) {
     const options = {
       destination: `${owner}/${userGivenName}`,
       input: {
-        steps: 100, // max 6000 (2000 is best results so far)
-        lora_rank: 30, // (max 128) Higher ranks take longer to train but can capture more complex features. Caption quality is more important for higher ranks.
+        steps: 2000, // max 6000 (2000 is best results so far)
+        lora_rank: 16, // (max 128) Higher ranks take longer to train but can capture more complex features. Caption quality is more important for higher ranks.
         optimizer: "adamw8bit",
         batch_size: 1,
         resolution: "512,768,1024",
@@ -172,7 +166,6 @@ export async function POST(req) {
 
     // Possibly delete the .zip from firebase after use.
     // Not sure if it is cheaper to keep the files or use operations to delete them
-    Logger.info(`Training Route - Training URL: https://replicate.com/p/${training.id}`);
     return NextResponse.json({ detail: 'Model training has started!', trainedModel: training }, { status: 200 });
 
   } catch (error) {
@@ -184,11 +177,3 @@ export async function POST(req) {
 export function GET(req, res) {
   return NextResponse.json('Working!', { status: 200 });
 }
-
-// route url sent from
-// encoded  https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Faicurbappeal-56306.appspot.com%2Fo%2FghKALyqoHHOMOknTGMsrk86sqOW2%252Furl_test3%252FinputImage%252Furl_test3-DisplayImage.jpg%3Falt%3Dmedia%26token%3D0faf2ec1-edac-496c-b625-d33f7342c557
-// Decoded  https://firebasestorage.googleapis.com/v0/b/aicurbappeal-56306.appspot.com/o/ghKALyqoHHOMOknTGMsrk86sqOW2%2Furl_test3%2FinputImage%2Furl_test3-DisplayImage.jpg?alt=media&token=0faf2ec1-edac-496c-b625-d33f7342c557
-
-// Webhook
-// Encoded  https://firebasestorage.googleapis.com/v0/b/aicurbappeal-56306.appspot.com/o/ghKALyqoHHOMOknTGMsrk86sqOW2%2Furl_test3%2FinputImage%2Furl_test3-DisplayImage.jpg?alt=media&token=0faf2ec1-edac-496c-b625-d33f7342c557
-// decoded  https://firebasestorage.googleapis.com/v0/b/aicurbappeal-56306.appspot.com/o/ghKALyqoHHOMOknTGMsrk86sqOW2/url_test3/inputImage/url_test3-DisplayImage.jpg?alt=media&token=0faf2ec1-edac-496c-b625-d33f7342c557
