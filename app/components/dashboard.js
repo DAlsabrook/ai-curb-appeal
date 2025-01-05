@@ -236,13 +236,59 @@ export default function Dashboard() {
     }));
     setLoadingImages(placeholders);
     const formData = new FormData();
-    formData.append('prompt', prompt);
     formData.append('uid', user.uid);
     formData.append('negative_prompt', negativePrompt);
     formData.append('num_images', numImages);
     formData.append('designFlexibility', designFlexibility);
     formData.append('selected_model', selectedModel);
     formData.append('selected_model_version', selectedModelVersion);
+
+    // OpenAI generates a better prompt
+    try {
+      let modelTrainedImage;
+      console.log(user.data.models)
+      for (let i = 0; i < user.data.models.length; i++) {
+        const model = user.data.models[i];
+        console.log('looping')
+        if (model.name === selectedModel) {
+          console.log('found match');
+          console.log(model);
+          modelTrainedImage = model.trainedImg;
+          break; // Exit the loop once the match is found
+        }
+      }
+      if (!modelTrainedImage) {
+        setIsGenerating(false);
+        setLoadingImages([]);
+        setPredictionError('Could not find models training image');
+        return;
+      }
+      const promptCreationData = {
+        imageURL: modelTrainedImage,
+        textPrompt: prompt,
+      }
+      const response = await fetch('/api/ai/prompt-creation', {
+        method: 'POST',
+        body: promptCreationData,
+      });
+      if (response.ok) {
+        formData.append('prompt', response.prompt);
+        setIsGenerating(false);
+        setLoadingImages([])
+      } else {
+        setIsGenerating(false);
+        setLoadingImages([]);
+        setPredictionError('An unexpected error occurred generating the prompt!');
+        return;
+      }
+    } catch (error) {
+      setIsGenerating(false);
+      setLoadingImages([]);
+      setPredictionError('An unexpected error occurred generating the prompt!');
+      return;
+    }
+
+    // Send prompt to replicate
     try {
       const currentModelName = selectedModel;
       const response = await fetch('/api/ai/predictions', {
