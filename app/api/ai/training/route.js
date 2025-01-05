@@ -121,7 +121,7 @@ export async function POST(req) {
     // Upload the combined zip file to Firebase Storage
     const zipURL = await uploadInputZip(zipContent, userUID, userGivenName);
     const imageURL = await uploadInputImage(images[0], userUID, userGivenName);
-
+    Logger.info(`Training Route - Image URL: ${imageURL}`);
     // Create the model
     const owner = 'dalsabrook';
     const visibility = 'private';

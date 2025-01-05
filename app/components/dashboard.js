@@ -249,10 +249,7 @@ export default function Dashboard() {
       console.log(user.data.models)
       for (let i = 0; i < user.data.models.length; i++) {
         const model = user.data.models[i];
-        console.log('looping')
         if (model.name === selectedModel) {
-          console.log('found match');
-          console.log(model);
           modelTrainedImage = model.trainedImg;
           break; // Exit the loop once the match is found
         }
@@ -267,9 +264,11 @@ export default function Dashboard() {
         imageURL: modelTrainedImage,
         textPrompt: prompt,
       }
+      console.log('Sending to prompt-creation route: ')
+      console.log(promptCreationData)
       const response = await fetch('/api/ai/prompt-creation', {
         method: 'POST',
-        body: promptCreationData,
+        body: JSON.stringify(promptCreationData),
       });
       if (response.ok) {
         formData.append('prompt', response.prompt);

@@ -68,17 +68,13 @@ export async function POST(req) {
     const status = parsedBody.status; // possible "starting", "processing", "succeeded", "failed", "canceled"
     const versionId = parsedBody.output.version.split(':')[1];
 
-
-    console.log('versionID')
-    console.log(versionId);
-
     // Extract query parameters
     const url = new URL(req.url);
     const searchParams = url.searchParams;
     const userUID = searchParams.get('uid');
     const userGivenName = searchParams.get('modelName');
     const trainedImg = decodeURIComponent(searchParams.get('trainedImg'));
-
+    logger.info(`Training-webhook Route - Image URL: ${trainedImg}`);
     // Check if the model training is completed
     if (status === 'succeeded') {
       // Get the user current state in DB
