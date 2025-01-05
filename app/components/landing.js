@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Loader from './loader'
 import '../styles/landing.css'
 
-const LandingPage = () => {
+const LandingPage = ({ setIsSignUpModalOpen }) => {
   const [currentPrompt, setCurrentPrompt] = useState('"Red brick with dark paint"')
   const [isLoading, setIsLoading] = useState(false)
   const [showImage, setShowImage] = useState(true)
@@ -89,16 +89,16 @@ const LandingPage = () => {
         <motion.div className="hero-content" style={{ y }}>
           <h1>Transform Your Home with AI</h1>
           <p>Design, visualize, and renovate with the power of artificial intelligence</p>
-          <button className="cta-button">Start Your AI Renovation Journey</button>
+          <button className="cta-button" onClick={() => setIsSignUpModalOpen(true)}>Start Your AI Renovation Journey</button>
         </motion.div>
       </section>
 
       <section className="benefits">
-        <h2>Why Choose AI Curb Appeal?</h2>
+        <h2>Why Try AI Curb Appeal?</h2>
         <div className="benefits-grid">
           <div className="benefit-card">
-            <h3>Unlimited Design Options</h3>
-            <p>Explore countless exterior designs without committing to costly renovations</p>
+            <h3>Instant Visualization</h3>
+            <p>See your ideas come to life in seconds, not days</p>
           </div>
           <div className="benefit-card">
             <h3>Cost-Effective Planning</h3>
@@ -108,10 +108,7 @@ const LandingPage = () => {
             <h3>Client Collaboration</h3>
             <p>Generate multiple designs to present to your clients</p>
           </div>
-          <div className="benefit-card">
-            <h3>Instant Visualization</h3>
-            <p>See your ideas come to life in seconds, not days</p>
-          </div>
+
         </div>
       </section>
 

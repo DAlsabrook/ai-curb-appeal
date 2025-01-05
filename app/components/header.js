@@ -13,9 +13,8 @@ import { Switch } from "@/components/ui/switch"
 import Loader from './loader'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
-export default function Header() {
+export default function Header({ isSignUpModalOpen, setIsSignUpModalOpen }) {
   const { user, setUser } = useUser()
-  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [isAccountSettingsOpen, setIsAccountSettingsOpen] = useState(false)
   const [email, setEmail] = useState('')
@@ -182,14 +181,14 @@ export default function Header() {
 
   return (
     <header className="header">
-      <div className="logo">
+      <div className="logo ml-8">
         <Image
-          src={'/whiteCircle-black.png'}
+          src={'/ripplesLogo.png'}
           alt={'AI Curb Appeal Logo'}
-          width={40}
-          height={40}
+          width={75}
+          height={75}
           />
-        <p>AI CurbAppeal</p>
+        <p>Curb Appeal</p>
       </div>
       <nav>
         {user ? (
@@ -420,8 +419,6 @@ export default function Header() {
                       <Button type="submit">Log In</Button>
                     </DialogFooter>
                   </form>
-
-
               </DialogContent>
             </Dialog>
           </div>
