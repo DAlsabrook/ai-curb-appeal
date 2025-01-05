@@ -73,8 +73,10 @@ export async function POST(req) {
     const searchParams = url.searchParams;
     const userUID = searchParams.get('uid');
     const userGivenName = searchParams.get('modelName');
-    const trainedImg = decodeURIComponent(searchParams.get('trainedImg'));
-    logger.info(`Training-webhook Route - Image URL: ${trainedImg}`);
+    const encodedTrainedImg = searchParams.get('trainedImg');
+    logger.info(`Encoded ${encodedTrainedImg}`)
+    const trainedImg = decodeURIComponent(encodedTrainedImg);
+    logger.info(`Training-webhook Route - decoded Image URL: ${trainedImg}`);
     // Check if the model training is completed
     if (status === 'succeeded') {
       // Get the user current state in DB

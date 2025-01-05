@@ -122,6 +122,11 @@ export async function POST(req) {
     const zipURL = await uploadInputZip(zipContent, userUID, userGivenName);
     const imageURL = await uploadInputImage(images[0], userUID, userGivenName);
     Logger.info(`Training Route - Image URL: ${imageURL}`);
+    const encodedImageURL = encodeURIComponent(imageURL);
+    Logger.info(`Training Route - encoded url: ${encodedImageURL}`)
+    Logger.info(`Training Route - Decoded url: ${decodeURIComponent(encodedImageURL)}`)
+    // https://firebasestorage.googleapis.com/v0/b/aicurbappeal-56306.appspot.com/o/ghKALyqoHHOMOknTGMsrk86sqOW2%2Furl_test%2FinputImage%2Furl_test-DisplayImage.jpg?alt=media&token=6f0c1e54-9828-4802-9c3c-e3ab180ddc69
+
     // Create the model
     const owner = 'dalsabrook';
     const visibility = 'private';
@@ -142,7 +147,7 @@ export async function POST(req) {
     const options = {
       destination: `${owner}/${userGivenName}`,
       input: {
-        steps: 2000, // max 6000
+        steps: 100, // max 6000 (2000 is best results so far)
         lora_rank: 30, // (max 128) Higher ranks take longer to train but can capture more complex features. Caption quality is more important for higher ranks.
         optimizer: "adamw8bit",
         batch_size: 1,
@@ -156,7 +161,7 @@ export async function POST(req) {
         caption_dropout_rate: 0.05,
         wandb_sample_interval: 100
       },
-      webhook: `https://ai-curb-appeal.vercel.app/api/ai/training-webhook?uid=${userUID}&modelName=${userGivenName}&trainedImg=${encodeURIComponent(imageURL)}`
+      webhook: `https://ai-curb-appeal.vercel.app/api/ai/training-webhook?uid=${userUID}&modelName=${userGivenName}&trainedImg=${encodedImageURL}`
       // Add query params like user.uid, model name? to then save in db from webhook?
     };
 
@@ -179,3 +184,6 @@ export async function POST(req) {
 export function GET(req, res) {
   return NextResponse.json('Working!', { status: 200 });
 }
+
+// https://firebasestorage.googleapis.com/v0/b/aicurbappeal-56306.appspot.com/o/ghKALyqoHHOMOknTGMsrk86sqOW2%2Furl_test1%2FinputImage%2Furl_test1-DisplayImage.jpg?alt=media&token=fd6746c5-3d9b-4057-b6d9-03eb4270f6c0
+// https://firebasestorage.googleapis.com/v0/b/aicurbappeal-56306.appspot.com/o/ghKALyqoHHOMOknTGMsrk86sqOW2/url_test1/inputImage/url_test1-DisplayImage.jpg?alt=media&token=fd6746c5-3d9b-4057-b6d9-03eb4270f6c0

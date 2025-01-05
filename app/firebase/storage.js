@@ -25,7 +25,6 @@ const uploadInputImage = async (image, userUID, modelName) => {
     const imageSnapshot = await uploadBytes(imageRef, image);
     // First image uploaded successfully
     const imageDownloadURL = await getDownloadURL(imageSnapshot.ref); // Get the download URL for the first image
-    Logger.info(imageDownloadURL)
     return imageDownloadURL;
   } catch (error) {
     // Handle upload errors
