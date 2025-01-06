@@ -35,12 +35,14 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
 
   useEffect(() => {
     if (currentPrompt) {
-      setIsLoading(true)
+      setTimeout(() => {
+        setIsLoading(true)
+      }, 500);
       setShowImage(false)
       const timer = setTimeout(() => {
         setIsLoading(false)
         setShowImage(true)
-      }, 2000) // Simulate 2 seconds of "AI generation"
+      }, 2500) // Simulate 2 seconds of "AI generation"
       return () => clearTimeout(timer)
     }
   }, [currentPrompt])
@@ -116,19 +118,84 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
         <h2>How It Works</h2>
         <div className="steps">
           <div className="step">
-            <div className="step-number">1</div>
-            <h3>Upload Your Home</h3>
-            <p>Take 10 - 20 images of your property and upload them to our system</p>
+            <Image
+              className='step-image'
+              src={"/ourhouse_stack.png"}
+              alt={"House before renovation"}
+              width={500}
+              height={500}
+              style={{width: '50%', height: 'auto'}}
+            />
+
+            <div className='step-text'>
+              <div className="step-number">1</div>
+              <h3>Upload Your Home</h3>
+              <p>Take 10 - 20 images of your property and upload them to our system</p>
+            </div>
           </div>
           <div className="step">
-            <div className="step-number">2</div>
-            <h3>Train Your AI Model</h3>
-            <p>Our AI learns the unique features of your home</p>
+            <div className='step-text'>
+              <div className="step-number">2</div>
+              <h3>Train Your AI Model</h3>
+              <p>Our AI learns the unique features of your home</p>
+            </div>
+
+            <div className="w-full max-w-md mx-auto h-96 relative">
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
+                <Image
+                  src={"/ourhouse_single.png"}
+                  alt={"House before renovation"}
+                  width={500}
+                  height={500}
+                  style={{ width: '100%', height: 'auto' }}
+                />
+              </div>
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                <Image
+                  src={"/prompt_images/before-house.jpg"}
+                  alt={"House before renovation"}
+                  width={200}
+                  height={200}
+                />
+              </div>
+              {[...Array(5)].map((_, index) => (
+                <div
+                  key={index}
+                  className="absolute top-24 left-1/2 w-0.5 bg-black"
+                  style={{
+                    height: 'calc(100% - 12rem)',
+                    transform: `translateX(${(index - 2) * 10}px)`,
+                  }}
+                >
+                  <motion.div
+                    className="w-full h-8 bg-blue-400"
+                    animate={{
+                      y: ['0%', '100%'],
+                      opacity: [0, 1, 0],
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                      delay: index * 0.3,
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
           <div className="step">
-            <div className="step-number">3</div>
-            <h3>Generate Designs</h3>
-            <p>Use text prompts to change the exterior design of your home</p>
+            <Image
+              src={"/prompt_images/before-house.jpg"}
+              alt={"House before renovation"}
+              width={200}
+              height={200}
+            />
+            <div className='step-text'>
+              <div className="step-number">3</div>
+              <h3>Generate Designs</h3>
+              <p>Use text prompts to change the exterior design of your home</p>
+            </div>
           </div>
         </div>
       </section>
@@ -143,7 +210,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
                 src={"/prompt_images/before-house.jpg"}
                 alt={"House before renovation"}
                 width={200}
-                height={500}
+                height={200}
                 />
             </div>
             <div className="after-image">
@@ -152,25 +219,6 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
               <div className="image-container">
                 {isLoading && (
                   <Loader/>
-                  // <div className="loader-container">
-                  //   <div className="ripple-loader">
-                  //     {[1, 2, 3].map((i) => (
-                  //       <motion.div
-                  //         key={i}
-                  //         className="ripple"
-                  //         animate={{
-                  //           scale: [1, 2, 1],
-                  //           opacity: [0.8, 0, 0.8],
-                  //         }}
-                  //         transition={{
-                  //           duration: 2,
-                  //           repeat: Infinity,
-                  //           delay: i * 0.2,
-                  //         }}
-                  //       />
-                  //     ))}
-                  //   </div>
-                  // </div>
                 )}
                 <AnimatePresence>
                   {showImage && (
@@ -214,7 +262,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
           </div>
           <div className="testimonial-card">
             <p>&quot;My clients love seeing multiple design options. It&apos;s revolutionized my business.&quot;</p>
-            <h4>- Mark T., Interior Designer</h4>
+            <h4>- Mark T., Contractor</h4>
           </div>
         </div>
       </section>

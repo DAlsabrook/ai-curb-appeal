@@ -3,7 +3,6 @@ import { useUser } from './components/UserContext'
 import Header from './components/header'
 import LandingPage from './components/landing'
 import Dashboard from './components/dashboard'
-import './styles/page.css'
 import { useState } from 'react'
 
 export default function Home() {

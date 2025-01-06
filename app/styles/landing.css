@@ -16,11 +16,19 @@ body {
   line-height: 1.6;
 }
 
+.landing-page h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2rem;
+}
 .landing-page {
-  width: 100%;
+  padding: 0 !important;
+  width: 80vw;
   height: auto;
   overflow-x: hidden;
   overflow-y: scroll;
+  margin: auto;
 }
 
 h1,
@@ -176,14 +184,23 @@ section {
 
 .steps {
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .step {
+  display: flex;
+  justify-content: space-around;
   text-align: center;
-  max-width: 300px;
+  margin: 50px 0px;
+}
+
+.step-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .step-number {
@@ -258,7 +275,7 @@ section {
 }
 
 .prompt-selector p {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   margin-bottom: 1rem;
 }
 

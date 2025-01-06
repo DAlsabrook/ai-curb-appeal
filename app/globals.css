@@ -17,6 +17,18 @@ body {
   display: none;
 }
 
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-footer {
+  background-color: #f3f4f6;
+  padding: 1rem;
+  text-align: center;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
