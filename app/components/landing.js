@@ -166,6 +166,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
                     transform: `translateX(${(index - 2) * 9}px)`,
                   }}
                 >
+                  <div className="absolute top-[0px] left-[-1.5px] w-0.8 bg-gray-700">&nbsp;</div>
                   <motion.div
                     className="w-full h-8 bg-orange-400"
                     animate={{
