@@ -117,10 +117,10 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
       <section className="how-it-works no-box">
         <h2>How It Works</h2>
         <div className="steps">
-          <div className="step">
+          <div className="step rounded-3xl">
             <Image
               className='step-image'
-              src={"/ourhouse_stack.png"}
+              src={"/landing-page/ourhouse_stack.png"}
               alt={"House before renovation"}
               width={500}
               height={500}
@@ -133,63 +133,63 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
               <p>Take 10 - 20 images of your property and upload them to our system</p>
             </div>
           </div>
-          <div className="step">
-            <div className='step-text'>
+          <div className="step rounded-3xl">
+            <div className='step-text w-[50%]'>
               <div className="step-number">2</div>
               <h3>Train Your AI Model</h3>
               <p>Our AI learns the unique features of your home</p>
             </div>
 
-            <div className="w-full max-w-md mx-auto h-96 relative">
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
+            <div className="w-full max-w-md mx-auto h-[500px] relative w-[50%]">
+              <div className="shimmer-container absolute top-[-7.5%] left-1/2 transform -translate-x-1/2 w-[95%]">
                 <Image
-                  src={"/ourhouse_single.png"}
+                  src={"/landing-page/ourhouse_single.png"}
                   alt={"House before renovation"}
                   width={500}
                   height={500}
-                  style={{ width: '100%', height: 'auto' }}
                 />
               </div>
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[60%]">
                 <Image
-                  src={"/prompt_images/before-house.jpg"}
+                  src={"/landing-page/aiBrain.png"}
                   alt={"House before renovation"}
-                  width={200}
-                  height={200}
+                  width={400}
+                  height={400}
                 />
               </div>
-              {[...Array(5)].map((_, index) => (
+              {[...Array(6)].map((_, index) => (
                 <div
                   key={index}
-                  className="absolute top-24 left-1/2 w-0.5 bg-black"
+                  className="absolute top-[32%] left-[48.8%] w-0.5 bg-gray-700"
                   style={{
-                    height: 'calc(100% - 12rem)',
-                    transform: `translateX(${(index - 2) * 10}px)`,
+                    height: 'calc(74.5% - 12rem)',
+                    transform: `translateX(${(index - 2) * 9}px)`,
                   }}
                 >
                   <motion.div
-                    className="w-full h-8 bg-blue-400"
+                    className="w-full h-8 bg-orange-400"
                     animate={{
-                      y: ['0%', '100%'],
-                      opacity: [0, 1, 0],
+                      y: ['0%', '500%'],
+                      opacity: [0, 1, 1, 1, 0],
                     }}
                     transition={{
                       duration: 1.5,
                       repeat: Infinity,
                       ease: 'easeInOut',
-                      delay: index * 0.3,
+                      delay: index * 0.6,
                     }}
                   />
                 </div>
               ))}
             </div>
           </div>
-          <div className="step">
+          <div className="step rounded-3xl">
             <Image
-              src={"/prompt_images/before-house.jpg"}
+              src={"/landing-page/ourhouse_white_walls.webp"}
               alt={"House before renovation"}
-              width={200}
-              height={200}
+              width={400}
+              height={400}
+              className='rounded-3xl'
             />
             <div className='step-text'>
               <div className="step-number">3</div>
@@ -287,13 +287,14 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
 
       <footer>
         <div className="footer-content">
-          <div className="footer-logo">
+          <div className="logo ml-8 bg-white text-black p-8 h-14 rounded-full">
             <Image
-              src={'/whiteCircle-black.png'}
+              src={'/ripplesLogo.png'}
               alt={'AI Curb Appeal Logo'}
-              width={40}
-              height={40}
+              width={69}
+              height={69}
               />
+            <p>Curb Appeal</p>
           </div>
           <div className="footer-links">
             <a href="/privacy">Privacy Policy</a>
