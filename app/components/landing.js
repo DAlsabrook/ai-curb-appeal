@@ -5,6 +5,9 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import Loader from './loader'
 import '../styles/landing.css'
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const LandingPage = ({ setIsSignUpModalOpen }) => {
   const [currentPrompt, setCurrentPrompt] = useState('"Red brick with dark paint"')
@@ -68,6 +71,30 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
     columns[index % 4].push(img);
   });
 
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 2,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    customPaging: function (i) {
+      return (
+        <a>
+          <Image
+            src={`/landing-page/ourhouse_result${i + 1}.webp`}
+            alt={`Preview ${i + 1}`}
+            width={100}
+            height={100}
+            className="rounded-3xl"
+          />
+        </a>
+      );
+    },
+    dotsClass: "slick-dots slick-thumb",
+  };
+
   return (
     <div ref={containerRef} className="landing-page">
       <section className="hero no-box">
@@ -97,18 +124,26 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
 
       <section className="benefits">
         <h2>Why Try AI Curb Appeal?</h2>
-        <div className="benefits-grid">
-          <div className="benefit-card">
+        <Image
+          className='step-image m-auto'
+          src={"/landing-page/laptop_on_white.png"}
+          alt={"House before renovation"}
+          width={500}
+          height={500}
+          style={{ width: '60%', height: 'auto' }}
+        />
+        <div className="benefits-grid text-center">
+          <div className="benefit-card mr-5">
             <h3>Instant Visualization</h3>
-            <p>See your ideas come to life in seconds, not days</p>
+            <p>Transform your ideas into stunning, photorealistic renderings of your home or property in moments. See how new colors, materials, and landscaping will look before committing to costly changes. With AI Curb Appeal, you can experiment with endless possibilities to create the perfect design.</p>
           </div>
-          <div className="benefit-card">
+          <div className="benefit-card mr-5">
             <h3>Cost-Effective Planning</h3>
-            <p>Save money by visualizing changes before purchasing materials</p>
+            <p>Save time and money by visualizing your renovations before breaking ground. Our AI-powered tool eliminates guesswork, helping you make confident decisions that fit your style and budget. Plan smarter, avoid costly mistakes, and achieve your dream look efficiently.</p>
           </div>
           <div className="benefit-card">
             <h3>Client Collaboration</h3>
-            <p>Generate multiple designs to present to your clients</p>
+            <p>Simplify communication and collaboration with clients, contractors, or design teams. Share detailed, AI-generated mockups to align visions and make adjustments with ease. Whether you're flipping homes or managing projects, AI Curb Appeal streamlines the design process for everyone involved.</p>
           </div>
 
         </div>
@@ -130,17 +165,19 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
             <div className='step-text'>
               <div className="step-number">1</div>
               <h3>Upload Your Home</h3>
-              <p>Take 10 - 20 images of your property and upload them to our system</p>
+              <p>Take 10 - 20 images of your property and upload them to our system!</p>
+              <p>Start by uploading clear images of your house or property from different angles. These photos will serve as the foundation for creating a personalized AI model tailored to your unique space. The better the photos, the more realistic and accurate your results will be!</p>
             </div>
           </div>
           <div className="step rounded-3xl">
             <div className='step-text w-[50%]'>
               <div className="step-number">2</div>
               <h3>Train Your AI Model</h3>
-              <p>Our AI learns the unique features of your home</p>
+              <p>Our AI learns the unique features of your home!</p>
+              <p>Once your images are uploaded, our system trains a specialized AI model designed to understand your home’s structure and features. This step ensures that every generated design is customized to your specific property. The process is seamless, and you'll be ready to create in about 30 minutes.</p>
             </div>
 
-            <div className="w-full max-w-md mx-auto h-[500px] relative w-[50%]">
+            <div className="w-full max-w-md mx-auto h-[500px] relative w-[50%] mt-5">
               <div className="shimmer-container absolute top-[-7.5%] left-1/2 transform -translate-x-1/2 w-[95%]">
                 <Image
                   src={"/landing-page/ourhouse_single.png"}
@@ -184,25 +221,78 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
               ))}
             </div>
           </div>
-          <div className="step rounded-3xl">
-            <Image
-              src={"/landing-page/ourhouse_white_walls.webp"}
-              alt={"House before renovation"}
-              width={400}
-              height={400}
-              className='rounded-3xl'
-            />
+          <div className="step last-step rounded-3xl">
             <div className='step-text'>
               <div className="step-number">3</div>
               <h3>Generate Designs</h3>
-              <p>Use text prompts to change the exterior design of your home</p>
+              <p>Use text prompts to change the exterior design of your home!</p>
+              <p>Unleash your creativity by prompting the AI to reimagine your home’s exterior with different designs, materials, and features. From new wall colors to landscaping and lighting, the possibilities are endless. Instantly visualize your dream home and refine your ideas with ease!</p>
+            </div>
+            <div className='flex flex-col justify-around mt-5'>
+              <Slider {...settings}>
+                <div>
+                  <Image
+                    src={"/landing-page/ourhouse_result2.webp"}
+                    alt={"House before renovation"}
+                    width={400}
+                    height={400}
+                    className="rounded-3xl"
+                  />
+                </div>
+                <div>
+                  <Image
+                    src={"/landing-page/ourhouse_result5.webp"}
+                    alt={"House before renovation"}
+                    width={400}
+                    height={400}
+                    className="rounded-3xl"
+                  />
+                </div>
+                <div>
+                  <Image
+                    src={"/landing-page/ourhouse_result1.webp"}
+                    alt={"House before renovation"}
+                    width={400}
+                    height={400}
+                    className="rounded-3xl"
+                  />
+                </div>
+                <div>
+                  <Image
+                    src={"/landing-page/ourhouse_result3.webp"}
+                    alt={"House before renovation"}
+                    width={400}
+                    height={400}
+                    className="rounded-3xl"
+                  />
+                </div>
+                <div>
+                  <Image
+                    src={"/landing-page/ourhouse_result4.webp"}
+                    alt={"House before renovation"}
+                    width={400}
+                    height={400}
+                    className="rounded-3xl"
+                  />
+                </div>
+                <div>
+                  <Image
+                    src={"/landing-page/ourhouse_result6.webp"}
+                    alt={"House before renovation"}
+                    width={400}
+                    height={400}
+                    className="rounded-3xl"
+                  />
+                </div>
+              </Slider>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="interactive-demo">
+      <section className="interactive-demo text-center">
         <h2>See the Magic in Action</h2>
+        <p>Experience the power of AI Curb Appeal with just a click! Select from pre-designed prompts to watch your home transform in real time, showcasing stunning design possibilities. From bold new colors to modern landscaping, see what’s possible and spark your creativity for your own project.</p>
         <div className="demo-container">
           <div className="image-comparison">
             <div className="before-image">
@@ -272,22 +362,35 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
         <h2>Frequently Asked Questions</h2>
         <div className="faq-list">
           <details>
-            <summary>How accurate are the AI-generated designs?</summary>
-            <p>Our AI models are trained on your specific property, ensuring high accuracy and realism in the generated designs.</p>
+            <summary>How realistic are the AI-generated designs?</summary>
+            <p>Our AI models are trained using the specific images you provide, ensuring highly realistic and photorealistic results. The generated designs accurately reflect your property’s dimensions, textures, and lighting, giving you a true-to-life preview of potential changes.</p>
           </details>
           <details>
-            <summary>Can I use this for commercial properties?</summary>
-            <p>AI Curb Appeal works great for both residential and commercial properties.</p>
+            <summary>Can this tool be used for commercial properties or large-scale projects?</summary>
+            <p>Absolutely! AI Curb Appeal is designed to work seamlessly with residential, commercial, and industrial properties. Whether you're redesigning a storefront, renovating a rental property, or planning updates for an office building, our AI adapts to your needs.</p>
           </details>
           <details>
-            <summary>How long does it take to generate a design?</summary>
-            <p>Most designs are generated within seconds, allowing for rapid iteration and exploration.</p>
+            <summary>How long does it take to train the AI and generate designs?</summary>
+            <p>Training your AI model typically takes about 30-45 minutes after uploading your images and you will only have to do this once. After training, designs are generated in seconds, allowing you to explore multiple ideas quickly and efficiently. We suggest making 1 change at a time and iterating on the design to get to your end goal!</p>
+          </details>
+          <details>
+            <summary>What kinds of exterior changes can the AI handle?</summary>
+            <p>The AI can modify a wide range of exterior elements, including wall colors, materials, roofing, windows, doors, landscaping, lighting, and more. You can experiment with subtle updates or completely reimagine the look of your property.</p>
+          </details>
+          <details>
+            <summary>Do I need technical skills to use AI Curb Appeal?</summary>
+            <p>No technical expertise is required! The platform is designed to be user-friendly, with intuitive prompts and straightforward processes. Upload your images, describe your vision, and let the AI do the rest.</p>
+          </details>
+          <details>
+            <summary>Can I share the generated designs with others?</summary>
+            <p>Yes, all generated designs can be easily downloaded and shared. Whether you’re collaborating with contractors, designers, or clients, you can provide clear visual references to bring your vision to life.</p>
           </details>
         </div>
       </section>
 
+
       <footer>
-        <div className="footer-content">
+        <div className="text-center flex flex-col">
           <div className="logo ml-8 bg-white text-black p-8 h-14 rounded-full">
             <Image
               src={'/ripplesLogo.png'}
@@ -302,12 +405,10 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
             <a href="/terms">Terms of Service</a>
             <a href="/contact">Contact Us</a>
           </div>
-          <div className="social-icons">
-            {/* Add your social media icons here */}
+          <div className="footer-bottom m-auto">
+            <p>&copy; {new Date().getFullYear()} AI Curb Appeal. All rights reserved.</p>
+            <p><a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-service">Terms of Service</a></p>
           </div>
-        </div>
-        <div className="copyright">
-          © 2024 AI Curb Appeal. All rights reserved.
         </div>
       </footer>
     </div>
