@@ -161,7 +161,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
             <Users className="w-auto h-[100px] mx-auto my-6 text-orange-500" />
             <h3 className='font-bold text-center text-2xl mb-2'>Client Collaboration</h3>
             <p className='text-md p-1 border-b-4 border-gray-300 pb-4 mb-4'>Simplify communication and collaboration with clients, contractors, or design teams.</p>
-            <p className='text-md italic p-1 opacity-70'>Share detailed, AI-generated mockups to align visions and make adjustments with ease. Whether you're flipping homes or managing projects, AI Curb Appeal streamlines the design process for everyone involved.</p>
+            <p className='text-md italic p-1 opacity-70'>Share detailed, AI-generated mockups to align visions and make adjustments with ease. Whether you&apos;re flipping homes or managing projects, AI Curb Appeal streamlines the design process for everyone involved.</p>
           </div>
 
         </div>
@@ -192,7 +192,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
               <div className="step-number">2</div>
               <h3>Train Your AI Model</h3>
               <p>Our AI learns the unique features of your home!</p>
-              <p>Once your images are uploaded, our system trains a specialized AI model designed to understand your home’s structure and features. This step ensures that every generated design is customized to your specific property. The process is seamless, and you'll be ready to create in about 30 minutes.</p>
+              <p>Once your images are uploaded, our system trains a specialized AI model designed to understand your home&apos;s structure and features. This step ensures that every generated design is customized to your specific property. The process is seamless, and you'll be ready to create in about 30 minutes.</p>
             </div>
 
             <div className="w-full max-w-md mx-auto h-[500px] relative w-[50%] mt-5">
@@ -390,7 +390,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
         <div className="faq-list">
           <details>
             <summary>How realistic are the AI-generated designs?</summary>
-            <p>Our AI models are trained using the specific images you provide, ensuring highly realistic and photorealistic results. The generated designs accurately reflect your property’s dimensions, textures, and lighting, giving you a true-to-life preview of potential changes.</p>
+            <p>Our AI models are trained using the specific images you provide, ensuring highly realistic and photorealistic results. The generated designs accurately reflect your property&apos;s dimensions, textures, and lighting, giving you a true-to-life preview of potential changes.</p>
           </details>
           <details>
             <summary>Can this tool be used for commercial properties or large-scale projects?</summary>
@@ -410,7 +410,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
           </details>
           <details>
             <summary>Can I share the generated designs with others?</summary>
-            <p>Yes, all generated designs can be easily downloaded and shared. Whether you’re collaborating with contractors, designers, or clients, you can provide clear visual references to bring your vision to life.</p>
+            <p>Yes, all generated designs can be easily downloaded and shared. Whether you&apos;re collaborating with contractors, designers, or clients, you can provide clear visual references to bring your vision to life.</p>
           </details>
         </div>
       </section>
