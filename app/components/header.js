@@ -180,15 +180,15 @@ export default function Header({ isSignUpModalOpen, setIsSignUpModalOpen }) {
   }
 
   return (
-    <header className="header">
-      <div className="logo ml-8">
+    <header className="flex items-center justify-between p-4 z-50 sticky top-0">
+      <div className="flex items-center">
         <Image
           src={'/ripplesLogo.png'}
           alt={'AI Curb Appeal Logo'}
           width={75}
           height={75}
           />
-        <p>Curb Appeal</p>
+        <p className='hidden md:block  md:text-lg'>Curb Appeal</p>
       </div>
       <nav>
         {user ? (
@@ -226,12 +226,12 @@ export default function Header({ isSignUpModalOpen, setIsSignUpModalOpen }) {
             </div>
           </div>
         ) : (
-          <div className='login-buttons'>
+          <div className='flex w-[200px] justify-between'>
             <Dialog open={isSignUpModalOpen} onOpenChange={setIsSignUpModalOpen}>
               <DialogTrigger asChild>
                 <Button variant="default">Sign up</Button>
               </DialogTrigger>
-                <DialogContent className="sm:max-w-[725px]">
+                <DialogContent className="w-[340px] md:w-[100%] md:max-w-[725px]">
                 <DialogHeader>
                   <DialogTitle>Sign Up</DialogTitle>
                   <DialogDescription>
@@ -251,8 +251,8 @@ export default function Header({ isSignUpModalOpen, setIsSignUpModalOpen }) {
                             <p className='text-center'>After verification we will notify you as soon as the site goes live!</p>
                         </div>
                         ):(
-                        <div className="grid grid-cols-2 gap-4 py-4">
-                          <div className="grid grid-cols-1 gap-4" style={{ minWidth: '200px', maxWidth: '300px' }}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+                          <div className="grid grid-cols-1 gap-4 " style={{ minWidth: '200px', maxWidth: '300px' }}>
                             <div className="grid grid-cols-1 items-center gap-1">
                               <Label htmlFor="firstName" className="text-lg">
                                 First Name

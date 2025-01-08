@@ -8,6 +8,8 @@ import '../styles/landing.css'
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Image as ImageIcon, DollarSign, Users } from 'lucide-react';
+
 
 const LandingPage = ({ setIsSignUpModalOpen }) => {
   const [currentPrompt, setCurrentPrompt] = useState('"Red brick with dark paint"')
@@ -53,16 +55,23 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
   const houseImages = [
     '/results/earhart-house-1.jpg',
     '/results/earhart-house-2.jpeg',
+    '/landing-page/ourhouse_result1.webp',
     '/results/earhart-house-3.jpg',
     '/results/earhart-house-4.jpg',
+    '/landing-page/ourhouse_result2.webp',
     '/results/earhart-house-5.jpg',
     '/results/earhart-house-6.jpg',
+    '/landing-page/ourhouse_result3.webp',
     '/results/earhart-house-7.jpg',
     '/results/earhart-house-8.jpg',
+    '/landing-page/ourhouse_result4.webp',
     '/results/earhart-house-1.jpg',
     '/results/earhart-house-2.jpeg',
+    '/landing-page/ourhouse_result5.webp',
     '/results/earhart-house-3.jpg',
     '/results/earhart-house-4.jpg',
+    '/landing-page/ourhouse_result7.webp',
+    '/landing-page/ourhouse_result6.webp'
   ]
   const columns = [[], [], [], []];
 
@@ -96,12 +105,12 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
   };
 
   return (
-    <div ref={containerRef} className="landing-page">
-      <section className="hero no-box">
-        <div className="hero-background">
+    <div ref={containerRef} className="landing-page w-[80vw] m-auto h-auto">
+      <section className="relative no-box min-h-[85vh] flex items-center justify-center overflow-hidden">
+        <div className="flex justify-between overflow-hidden h-[100%] absolute">
           {columns.map((column, colIndex) => (
-            <div key={colIndex} className={`image-column ${colIndex % 2 === 0 ? 'up' : 'down'}`}>
-              {Array.from({ length: 2 }).map((_, repeatIndex) => (
+            <div key={colIndex} className={`image-column flex flex-col items-center w-[22%]`}>
+              {Array.from({ length: 3 }).map((_, repeatIndex) => (
                 column.map((img, imgIndex) => (
                   <Image
                     src={img}
@@ -109,48 +118,57 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
                     key={`${colIndex}-${imgIndex}-${repeatIndex}`}
                     width={150}
                     height={100}
+                    className='w-[100%] mb-3 rounded-lg opacity-20'
                     />
                 ))
               ))}
             </div>
           ))}
         </div>
-        <motion.div className="hero-content" style={{ y }}>
-          <h1>Transform Your Home with AI</h1>
-          <p>Design, visualize, and renovate with the power of artificial intelligence</p>
-          <button className="cta-button" onClick={() => setIsSignUpModalOpen(true)}>Start Your AI Renovation Journey</button>
+        <motion.div className="hero-content relative z-[2] text-center p-5" style={{ y }}>
+          <h1 className='text-4xl font-bold mb-5'><span className='text-purple-500'>Transform</span> Your Home with AI</h1>
+          <p className='mb-5 opacity-60'>Design, visualize, and renovate with the power of artificial intelligence</p>
+          <button className="cta-button p-3 text-lg rounded-full" onClick={() => setIsSignUpModalOpen(true)}>Start Your AI Renovation Journey</button>
         </motion.div>
       </section>
 
-      <section className="benefits">
-        <h2>Why Try AI Curb Appeal?</h2>
+      <section className="benefits flex flex-col justify-center items-center">
+        <h2 className='text-center text-4xl w-[250px] mb-10 md:w-auto font-bold'>Why Try AI Curb Appeal?</h2>
         <Image
-          className='step-image m-auto'
+          className='min-w-[350px] h-auto'
           src={"/landing-page/laptop_on_white.png"}
           alt={"House before renovation"}
           width={500}
           height={500}
-          style={{ width: '60%', height: 'auto' }}
         />
-        <div className="benefits-grid text-center">
-          <div className="benefit-card mr-5">
-            <h3>Instant Visualization</h3>
-            <p>Transform your ideas into stunning, photorealistic renderings of your home or property in moments. See how new colors, materials, and landscaping will look before committing to costly changes. With AI Curb Appeal, you can experiment with endless possibilities to create the perfect design.</p>
+        <div className="flex flex-col lg:flex-row justify-center text-left">
+          <div className="benefit-card lg:mr-5 p-4 mb-8 lg:mb-1 lg:h-auto rounded-lg">
+            <ImageIcon className="w-auto h-[100px] mx-auto my-6 text-purple-500" />
+            <h3 className='font-bold text-center text-2xl mb-2'>Instant Visualization</h3>
+
+            <p className='text-md p-1 border-b-4 border-gray-300 pb-4 mb-4'>Transform your ideas into stunning, photorealistic renderings of your home or property in moments.</p>
+
+            <p className='text-md italic p-1 opacity-70'>See how new colors, materials, and landscaping will look before committing to costly changes. With AI Curb Appeal, you can experiment with endless possibilities to create the perfect design.</p>
+
           </div>
-          <div className="benefit-card mr-5">
-            <h3>Cost-Effective Planning</h3>
-            <p>Save time and money by visualizing your renovations before breaking ground. Our AI-powered tool eliminates guesswork, helping you make confident decisions that fit your style and budget. Plan smarter, avoid costly mistakes, and achieve your dream look efficiently.</p>
+          <div className="benefit-card lg:mr-5 p-4 mb-8 lg:mb-1 lg:h-auto rounded-lg">
+            <DollarSign className="w-auto h-[100px] mx-auto my-6 text-green-500" />
+            <h3 className='font-bold text-center text-2xl mb-2'>Cost-Effective Planning</h3>
+            <p className='text-md p-1 border-b-4 border-gray-300 pb-4 mb-4'>Save time and money by visualizing your renovations before breaking ground.</p>
+            <p className='text-md italic p-1 opacity-70'>Our AI-powered tool eliminates guesswork, helping you make confident decisions that fit your style and budget. Plan smarter, avoid costly mistakes, and achieve your dream look efficiently.</p>
           </div>
-          <div className="benefit-card">
-            <h3>Client Collaboration</h3>
-            <p>Simplify communication and collaboration with clients, contractors, or design teams. Share detailed, AI-generated mockups to align visions and make adjustments with ease. Whether you're flipping homes or managing projects, AI Curb Appeal streamlines the design process for everyone involved.</p>
+          <div className="benefit-card lg:mr-5 p-4 mb-8 lg:mb-1 lg:h-auto rounded-lg">
+            <Users className="w-auto h-[100px] mx-auto my-6 text-orange-500" />
+            <h3 className='font-bold text-center text-2xl mb-2'>Client Collaboration</h3>
+            <p className='text-md p-1 border-b-4 border-gray-300 pb-4 mb-4'>Simplify communication and collaboration with clients, contractors, or design teams.</p>
+            <p className='text-md italic p-1 opacity-70'>Share detailed, AI-generated mockups to align visions and make adjustments with ease. Whether you're flipping homes or managing projects, AI Curb Appeal streamlines the design process for everyone involved.</p>
           </div>
 
         </div>
       </section>
 
       <section className="how-it-works no-box">
-        <h2>How It Works</h2>
+        <h2 className='text-center text-4xl w-[220px] mb-10 md:w-auto font-bold'>How It Works</h2>
         <div className="steps">
           <div className="step rounded-3xl">
             <Image
@@ -284,6 +302,15 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
                     className="rounded-3xl"
                   />
                 </div>
+                <div>
+                  <Image
+                    src={"/landing-page/ourhouse_result7.webp"}
+                    alt={"House before renovation"}
+                    width={400}
+                    height={400}
+                    className="rounded-3xl"
+                  />
+                </div>
               </Slider>
             </div>
           </div>
@@ -291,7 +318,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
       </section>
 
       <section className="interactive-demo text-center">
-        <h2>See the Magic in Action</h2>
+        <h2 className='text-center text-4xl w-[220px] mb-10 md:w-auto font-bold'>See the Magic in Action</h2>
         <p>Experience the power of AI Curb Appeal with just a click! Select from pre-designed prompts to watch your home transform in real time, showcasing stunning design possibilities. From bold new colors to modern landscaping, see what’s possible and spark your creativity for your own project.</p>
         <div className="demo-container">
           <div className="image-comparison">
@@ -345,7 +372,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
       </section>
 
       <section className="testimonials no-box">
-        <h2>What Our Users Say</h2>
+        <h2 className='text-center text-4xl w-[220px] mb-10 md:w-auto font-bold'>What Our Users Say</h2>
         <div className="testimonial-grid">
           <div className="testimonial-card">
             <p>&quot;I saved thousands on my renovation by visualizing different options first!&quot;</p>
@@ -359,7 +386,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
       </section>
 
       <section className="faq">
-        <h2>Frequently Asked Questions</h2>
+        <h2 className='text-center text-4xl w-[220px] mb-10 md:w-auto font-bold'>Frequently Asked Questions</h2>
         <div className="faq-list">
           <details>
             <summary>How realistic are the AI-generated designs?</summary>

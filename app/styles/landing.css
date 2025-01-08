@@ -13,32 +13,14 @@ body {
   background-color: var(--background-color);
   margin: 0;
   padding: 0;
-  line-height: 1.6;
 }
 
-.landing-page h1 {
-  font-size: 2.5rem;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 2rem;
-}
 .landing-page {
   padding: 0 !important;
-  width: 80vw;
-  height: auto;
   overflow-x: hidden;
   overflow-y: scroll;
-  margin: auto;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin-top: 0;
-}
 
 section {
   margin: 20px 0;
@@ -51,78 +33,18 @@ section {
 }
 
 /* Hero section */
-.hero {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.hero-background {
-  display: flex;
-  justify-content: space-between;
-  overflow: hidden;
-  height: 100vh;
-  position: absolute;
-  /* Adjust as needed */
-}
-
-.image-column {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 22%;
-  margin: auto 20px;
-}
-
-.image-column.up {
-  transform: translateY(-10%);
-}
-
-.image-column.scroll-down {
-  transform: translateY(10%);
-}
-
-.image-column img {
-  width: 100%;
-  /* Adjust as needed */
-  margin-bottom: 1rem;
-  /* Adjust as needed */
-  border-radius: 20px;
-  opacity: .2;
-}
 
 .hero-content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
   color: white;
-  background-color: rgba(0, 0, 0, 0.6);
-  padding: 2rem;
+  background-color: rgba(0, 0, 0, .85);
   border-radius: 10px;
 }
 
-.hero h1 {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.hero p {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-}
 
 .cta-button {
   background-color: var(--accent-color);
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  border-radius: 50px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -133,32 +55,18 @@ section {
 
 /* Benefits section */
 .benefits {
-  padding: 4rem 2rem;
+  padding: 4rem 15px;
   background-color: white;
 }
 
-.benefits h2 {
-  text-align: center;
-  font-size: 2.5rem;
-}
-
-.benefits-grid {
-  display: flex;
-}
-
 .benefit-card {
-  padding: 2rem;
-  border-radius: 0.5rem;
   background-color: rgb(240, 240, 240);
-  border: .2px solid rgb(187, 187, 187);
-  box-shadow: inset 4px 7px 8px rgba(0, 0, 0, 0.2),
-      inset -4px -7px 8px rgba(255, 255, 255, .9);
+  /* border: .2px solid rgb(187, 187, 187); */
+  box-shadow: inset 4px 7px 7px rgba(89, 0, 118, 0.15), /*purple inside*/
+      inset -4px -7px 8px rgba(250, 232, 213, 0.9),/*orange inside*/
+      -4px -7px 8px rgba(89, 0, 118, 0.2),/*purple outside*/
+      4px 7px 8px rgba(250, 232, 213, 0.9);/*orange outside*/
   transition: box-shadow .5s ease-in-out;
-}
-
-.benefit-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
 }
 
 /* How it works section */
@@ -461,6 +369,10 @@ footer {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .landing-page {
+    width: 90vw;
+  }
+
   .hero h1 {
     font-size: 3rem;
   }
