@@ -192,7 +192,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
               <div className="step-number">2</div>
               <h3>Train Your AI Model</h3>
               <p>Our AI learns the unique features of your home!</p>
-              <p>Once your images are uploaded, our system trains a specialized AI model designed to understand your home&apos;s structure and features. This step ensures that every generated design is customized to your specific property. The process is seamless, and you'll be ready to create in about 30 minutes.</p>
+              <p>Once your images are uploaded, our system trains a specialized AI model designed to understand your home&apos;s structure and features. This step ensures that every generated design is customized to your specific property. The process is seamless, and you&apos;ll be ready to create in about 30 minutes.</p>
             </div>
 
             <div className="w-full max-w-md mx-auto h-[500px] relative w-[50%] mt-5">
@@ -394,7 +394,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
           </details>
           <details>
             <summary>Can this tool be used for commercial properties or large-scale projects?</summary>
-            <p>Absolutely! AI Curb Appeal is designed to work seamlessly with residential, commercial, and industrial properties. Whether you're redesigning a storefront, renovating a rental property, or planning updates for an office building, our AI adapts to your needs.</p>
+            <p>Absolutely! AI Curb Appeal is designed to work seamlessly with residential, commercial, and industrial properties. Whether you&apos;re redesigning a storefront, renovating a rental property, or planning updates for an office building, our AI adapts to your needs.</p>
           </details>
           <details>
             <summary>How long does it take to train the AI and generate designs?</summary>
