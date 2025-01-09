@@ -113,8 +113,8 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
   };
 
   return (
-    <div ref={containerRef} className="landing-page w-[80vw] m-auto h-auto">
-      <section className="relative no-box min-h-[85vh] flex items-center justify-center overflow-hidden">
+    <div ref={containerRef} className="landing-page w-[90vw] m-auto h-auto">
+      <section className="relative no-box min-h-[85vh] flex items-center justify-center overflow-hidden mb-20">
         <div className="flex justify-between overflow-hidden h-[100%] absolute">
           {columns.map((column, colIndex) => (
             <div key={colIndex} className={`image-column flex flex-col items-center w-[22%]`}>
@@ -140,7 +140,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
         </motion.div>
       </section>
 
-      <section className="benefits flex flex-col justify-center items-center">
+      <section className="benefits flex flex-col justify-center items-center mb-20">
         <h2 className='text-center text-4xl w-[250px] mb-10 md:w-auto font-bold'>Why Try AI Curb Appeal?</h2>
         <Image
           className='min-w-[350px] h-auto'
@@ -175,11 +175,11 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
         </div>
       </section>
 
-      <section className="how-it-works no-box w-[100%] flex flex-col justify-center items-center m-auto">
+      <section className="how-it-works no-box w-[100%] flex flex-col justify-center items-center m-auto mb-20">
         <h2 className='text-center text-4xl w-[220px] mb-10 md:w-auto font-bold'>How It Works</h2>
         <div className="steps flex flex-col w-[100%] max-w-[1200px] justify-center items-center my-auto mx-0">
 
-          <div className="step flex flex-col w-[100%] md:flex-row justify-around text-center p-[30px] rounded-3xl">
+          <div className="step flex flex-col w-[100%] md:flex-row justify-around text-center p-[30px] rounded-3xl mb-10">
             <Image
               className='w-[100%] md:w-[50%]'
               src={"/landing-page/ourhouse_stack.png"}
@@ -195,7 +195,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
             </div>
           </div>
 
-          <div className="step flex flex-col-reverse w-[100%] md:flex-row justify-center items-center text-center p-[30px] rounded-3xl">
+          <div className="step flex flex-col-reverse w-[100%] md:flex-row justify-center items-center text-center p-[30px] mb-10 rounded-3xl">
             <div className='flex flex-col justify-center items-center w-[100%] md:w-[40%]'>
               <div className="step-number">2</div>
               <h3 className='font-bold text-center text-2xl mb-2'>Train Your AI Model</h3>
@@ -327,7 +327,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
         </div>
       </section>
 
-      <section className="interactive-demo flex flex-col justify-center items-center p-7">
+      <section className="interactive-demo flex flex-col justify-center items-center p-7 mb-20">
         <h2 className='text-center text-4xl w-[220px] mb-10 md:w-auto font-bold'>See the Magic in Action</h2>
         <p>Experience the power of AI Curb Appeal with just a click! Select from pre-designed prompts to watch your home transform in real time, showcasing stunning design possibilities. From bold new colors to modern landscaping, see what’s possible and spark your creativity for your own project.</p>
         <div>
@@ -383,7 +383,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
         </div>
       </section>
 
-      <section className="testimonials no-box">
+      <section className="testimonials no-box mb-20">
         <h2 className='text-center text-4xl w-[220px] mb-10 md:w-auto font-bold'>What Our Users Say</h2>
         <div className="testimonial-grid">
           <div className="testimonial-card">
@@ -397,7 +397,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
         </div>
       </section>
 
-      <section className="faq">
+      <section className="faq mb-20">
         <h2 className='text-center text-4xl w-[220px] mb-10 md:w-auto font-bold'>Frequently Asked Questions</h2>
         <div className="faq-list">
           <details>
