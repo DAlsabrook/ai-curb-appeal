@@ -203,7 +203,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
               <p className='text-left'>Once your images are uploaded, our system trains a specialized AI model designed to understand your home&apos;s structure and features. This step ensures that every generated design is customized to your specific property. The process is seamless, and you&apos;ll be ready to create in about 30 minutes.</p>
             </div>
             <div className="w-full mx-auto h-[500px] relative w-[100%] md:w-[50%] flex flex-col">
-              <div className="shimmer-container absolute top-[-7.5%] mt-12 left-1/2 transform -translate-x-1/2 w-[320px]">
+              <div className="shimmer-container absolute top-[-7.5%] mt-16 left-1/2 transform -translate-x-1/2 w-[280px]">
                 <Image
                   className='w-[100%]'
                   src={"/landing-page/ourhouse_single.png"}
