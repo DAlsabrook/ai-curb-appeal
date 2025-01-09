@@ -203,7 +203,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
               <p className='text-left'>Once your images are uploaded, our system trains a specialized AI model designed to understand your home&apos;s structure and features. This step ensures that every generated design is customized to your specific property. The process is seamless, and you&apos;ll be ready to create in about 30 minutes.</p>
             </div>
             <div className="w-full mx-auto h-[500px] relative w-[100%] md:w-[50%] flex flex-col">
-              <div className="shimmer-container absolute top-[-7.5%] mt-16 left-1/2 transform -translate-x-1/2 w-[280px]">
+              <div className="shimmer-container absolute top-[-7.5%] mt-16 pt-1 left-1/2 transform -translate-x-1/2 w-[280px]">
                 <Image
                   className='w-[100%]'
                   src={"/landing-page/ourhouse_single.png"}
@@ -224,7 +224,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
               {[...Array(6)].map((_, index) => (
                 <div
                   key={index}
-                  className="absolute top-[32%] left-[48.8%] w-0.5 bg-gray-700"
+                  className="absolute top-[32%] left-[48.8%] w-0.5 bg-black"
                   style={{
                     height: 'calc(74.5% - 12rem)',
                     transform: `translateX(${(index - 2) * 9}px)`,
@@ -232,7 +232,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
                 >
                   <div className="absolute top-[0px] left-[-1.5px] w-0.8 bg-gray-700">&nbsp;</div>
                   <motion.div
-                    className="w-full h-8 bg-orange-400"
+                    className="w-full h-8 bg-gradient-to-b from-orange-400"
                     animate={{
                       y: ['0%', '500%'],
                       opacity: [0, 1, 1, 1, 0],
