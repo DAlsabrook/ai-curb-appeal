@@ -81,7 +81,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
   });
 
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 2,
@@ -101,7 +101,15 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
         </a>
       );
     },
-    dotsClass: "slick-dots slick-thumb",
+    responsive: [
+      {
+        breakpoint: 768, // Mobile breakpoint
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   return (
@@ -128,7 +136,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
         <motion.div className="hero-content relative z-[2] text-center p-5" style={{ y }}>
           <h1 className='text-4xl font-bold mb-5'><span className='text-purple-500'>Transform</span> Your Home with AI</h1>
           <p className='mb-5 opacity-60'>Design, visualize, and renovate with the power of artificial intelligence</p>
-          <button className="cta-button p-3 text-lg rounded-full" onClick={() => setIsSignUpModalOpen(true)}>Start Your AI Renovation Journey</button>
+          <button className="cta-button p-3 text-lg rounded-full" onClick={() => setIsSignUpModalOpen(true)}>Start Your AI Renovation</button>
         </motion.div>
       </section>
 
@@ -167,45 +175,46 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
         </div>
       </section>
 
-      <section className="how-it-works no-box">
+      <section className="how-it-works no-box w-[100%] flex flex-col justify-center items-center m-auto">
         <h2 className='text-center text-4xl w-[220px] mb-10 md:w-auto font-bold'>How It Works</h2>
-        <div className="steps">
-          <div className="step rounded-3xl">
+        <div className="steps flex flex-col w-[100%] max-w-[1200px] justify-center items-center my-auto mx-0">
+
+          <div className="step flex flex-col w-[100%] md:flex-row justify-around text-center p-[30px] rounded-3xl">
             <Image
-              className='step-image'
+              className='w-[100%] md:w-[50%]'
               src={"/landing-page/ourhouse_stack.png"}
               alt={"House before renovation"}
               width={500}
               height={500}
-              style={{width: '50%', height: 'auto'}}
             />
-
-            <div className='step-text'>
+            <div className='flex flex-col justify-center items-center w-[100%] md:w-[40%]'>
               <div className="step-number">1</div>
-              <h3>Upload Your Home</h3>
-              <p>Take 10 - 20 images of your property and upload them to our system!</p>
-              <p>Start by uploading clear images of your house or property from different angles. These photos will serve as the foundation for creating a personalized AI model tailored to your unique space. The better the photos, the more realistic and accurate your results will be!</p>
+              <h3 className='font-bold text-center text-2xl mb-2'>Upload Your Home</h3>
+              <p className='text-left'>Take 10 - 20 images of your property and upload them to our system!</p>
+              <p className='text-left'>Start by uploading clear images of your house or property from different angles. These photos will serve as the foundation for creating a personalized AI model tailored to your unique space. The better the photos, the more realistic and accurate your results will be!</p>
             </div>
           </div>
-          <div className="step rounded-3xl">
-            <div className='step-text w-[50%]'>
-              <div className="step-number">2</div>
-              <h3>Train Your AI Model</h3>
-              <p>Our AI learns the unique features of your home!</p>
-              <p>Once your images are uploaded, our system trains a specialized AI model designed to understand your home&apos;s structure and features. This step ensures that every generated design is customized to your specific property. The process is seamless, and you&apos;ll be ready to create in about 30 minutes.</p>
-            </div>
 
-            <div className="w-full max-w-md mx-auto h-[500px] relative w-[50%] mt-5">
-              <div className="shimmer-container absolute top-[-7.5%] left-1/2 transform -translate-x-1/2 w-[95%]">
+          <div className="step flex flex-col-reverse w-[100%] md:flex-row justify-center items-center text-center p-[30px] rounded-3xl">
+            <div className='flex flex-col justify-center items-center w-[100%] md:w-[40%]'>
+              <div className="step-number">2</div>
+              <h3 className='font-bold text-center text-2xl mb-2'>Train Your AI Model</h3>
+              <p className='text-left'>Our AI learns the unique features of your home!</p>
+              <p className='text-left'>Once your images are uploaded, our system trains a specialized AI model designed to understand your home&apos;s structure and features. This step ensures that every generated design is customized to your specific property. The process is seamless, and you&apos;ll be ready to create in about 30 minutes.</p>
+            </div>
+            <div className="w-full mx-auto h-[500px] relative w-[100%] md:w-[50%] flex flex-col">
+              <div className="shimmer-container absolute top-[-7.5%] mt-12 left-1/2 transform -translate-x-1/2 w-[320px]">
                 <Image
+                  className='w-[100%]'
                   src={"/landing-page/ourhouse_single.png"}
                   alt={"House before renovation"}
                   width={500}
                   height={500}
                 />
               </div>
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[60%]">
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[270px]">
                 <Image
+                  className='w-[100%]'
                   src={"/landing-page/aiBrain.png"}
                   alt={"House before renovation"}
                   width={400}
@@ -239,12 +248,13 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
               ))}
             </div>
           </div>
-          <div className="step last-step rounded-3xl">
-            <div className='step-text'>
+
+          <div className="step flex flex-col-reverse md:flex-col w-[100%] justify-around text-center p-[30px] rounded-3xl">
+            <div className='flex flex-col justify-center items-center md:w-[50%] m-auto'>
               <div className="step-number">3</div>
-              <h3>Generate Designs</h3>
-              <p>Use text prompts to change the exterior design of your home!</p>
-              <p>Unleash your creativity by prompting the AI to reimagine your home’s exterior with different designs, materials, and features. From new wall colors to landscaping and lighting, the possibilities are endless. Instantly visualize your dream home and refine your ideas with ease!</p>
+              <h3 className='font-bold text-center text-2xl mb-2'>Generate Designs</h3>
+              <p className='text-left'>Use text prompts to change the exterior design of your home!</p>
+              <p className='text-left'>Unleash your creativity by prompting the AI to reimagine your home’s exterior with different designs, materials, and features. From new wall colors to landscaping and lighting, the possibilities are endless. Instantly visualize your dream home and refine your ideas with ease!</p>
             </div>
             <div className='flex flex-col justify-around mt-5'>
               <Slider {...settings}>
@@ -317,30 +327,31 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
         </div>
       </section>
 
-      <section className="interactive-demo text-center">
+      <section className="interactive-demo flex flex-col justify-center items-center p-7">
         <h2 className='text-center text-4xl w-[220px] mb-10 md:w-auto font-bold'>See the Magic in Action</h2>
         <p>Experience the power of AI Curb Appeal with just a click! Select from pre-designed prompts to watch your home transform in real time, showcasing stunning design possibilities. From bold new colors to modern landscaping, see what’s possible and spark your creativity for your own project.</p>
-        <div className="demo-container">
-          <div className="image-comparison">
-            <div className="before-image">
-              <h3>Before</h3>
+        <div>
+          <div className="flex flex-col justify-center items-center mb-0 mt-10">
+            <div className='text-center h-auto w-[100%] md:w-[40%]'>
               <Image
+                className='w-[100%] rounded-3xl'
                 src={"/prompt_images/before-house.jpg"}
                 alt={"House before renovation"}
                 width={200}
                 height={200}
                 />
+              <h3 className='italic'>An image the model was trained on</h3>
             </div>
-            <div className="after-image">
-              <h3>After Prompt: {currentPrompt}</h3>
 
-              <div className="image-container">
+            <div className="flex flex-col justify-center items-center text-center my-10">
+              <div className='flex flex-col justify-center items-center relative min-h-[300px] w-[100%]  md:w-[40%]'>
                 {isLoading && (
                   <Loader/>
                 )}
                 <AnimatePresence>
                   {showImage && (
                     <motion.img
+                      className=' rounded-3xl'
                       key={currentPrompt}
                       src={getImageForPrompt(currentPrompt)}
                       alt={`${currentPrompt} style house`}
@@ -352,6 +363,7 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
                   )}
                 </AnimatePresence>
               </div>
+              <h3 className='italic'>Prompt: {currentPrompt} Image</h3>
             </div>
           </div>
           <div className="prompt-selector">
@@ -416,9 +428,9 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
       </section>
 
 
-      <footer>
-        <div className="text-center flex flex-col">
-          <div className="logo ml-8 bg-white text-black p-8 h-14 rounded-full">
+      <footer className='rounded-t-3xl'>
+        <div className="text-center flex flex-col justify-center items-center">
+          <div className="flex flex-row justify-center items-center bg-white text-black h-[70px] rounded-full w-[200px]">
             <Image
               src={'/ripplesLogo.png'}
               alt={'AI Curb Appeal Logo'}
@@ -427,14 +439,13 @@ const LandingPage = ({ setIsSignUpModalOpen }) => {
               />
             <p>Curb Appeal</p>
           </div>
-          <div className="footer-links">
+          <div className="footer-links mt-10">
             <a href="/privacy">Privacy Policy</a>
             <a href="/terms">Terms of Service</a>
             <a href="/contact">Contact Us</a>
           </div>
           <div className="footer-bottom m-auto">
             <p>&copy; {new Date().getFullYear()} AI Curb Appeal. All rights reserved.</p>
-            <p><a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-service">Terms of Service</a></p>
           </div>
         </div>
       </footer>

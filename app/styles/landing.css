@@ -61,52 +61,19 @@ section {
 
 .benefit-card {
   background-color: rgb(240, 240, 240);
-  /* border: .2px solid rgb(187, 187, 187); */
-  box-shadow: inset 4px 7px 7px rgba(89, 0, 118, 0.15), /*purple inside*/
-      inset -4px -7px 8px rgba(250, 232, 213, 0.9),/*orange inside*/
-      -4px -7px 8px rgba(89, 0, 118, 0.2),/*purple outside*/
-      4px 7px 8px rgba(250, 232, 213, 0.9);/*orange outside*/
+  border: .2px solid rgb(187, 187, 187);
   transition: box-shadow .5s ease-in-out;
 }
 
 /* How it works section */
 .how-it-works {
   background-color: var(--background-color);
-  padding: 4rem 2rem;
-}
-
-.how-it-works h2 {
-  text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 3rem;
-}
-
-.steps {
-  display: flex;
-  flex-direction: column;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .step {
-  display: flex;
-  justify-content: space-around;
-  text-align: center;
-  margin: 60px 0px;
-  padding: 40px;
   box-shadow: 0 0px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-.last-step {
-  flex-direction: column;
-}
-
-.step-text {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
 
 .step-number {
   background-color: var(--accent-color);
@@ -172,44 +139,14 @@ section {
 
 /* Interactive demo section */
 .interactive-demo {
-  padding: 4rem 2rem;
   background-color: white;
 }
 
-.interactive-demo h2 {
-  text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 3rem;
-}
 
-.demo-container {
-  max-width: 1000px;
-  margin: 0 auto;
-}
 
 .image-comparison {
   display: flex;
   gap: 2rem;
-}
-
-.before-image,
-.after-image {
-  flex: 1;
-}
-
-.before-image h3,
-.after-image h3 {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.before-image img,
-.after-image img {
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
-  border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .prompt-selector {
@@ -367,40 +304,6 @@ footer {
   font-size: 0.9rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .landing-page {
-    width: 90vw;
-  }
-
-  .hero h1 {
-    font-size: 3rem;
-  }
-
-  .hero p {
-    font-size: 1.2rem;
-  }
-
-  .steps {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .step {
-    margin-bottom: 2rem;
-  }
-
-  .image-comparison {
-    flex-direction: column;
-  }
-
-
-  .footer-logo,
-  .footer-links,
-  .social-icons {
-    margin-bottom: 1rem;
-  }
-}
 
 /* Animations */
 @keyframes fadeIn {
@@ -440,9 +343,3 @@ footer {
   background: var(--secondary-color);
 }
 
-.image-container {
-  position: relative;
-  width: 100%;
-  height: 400px;
-  max-height: 500px;
-}

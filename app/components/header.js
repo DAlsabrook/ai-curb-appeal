@@ -231,7 +231,7 @@ export default function Header({ isSignUpModalOpen, setIsSignUpModalOpen }) {
               <DialogTrigger asChild>
                 <Button variant="default">Sign up</Button>
               </DialogTrigger>
-                <DialogContent className="w-[340px] md:w-[100%] md:max-w-[725px]">
+                <DialogContent className="w-[340px] md:w-[100%] md:max-w-[725px] h-[80vh] md:h-auto overflow-scroll">
                 <DialogHeader>
                   <DialogTitle>Sign Up</DialogTitle>
                   <DialogDescription>
